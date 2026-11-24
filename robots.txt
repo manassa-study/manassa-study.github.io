@@ -1,0 +1,5 @@
+# منصة المذاكرة: every study page is open to search engines.
+User-agent: *
+Allow: /
+
+Sitemap: https://manassa-study.github.io/sitemap.xml
