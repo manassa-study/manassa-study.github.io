@@ -16,8 +16,8 @@
   window.__msReport = true;
 
   var FORM = {
-    id: "",
-    entries: { course: "", place: "", type: "", details: "", contact: "" },
+    id: "1FAIpQLSfQZEaQiFQ7JAS-BIwYuceFYHmGIogB3yzZziDiCmxGqJWdZQ",
+    entries: { course: "1591633300", place: "326955045", type: "1696159737", details: "485428648", contact: "34760340" },
     types: ["خطأ في المعلومة", "خطأ إملائي أو طباعي", "نقص أو شيء مفقود", "مشكلة في الموقع", "اقتراح"]
   };
   var TYPES = [
