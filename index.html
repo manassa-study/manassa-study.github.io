@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>منصة المذاكرة</title>
-<meta name="description" content="منصة مذاكرة مجانية: التفسير وعلوم القرآن، وعلوم الحديث، بملخصات وخرائط ذهنية وبطاقات واختبارات.">
+<meta name="description" content="منصة مذاكرة مجانية: التفسير وعلوم القرآن، وعلوم الحديث، والفقه وأصوله، بملخصات وخرائط ذهنية وبطاقات واختبارات.">
 <meta name="theme-color" content="#0b2a52">
 <meta property="og:title" content="منصة المذاكرة">
 <meta property="og:type" content="website">
@@ -15,7 +15,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ar_AR">
 <meta name="twitter:card" content="summary_large_image">
-<meta property="og:description" content="منصة مذاكرة مجانية: التفسير وعلوم القرآن، وعلوم الحديث، بملخصات وخرائط ذهنية وبطاقات واختبارات.">
+<meta property="og:description" content="منصة مذاكرة مجانية: التفسير وعلوم القرآن، وعلوم الحديث، والفقه وأصوله، بملخصات وخرائط ذهنية وبطاقات واختبارات.">
 <link rel="icon" href="https://manassa-study.github.io/Tafseer/favicon.png" type="image/png" sizes="48x48"><link rel="icon" href="https://manassa-study.github.io/Tafseer/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="https://manassa-study.github.io/Tafseer/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +26,7 @@
   --navy-1:#071d3d; --navy-2:#0b2a52; --royal:#1a4f8b;
   --gold:#c9972b; --gold-2:#f0c96b; --gold-ink:#8a5c08;
   --green-1:#083d32; --green-2:#0f6450;
+  --plum-1:#3a1235; --plum-2:#6d2f63;
   --shadow:0 2px 4px rgba(11,42,82,.06),0 12px 32px rgba(11,42,82,.10);
   --f-title:"Aref Ruqaa","Scheherazade New",serif;
   --f-head:"Noto Kufi Arabic","Tajawal",sans-serif;
@@ -72,6 +73,7 @@ main{flex:1;width:100%;max-width:1040px;margin:-80px auto 0;padding:0 16px 48px;
 .card-top::before{content:"";position:absolute;inset:0;background-image:var(--pattern);opacity:.12}
 .card-top>*{position:relative}
 .card.green .card-top{background:linear-gradient(150deg,var(--green-2),var(--green-1))}
+.card.plum .card-top{background:linear-gradient(150deg,var(--plum-2),var(--plum-1))}
 .card.blue .card-top{background:linear-gradient(150deg,var(--royal),var(--navy-2))}
 .badge{position:absolute;top:18px;left:18px;font-family:var(--f-head);font-size:12.5px;font-weight:600;padding:4px 12px;border-radius:999px;background:rgba(240,201,107,.16);color:var(--gold-2);border:1px solid rgba(240,201,107,.45)}
 .icon{position:absolute;top:18px;right:22px;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.1);border:1px solid rgba(240,201,107,.4);color:var(--gold-2)}
@@ -207,6 +209,19 @@ footer .du{font-family:var(--f-read);font-size:19px;color:var(--gold-ink);displa
       <div class="card-body">
         <p>التخريج ودراسة الأسانيد: طرق التخريج، وكتب الرجال، والجرح والتعديل، ودراسة الإسناد.</p>
         <ul class="tags"><li>التخريج ودراسة الأسانيد</li></ul>
+        <span class="go">ادخل القسم <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
+      </div>
+    </a>
+    <a class="card reveal plum" href="https://manassa-study.github.io/fiqh.html">
+      <div class="card-top">
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 21h14"/><path d="M4 7h16"/><path d="M7 7l-3 7a3 3 0 0 0 6 0z"/><path d="M17 7l-3 7a3 3 0 0 0 6 0z"/></svg></span>
+        <span class="badge">قسم</span>
+        <h2>الفقه وأصوله</h2>
+        <p class="en">Fiqh &amp; Usul al-Fiqh</p>
+      </div>
+      <div class="card-body">
+        <p>المدخل إلى الفقه الإسلامي: الشريعة والفقه والقانون، وتاريخ التشريع في عصر الرسالة والصحابة والتابعين.</p>
+        <ul class="tags"><li>المدخل إلى الفقه الإسلامي</li></ul>
         <span class="go">ادخل القسم <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
       </div>
     </a>
