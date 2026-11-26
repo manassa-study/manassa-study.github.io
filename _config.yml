@@ -1,0 +1,14 @@
+# Jekyll settings for GitHub Pages.
+# Phase 1 decision O-1 (approved 27 November 2026): folders that hold sources,
+# tooling, tests and reports are not part of the public site.
+exclude:
+  - books/
+  - platform/
+  - tools/
+  - tests/
+  - references/
+  - reports/
+  - docs/
+  # Tooling files at the root, kept off the site for the same reason (O-1).
+  - requirements.txt
+  - requirements-dev.txt
