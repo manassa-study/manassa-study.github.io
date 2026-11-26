@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "slug": "munazara-rashidiya",
+  "title": "المناظرة الرشيدية",
+  "output": "mantiq/MunazaraRashidiyaAQU.html",
+  "og_image": "mantiq/og-munazara.jpg",
+  "description": "«الرشيدية» شرح الرسالة الشريفية في آداب البحث والمناظرة: التعريفات، والأبحاث التسعة، والمنع والنقض والمعارضة، مع تبسيط المواضع الصعبة. ملخصات وخرائط ذهنية وبطاقات واختبارات، على منصة المذاكرة.",
+  "storage_key": "munazara-rashidiya-v1",
+  "welcome_session_key": "munazara-wel",
+  "brand_mark": "ن",
+  "page_range": "ص ٢٢ - ٩٣",
+  "structure_summary": "مدخل ومقدمة وتسعة أبحاث وخاتمة · ",
+  "content": {
+    "loader": "python",
+    "files": [
+      "m1.py",
+      "m2.py",
+      "m3.py",
+      "m4.py",
+      "m5.py"
+    ],
+    "symbols": {
+      "meta": "META",
+      "cards": "FC",
+      "questions": "QRAW",
+      "examples": "EX",
+      "tables": "TB",
+      "maps": "MM",
+      "capsules": "CAPS"
+    },
+    "chapters": [
+      {
+        "symbol": "CH1",
+        "quiz_name": "المدخل"
+      },
+      {
+        "symbol": "CH2",
+        "quiz_name": "المقدمة: التعريفات"
+      },
+      {
+        "symbol": "CH3",
+        "quiz_name": "الأبحاث التسعة"
+      },
+      {
+        "symbol": "CH4",
+        "quiz_name": "الخاتمة والوصية"
+      }
+    ],
+    "extras": []
+  },
+  "quiz": {
+    "shuffle": "sequential",
+    "seed": 1447
+  },
+  "labels": {
+    "examples_title": "الأمثلة التطبيقية",
+    "examples_short": "الأمثلة",
+    "examples_count_noun": "مثالاً",
+    "examples_in_lesson": "أمثلة هذا الدرس",
+    "review_subtitle": "التعريفات والفروق والأقسام والأمثلة في مكان واحد"
+  },
+  "welcome": {
+    "aim": "نصرة الحق وإتقان آداب البحث والمناظرة",
+    "study_line": "قراءة الدروس بالترتيب مع نص المتن والتوضيح المبسّط وأسئلة"
+  },
+  "search": {
+    "placeholder": "ابحث: المنع، السند المساوي، المعارضة بالقلب، الغصب...",
+    "suggestions": [
+      "المنع",
+      "السند المساوي",
+      "النقض الإجمالي",
+      "المعارضة بالقلب",
+      "الغصب",
+      "المقاطع",
+      "المكابرة",
+      "التقريب"
+    ]
+  },
+  "theme": {
+    "light": {
+      "accent": "#8a4b14",
+      "accent_ink": "#ffffff",
+      "accent_soft": "#f6e7d6",
+      "hero_1": "#3b1d06",
+      "hero_2": "#8a4b14",
+      "paper": "#f7f2ec",
+      "surface": "#ffffff",
+      "surface_2": "#efe4d8",
+      "line": "#e2d2c0"
+    },
+    "dark": {
+      "accent": "#efb57c",
+      "accent_ink": "#2b1503",
+      "accent_soft": "#3a2516",
+      "hero_1": "#170d05",
+      "hero_2": "#432510",
+      "paper": "#13100c",
+      "surface": "#1c1712",
+      "surface_2": "#261f18",
+      "line": "#3e3227"
+    },
+    "browser_theme_color": "#3b1d06"
+  },
+  "features": {
+    "dedication_card": false
+  }
+}
