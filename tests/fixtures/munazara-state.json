@@ -1,0 +1,53 @@
+{
+  "source": "tests/golden/MunazaraRashidiyaAQU.html (baseline de019d2, sha256 a91018ea…)",
+  "storage_key": "munazara-rashidiya-v1",
+  "state": {
+    "done": {
+      "t1": true,
+      "t2": true,
+      "t5": true
+    },
+    "mastered": {
+      "1": true,
+      "3": true,
+      "5": true,
+      "7": false,
+      "9": false
+    },
+    "again": {
+      "7": true,
+      "9": true
+    },
+    "last": "t5",
+    "quizHist": [
+      {
+        "mode": "practice",
+        "ch": "الكل",
+        "c": 4,
+        "n": 10,
+        "t": 1795727909965
+      }
+    ],
+    "lastWrong": [
+      47,
+      136,
+      134,
+      132,
+      129,
+      158
+    ],
+    "theme": null,
+    "scale": 1,
+    "registered": true,
+    "reviewTab": "cards",
+    "mapIdx": 3,
+    "wrongBank": [
+      47,
+      136,
+      134,
+      132,
+      129,
+      158
+    ]
+  }
+}

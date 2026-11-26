@@ -22,8 +22,12 @@ def _leaves(x):
         yield x
 
 
+PARTIALS = ["app.js.j2", "auth.html.j2", "auth.js.j2", "head.html.j2", "report.html.j2", "styles.css.j2"]
+
+
 def test_templates_exist():
-    assert [p.relative_to(REPO / TEMPLATE_DIR).as_posix() for p in TEMPLATES] == ["book.html.j2"]
+    assert [p.relative_to(REPO / TEMPLATE_DIR).as_posix() for p in TEMPLATES] == \
+        ["book.html.j2"] + ["partials/" + n for n in PARTIALS]
 
 
 def test_no_slug_or_title_comparisons():
@@ -56,7 +60,9 @@ def test_lf_only_and_no_unknown_tags():
         assert b"\r" not in raw
         text = raw.decode("utf-8")
         assert "{#" not in text
-        assert re.findall(r"\{%", text) == []  # the step-1 template has no statements
+        # the only statements are includes of the partials (spec section 4, hierarchy)
+        for stmt in re.findall(r"\{%(.*?)%\}", text, re.S):
+            assert re.fullmatch(r'\s*include "partials/[a-z.]+\.j2"\s*', stmt), stmt
 
 
 def test_every_expression_uses_known_roots():
@@ -64,3 +70,9 @@ def test_every_expression_uses_known_roots():
         for expr in re.findall(r"\{\{(.*?)\}\}", path.read_text(encoding="utf-8")):
             expr = expr.strip()
             assert re.match(r'^(\(?(book|site|model)\b|"\$\{"$)', expr), expr
+
+
+def test_every_partial_is_included_once():
+    text = "".join(p.read_text(encoding="utf-8") for p in TEMPLATES)
+    for name in PARTIALS:
+        assert text.count(f'{{% include "partials/{name}" %}}') == 1, name

@@ -1,0 +1,56 @@
+<!-- ACCOUNT-SETTINGS v6 -->
+<style>
+.acc-p{position:fixed;inset:0;z-index:96;display:grid;place-items:center;background:rgba(6,16,32,.5);backdrop-filter:blur(3px);padding:16px}
+.acc-p[hidden]{display:none}
+.acc-card{width:min(460px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:16px;box-shadow:var(--shadow);font-family:var(--f-ui)}
+.acc-h{display:flex;justify-content:space-between;align-items:center}
+.acc-h b{font-family:var(--f-display);font-size:18px}
+.acc-f>span{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.acc-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.acc-opts.four{grid-template-columns:repeat(4,1fr)}
+.acc-opts button{border:1.5px solid var(--line);background:var(--surface);border-radius:11px;padding:10px 8px;color:var(--ink);font:inherit;font-weight:600;font-size:13.5px;cursor:pointer}
+.acc-opts button[aria-pressed="true"]{border-color:var(--accent);background:var(--surface-2);color:var(--accent)}
+.acc-f p{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.8}
+.acc-f input,.acc-f textarea{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:11px;background:var(--paper);color:var(--ink);padding:10px 12px;font:inherit;font-size:14px}
+.acc-f textarea{min-height:70px;direction:ltr;text-align:left;font-family:ui-monospace,monospace;font-size:12px;margin-top:8px}
+.acc-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.acc-row .btn{flex:1 1 auto}
+.acc-soon{opacity:.55;cursor:not-allowed}
+.acc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.acc-stats div{background:var(--surface-2);border-radius:11px;padding:10px 6px;text-align:center}
+.acc-stats b{display:block;font-size:19px;color:var(--accent)}
+.acc-stats span{font-size:11.5px;color:var(--muted)}
+.acc-msg{font-size:12.5px;color:var(--ok);min-height:1.3em;margin-top:6px}
+.acc-who{display:flex;align-items:center;gap:10px;background:var(--surface-2);border-radius:11px;padding:10px 12px}
+.acc-who b{display:block;font-size:14px}.acc-who small{display:block;color:var(--muted);font-size:12px;direction:ltr;text-align:right}
+.acc-g{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.acc-g svg{width:18px;height:18px}
+.gate .acc-g{margin-top:8px;width:100%}
+.acc-mail{display:flex;flex-direction:column;gap:8px;margin-top:10px;width:100%;text-align:right}
+.acc-mail input{width:100%;box-sizing:border-box;border:1.5px solid var(--line);border-radius:11px;background:#fff;color:#16213a;padding:11px 12px;font:inherit;font-size:15px}
+.acc-mail input.code{direction:ltr;text-align:center;letter-spacing:.35em;font-size:20px;font-weight:700}
+.acc-mail .acc-link{background:none;border:0;color:inherit;opacity:.85;text-decoration:underline;font:inherit;font-size:14px;cursor:pointer;padding:4px;align-self:center}
+.acc-mail .acc-mmsg{font-size:13px;line-height:1.7;min-height:1.2em;text-align:center}
+.btn.acc-danger{color:#c0392b;border-color:#c0392b66}
+</style>
+<template id="accSections">
+ <div class="acc-f">
+  <span>الحساب</span>
+  <div id="accBox"></div>
+  <label class="sr" for="accName">الاسم</label>
+  <input type="text" id="accName" placeholder="اسمك كما يظهر في الترحيب" maxlength="60" autocomplete="name" style="margin-top:10px">
+  <div class="acc-msg" id="accNameMsg" aria-live="polite"></div>
+ </div>
+ <div class="acc-f">
+  <span>تقدّمي في هذا المقرر</span>
+  <div class="acc-stats" id="accStats"></div>
+  <div class="acc-row"><button class="btn acc-danger" id="accReset">مسح تقدّمي في هذا المقرر</button></div>
+  <div class="acc-msg" id="accMsg" aria-live="polite"></div>
+ </div>
+</template>
+<div class="acc-p" id="accP" hidden role="dialog" aria-labelledby="accT"><div class="acc-card">
+ <div class="acc-h"><b id="accT">الإعدادات والحساب</b><button class="ibtn" id="accClose" aria-label="إغلاق"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+ <div class="acc-f"><span>المظهر</span><div class="acc-opts" id="accTheme"><button data-v="light">فاتح</button><button data-v="dark">داكن</button></div></div>
+ <div class="acc-f"><span>حجم خط القراءة</span><div class="acc-opts four" id="accSize"><button data-v="0.92">صغير</button><button data-v="1">عادي</button><button data-v="1.12">كبير</button><button data-v="1.25">أكبر</button></div></div>
+</div></div>
+<!-- /ACCOUNT-SETTINGS -->
