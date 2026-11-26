@@ -1,0 +1,35 @@
+# Build and validate only (spec section 10). This workflow never commits,
+# pushes, deploys or changes settings, and uses no secrets. Deployment stays
+# with GitHub's built-in Pages workflow. tests/unit/test_workflow_boundaries.py
+# fails if any of these boundaries is loosened.
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.11"
+      - name: Install pinned packages
+        run: python -m pip install --require-hashes --no-deps -r requirements-dev.txt
+      - name: Run tests
+        run: python -m pytest -q -p no:cacheprovider -m "not browser" tests

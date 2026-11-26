@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "base_url": "https://manassa-study.github.io/",
+  "platform_name": "منصة المذاكرة",
+  "report_script_url": "https://manassa-study.github.io/report.js",
+  "fonts_url": "https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Amiri+Quran&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=El+Messiri:wght@500;600;700&family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap",
+  "supabase_url": "https://bkqyroqdhkfofoevicjg.supabase.co",
+  "supabase_publishable_key": "sb_publishable_mmRkRsFroni2dgiF8eTXtQ__WGqONmH"
+}

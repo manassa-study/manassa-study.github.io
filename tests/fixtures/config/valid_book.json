@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "slug": "fixture-book",
+  "title": "كتاب الاختبار",
+  "output": "mantiq/FixtureBook.html",
+  "og_image": "mantiq/og-fixture.jpg",
+  "description": "كتاب صغير للاختبارات فقط.",
+  "storage_key": "fixture-book-v1",
+  "welcome_session_key": "fixture-wel",
+  "brand_mark": "ك",
+  "page_range": "ص ١ - ٢",
+  "structure_summary": "بابان · ",
+  "content": {
+    "loader": "python",
+    "files": ["content.py"],
+    "symbols": {"meta": "META", "cards": "FC", "questions": "QRAW", "examples": "EX",
+                "tables": "TB", "maps": "MM", "capsules": "CAPS"},
+    "chapters": [{"symbol": "CH1", "quiz_name": "الباب الأول"}],
+    "extras": []
+  },
+  "quiz": {"shuffle": "sequential", "seed": 1447},
+  "labels": {"examples_title": "الأمثلة", "examples_short": "الأمثلة", "examples_count_noun": "مثالاً",
+             "examples_in_lesson": "أمثلة هذا الدرس", "review_subtitle": "مراجعة"},
+  "welcome": {"aim": "الفهم", "study_line": "القراءة بالترتيب"},
+  "search": {"placeholder": "ابحث", "suggestions": ["أ", "ب"]},
+  "theme": {
+    "light": {"accent": "#8a4b14", "accent_ink": "#ffffff", "accent_soft": "#f6e7d6", "hero_1": "#3b1d06",
+              "hero_2": "#8a4b14", "paper": "#f7f2ec", "surface": "#ffffff", "surface_2": "#efe4d8", "line": "#e2d2c0"},
+    "dark": {"accent": "#efb57c", "accent_ink": "#2b1503", "accent_soft": "#3a2516", "hero_1": "#170d05",
+             "hero_2": "#432510", "paper": "#13100c", "surface": "#1c1712", "surface_2": "#261f18", "line": "#3e3227"},
+    "browser_theme_color": "#3b1d06"
+  },
+  "features": {"dedication_card": false}
+}
