@@ -3,7 +3,7 @@
   "slug": "minimal",
   "title": "كتاب الاختبار",
   "output": "fiqh/MinimalTestAQU.html",
-  "og_image": "fiqh/og-minimal.jpg",
+  "og_image": "fiqh/og-fiqh.jpg",
   "description": "وصف كتاب الاختبار.",
   "storage_key": "minimal-test-v1",
   "welcome_session_key": "minimal-wel",

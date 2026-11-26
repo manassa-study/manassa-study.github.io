@@ -359,13 +359,16 @@ def test_build_never_writes_the_lock_and_stops_cleanly(tmp_path):
     root = make_repo(tmp_path, [(PILOT, REPO / "books" / PILOT)])
     lock_file = root / "books" / PILOT / "ids.lock.json"
     before = lock_file.read_bytes()
+    page = root / "mantiq" / "MunazaraRashidiyaAQU.html"
+    page_before = page.read_bytes()
     content = root / "books" / PILOT / "content" / "m5.py"
     content.write_text(content.read_text(encoding="utf-8") + "\nFC.pop(0)\n", encoding="utf-8")
     with pytest.raises(BuildStopped) as e:
         run_book(root, PILOT)
     assert "V3.missing" in codes(e.value.findings)
     assert lock_file.read_bytes() == before
-    assert not (root / "mantiq").exists()
+    assert page.read_bytes() == page_before
+    assert [p.name for p in page.parent.iterdir() if p.name.endswith(".tmp")] == []
 
 
 @pytest.mark.parametrize("field, value, code", [

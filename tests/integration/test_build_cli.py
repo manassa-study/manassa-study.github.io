@@ -36,9 +36,17 @@ def test_check_fails_on_a_hand_edited_page(tmp_path):
     root = make_repo(tmp_path, [(PILOT, REPO / "books" / PILOT)])
     shutil.copytree(REPO / "tools", root / "tools", ignore=shutil.ignore_patterns("__pycache__"))
     page = root / PILOT_PAGE
-    page.parent.mkdir(parents=True)
     page.write_bytes((REPO / PILOT_PAGE).read_bytes().replace("</title>".encode(), " </title>".encode(), 1))
     r = subprocess.run([sys.executable, str(root / "tools" / "build.py"), "check", PILOT],
                        capture_output=True, text=True)
     assert r.returncode == 1
     assert "V9.committed-output" in r.stderr
+
+
+def test_diff_against_a_git_ref_writes_both_reports(tmp_path):
+    r = subprocess.run(CLI + ["diff", PILOT, "--against", "de019d2", "--out", str(tmp_path)], capture_output=True,
+                       text=True)
+    assert r.returncode == 0, r.stderr
+    assert "identical" in r.stdout
+    assert "No content changes." in (tmp_path / f"{PILOT}.content-changes.md").read_text(encoding="utf-8")
+    assert "No differences." in (tmp_path / f"{PILOT}.diff.md").read_text(encoding="utf-8")

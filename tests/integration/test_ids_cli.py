@@ -12,9 +12,6 @@ FIXTURE = REPO / "tests" / "fixtures" / "minimal-book"
 
 def _repo(tmp_path, with_page=False):
     root = make_repo(tmp_path, [(PILOT, REPO / "books" / PILOT)])
-    if with_page:
-        (root / "mantiq").mkdir()
-        shutil.copy(REPO / "mantiq" / "MunazaraRashidiyaAQU.html", root / "mantiq")
     shutil.copytree(REPO / "tools", root / "tools", ignore=shutil.ignore_patterns("__pycache__"))
     return root
 
@@ -32,7 +29,6 @@ def test_review_then_apply_then_build(tmp_path):
     assert r.returncode == 0, r.stderr
     proposal = json.loads(out.read_text(encoding="utf-8"))
     assert [c["kind"] for c in proposal["cases"]] == ["missing"] and proposal["cases"][0]["id"] == 1
-    assert proposal["cases"][0]["old_item"] is None  # the scratch copy has no committed page to show it from
     proposal["cases"][0].update(decision="retire", reason="Card removed in review")
     out.write_text(json.dumps(proposal, ensure_ascii=False), encoding="utf-8")
     lock_before = json.loads((root / "books" / PILOT / "ids.lock.json").read_text(encoding="utf-8"))

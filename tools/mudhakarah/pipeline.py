@@ -13,6 +13,7 @@ from .loaders import load_content
 from .model import assemble, check_raw
 from .output import manifest, manifest_bytes, sha256_bytes, verify_output, write_atomic
 from .render import TEMPLATE_DIR, render, template_files
+from .validate import model_findings, v07_assets, v08_html, v11_integrity
 
 
 @dataclass
@@ -59,7 +60,8 @@ def run_book(repo_root, slug):
     model, findings = assemble(raw, book, ids=ids, where=where)
     report.stop_if_blocking("assembly and ID binding", findings)
 
-    # Stage 4: model validation (the section 7 validators join this stage in M4)
+    # Stage 4: model validation (section 7)
+    report.stop_if_blocking("model validation", model_findings(raw, model, book, where))
 
     # Stage 5: rendering
     text = render(repo_root, book, site, model, where=where)
@@ -67,6 +69,13 @@ def run_book(repo_root, slug):
     # Stage 6: output verification
     report.stop_if_blocking("output verification", verify_output(text, model, where))
     report.stop_if_blocking("output verification", check_output_ids(model, lock, where))
+    committed = repo_root / book["output"]
+    previous_size = committed.stat().st_size if committed.is_file() else None
+    report.stop_if_blocking("output verification", v07_assets.check(text, repo_root, site, where, book["output"]))
+    report.stop_if_blocking("output verification", v08_html.check(text, book, where, previous_size))
+    after = {name: sha256_bytes((repo_root / "books" / slug / "content" / name).read_bytes())
+             for name in content_hashes}
+    report.stop_if_blocking("output verification", v11_integrity.files_unchanged(content_hashes, after, where))
 
     html = text.encode("utf-8")
     inputs = {

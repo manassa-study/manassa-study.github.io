@@ -20,7 +20,9 @@ from mudhakarah.config import discover_books  # noqa: E402
 from mudhakarah.diffreport import diff_report  # noqa: E402
 from mudhakarah.errors import BuildStopped  # noqa: E402
 from mudhakarah.idscli import main as ids_main  # noqa: E402
+from mudhakarah.ids import read_lock  # noqa: E402
 from mudhakarah.pipeline import run_book, write_result  # noqa: E402
+from mudhakarah.validate import v11_integrity, v13_paths  # noqa: E402
 
 
 def _books(args):
@@ -33,6 +35,27 @@ def _books(args):
     return [args.slug]
 
 
+def _data_or_none(text):
+    from mudhakarah.output import parse_data_line
+    try:
+        return parse_data_line(text) if text else None
+    except ValueError:
+        return None
+
+
+def _baseline_data(slug, result):
+    """V11 step 1: the data line equals the data line of the page the lock was bootstrapped from."""
+    import subprocess
+    from mudhakarah.errors import BLOCKING, Finding
+    boot = (read_lock(REPO, slug) or {}).get("bootstrap")
+    if not boot:
+        return [Finding("V11.data-changed", BLOCKING, "the lock has no bootstrap page to compare with", slug)]
+    r = subprocess.run(["git", "-C", str(REPO), "show", f"{boot['commit']}:{boot['from']}"], capture_output=True)
+    if r.returncode != 0:
+        return [Finding("V11.data-changed", BLOCKING, f"cannot read {boot['from']} at {boot['commit'][:7]}", slug)]
+    return v11_integrity.step1_data_identity(result.html.decode("utf-8"), r.stdout.decode("utf-8"), slug)
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     if argv[:1] == ["ids"]:
@@ -42,10 +65,18 @@ def main(argv=None):
     target = p.add_mutually_exclusive_group(required=True)
     target.add_argument("slug", nargs="?")
     target.add_argument("--all", action="store_true")
-    p.add_argument("--out", help="diff mode: folder for the report (default: a new temporary folder)")
+    p.add_argument("--out", help="diff mode: folder for the reports (default: a new temporary folder)")
+    p.add_argument("--against", help="diff mode: compare with the page at this git ref (default: the committed "
+                                      "file in the working tree)")
+    p.add_argument("--baseline-data", action="store_true",
+                   help="check mode, step 1: also require the data line to equal the bootstrap page's (V11)")
     args = p.parse_args(argv)
 
     failed = False
+    if args.mode == "check":
+        for f in v13_paths.check(REPO):
+            print(f, file=sys.stderr)
+            failed = True
     for slug in _books(args):
         try:
             result = run_book(REPO, slug)
@@ -62,6 +93,10 @@ def main(argv=None):
             print(f"{slug}: wrote {result.output_path} ({len(result.html)} bytes, "
                   f"sha256 {result.manifest['output']['sha256']})")
         elif args.mode == "check":
+            if args.baseline_data:
+                for f in _baseline_data(slug, result):
+                    print(f"{slug}: {f}", file=sys.stderr)
+                    failed = True
             if committed == result.html:
                 print(f"{slug}: OK, {result.output_path} equals a fresh build "
                       f"(sha256 {result.manifest['output']['sha256']})")
@@ -72,12 +107,21 @@ def main(argv=None):
         else:
             out = Path(args.out) if args.out else Path(tempfile.mkdtemp(prefix="mudhakarah-diff-"))
             out.mkdir(parents=True, exist_ok=True)
+            if args.against:
+                import subprocess
+                r = subprocess.run(["git", "-C", str(REPO), "show", f"{args.against}:{result.output_path}"],
+                                   capture_output=True)
+                committed = r.stdout if r.returncode == 0 else None
             old = committed.decode("utf-8") if committed is not None else ""
             report = out / f"{slug}.diff.md"
             report.write_text(diff_report(old, result.html.decode("utf-8"), result.output_path),
                               encoding="utf-8", newline="\n")
+            changes = out / f"{slug}.content-changes.md"
+            changes.write_text(v11_integrity.content_change_report(_data_or_none(old), result.model,
+                                                                   result.output_path),
+                               encoding="utf-8", newline="\n")
             state = "identical" if committed == result.html else "different"
-            print(f"{slug}: {state}; report written to {report}")
+            print(f"{slug}: {state}; reports written to {report} and {changes}")
     return 1 if failed else 0
 
 

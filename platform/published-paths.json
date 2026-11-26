@@ -1,0 +1,25 @@
+{
+  "baseline_commit": "de019d25ba8ea2be7f3dbc56b98de2a63248ea31",
+  "note": "Every file served by GitHub Pages from this repository at the Phase 0 baseline (verified by a Jekyll build of de019d2). V13 requires each to stay published, or to have an approved redirect.",
+  "paths": [
+    "404.html",
+    "README.md",
+    "fiqh.html",
+    "fiqh/MadkhalFiqhAQU.html",
+    "fiqh/og-fiqh.jpg",
+    "fiqh/og-madkhal.jpg",
+    "hadith.html",
+    "hadith/TakhreejAsaneedAQU.html",
+    "hadith/og-hadith.jpg",
+    "hadith/og-takhreej.jpg",
+    "index.html",
+    "mantiq.html",
+    "mantiq/MunazaraRashidiyaAQU.html",
+    "mantiq/og-mantiq.jpg",
+    "mantiq/og-munazara.jpg",
+    "og-image.jpg",
+    "report.js",
+    "shots/index-new.png"
+  ],
+  "redirects": []
+}
