@@ -85,14 +85,9 @@ def check_question_types(raw, where):
     return findings
 
 
-def assemble(raw, book, ids=None, where="assembler"):
-    """Build the book model.
-
-    `ids` is the ID binding from the lock (section 6): {"cards": [id…], "questions": [id…],
-    "orders": [order or None…]}. Without it (M2, before the lock exists) cards keep the
-    ids written by the content and questions are numbered by position, with today's
-    shared-sequence option order, exactly as the legacy build.
-    """
+def check_raw(raw, book, where):
+    """The checks the assembler needs before it can use an item: known question types
+    and valid options (V2), and every item's topic exists (V5)."""
     findings = check_question_types(raw, where)
     names = chapter_names(raw, book)
     for i, q in enumerate(raw["questions"], 1):
@@ -104,8 +99,21 @@ def assemble(raw, book, ids=None, where="assembler"):
             if x.get("topic") not in names:
                 findings.append(Finding("V5.topic", BLOCKING,
                                         f"{kind[:-1]} {i}: topic '{x.get('topic')}' does not exist", where))
+    return findings
+
+
+def assemble(raw, book, ids=None, where="assembler"):
+    """Build the book model.
+
+    `ids` is the ID binding from the lock (section 6): {"cards": [id…], "questions": [id…],
+    "orders": [order or None…]}. Without it (M2, before the lock exists) cards keep the
+    ids written by the content and questions are numbered by position, with today's
+    shared-sequence option order, exactly as the legacy build.
+    """
+    findings = check_raw(raw, book, where)
     if any(f.severity == BLOCKING for f in findings):
         raise BuildStopped("assembly", findings)
+    names = chapter_names(raw, book)
 
     if ids is None:
         card_ids = [c["id"] for c in raw["cards"]]

@@ -7,9 +7,10 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .config import load_book, load_site
-from .errors import BLOCKING, BuildStopped, Report
+from .errors import BLOCKING, BuildStopped, Finding, Report
+from .ids import LOCK_NAME, bind, check_lock_identity, check_output_ids, read_lock
 from .loaders import load_content
-from .model import assemble
+from .model import assemble, check_raw
 from .output import manifest, manifest_bytes, sha256_bytes, verify_output, write_atomic
 from .render import TEMPLATE_DIR, render, template_files
 
@@ -37,14 +38,26 @@ def run_book(repo_root, slug):
     site, site_findings = load_site(repo_root)
     book, book_findings = load_book(repo_root, slug)
     report.stop_if_blocking("configuration", site_findings + book_findings)
+    lock = read_lock(repo_root, slug)
+    if lock is None:
+        report.stop_if_blocking("configuration", [Finding(
+            "V3.no-lock", BLOCKING, f"{LOCK_NAME} not found; a published book is bootstrapped from its live page "
+            "(ids bootstrap), a new book gets its first IDs through ids review and ids apply", where)])
+    report.stop_if_blocking("configuration", check_lock_identity(lock, book, f"{where}/{LOCK_NAME}"))
 
     # Stage 2: content loading
     raw, content_hashes, findings = load_content(repo_root, slug, book)
     report.stop_if_blocking("content loading", findings)
 
-    # Stage 3: assembly (ID binding joins this stage in M3)
-    model, findings = assemble(raw, book, where=where)
-    report.stop_if_blocking("assembly", findings)
+    # Stage 3: assembly and ID binding (section 6)
+    report.stop_if_blocking("assembly and ID binding", check_raw(raw, book, where))
+    ids, findings, _cases = bind(raw, book, lock, where)
+    if any(f.severity == BLOCKING for f in findings):
+        findings = findings + [Finding("V3.review", BLOCKING,
+                                       f"run 'python3 tools/build.py ids review {slug}' to decide these cases", where)]
+    report.stop_if_blocking("assembly and ID binding", findings)
+    model, findings = assemble(raw, book, ids=ids, where=where)
+    report.stop_if_blocking("assembly and ID binding", findings)
 
     # Stage 4: model validation (the section 7 validators join this stage in M4)
 
@@ -53,6 +66,7 @@ def run_book(repo_root, slug):
 
     # Stage 6: output verification
     report.stop_if_blocking("output verification", verify_output(text, model, where))
+    report.stop_if_blocking("output verification", check_output_ids(model, lock, where))
 
     html = text.encode("utf-8")
     inputs = {
@@ -61,6 +75,7 @@ def run_book(repo_root, slug):
     }
     for name, digest in content_hashes.items():
         inputs[f"books/{slug}/content/{name}"] = digest
+    inputs[f"books/{slug}/{LOCK_NAME}"] = sha256_bytes((repo_root / "books" / slug / LOCK_NAME).read_bytes())
     for path in template_files(repo_root):
         inputs[_rel(repo_root, path)] = sha256_bytes(path.read_bytes())
     m = manifest(repo_root, slug, inputs, book["output"], html, report.findings)

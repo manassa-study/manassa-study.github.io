@@ -4,6 +4,7 @@
     python3 tools/build.py build <slug>|--all   write the page to its published path
     python3 tools/build.py check <slug>|--all   build in memory and compare with the committed page
     python3 tools/build.py diff  <slug>|--all   build in memory and write a readable diff report
+    python3 tools/build.py ids review|apply|bootstrap|invariants <slug> …   the ID lock (see mudhakarah/idscli.py)
 
 Exit code 0 on success, 1 when a blocking check fails, 2 on a usage error.
 """
@@ -18,6 +19,7 @@ sys.path.insert(0, str(REPO / "tools"))
 from mudhakarah.config import discover_books  # noqa: E402
 from mudhakarah.diffreport import diff_report  # noqa: E402
 from mudhakarah.errors import BuildStopped  # noqa: E402
+from mudhakarah.idscli import main as ids_main  # noqa: E402
 from mudhakarah.pipeline import run_book, write_result  # noqa: E402
 
 
@@ -32,6 +34,9 @@ def _books(args):
 
 
 def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["ids"]:
+        return ids_main(REPO, argv[1:])
     p = argparse.ArgumentParser(prog="build.py", description=__doc__.splitlines()[0])
     p.add_argument("mode", choices=["build", "check", "diff"])
     target = p.add_mutually_exclusive_group(required=True)
