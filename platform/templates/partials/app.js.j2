@@ -1,9 +1,10 @@
 (function(){
 "use strict";
-const {BOOK_METADATA:META, DEEP_STUDY_DATA:CH, QURANIC_EXAMPLES:EX, FLASHCARDS:FC, COMPARISON_TABLES:TB, MIND_MAPS:MM, QUIZ_BANK:QB, CAPSULES:CAPS} = D;
+{% if "S2-3" in step2 %}const BOOK={{ book|app_config }};
+{% endif %}const {BOOK_METADATA:META, DEEP_STUDY_DATA:CH, QURANIC_EXAMPLES:EX, FLASHCARDS:FC, COMPARISON_TABLES:TB, MIND_MAPS:MM, QUIZ_BANK:QB, CAPSULES:CAPS} = D;
 
 /* ---------- storage ---------- */
-const KEY="{{ book.storage_key }}";
+{% if "S2-3" in step2 %}const KEY=BOOK.storage_key;{% else %}const KEY="{{ book.storage_key }}";{% endif %}
 let S={done:{},mastered:{},again:{},last:null,quizHist:[],lastWrong:[],theme:null,scale:1};
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw));}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -109,7 +110,7 @@ function viewHome(){
     ["#review-cards","review","بطاقات الاستذكار",toAr(FC.length)+" بطاقة","t2"],
     ["#review-tables","table","جداول الفروق",toAr(TB.length)+" جدولاً","t3"],
     ["#maps-0","maps","خرائط المراجعة",toAr(MM.length+1)+" خرائط","t4"],
-    ["#review-ayat","ayah","{{ book.labels.examples_title }}",toAr(EX.length)+" {{ book.labels.examples_count_noun }}","t2"],
+    {% if "S2-3" in step2 %}["#review-ayat","ayah",BOOK.labels.examples_title,toAr(EX.length)+" "+BOOK.labels.examples_count_noun,"t2"],{% else %}["#review-ayat","ayah","{{ book.labels.examples_title }}",toAr(EX.length)+" {{ book.labels.examples_count_noun }}","t2"],{% endif %}
     ["#review-capsules","star","كبسولات الحفظ","أرقام وأعلام ومقولات","t3"],
     ["#quiz","quiz","الاختبار المحاكي",toAr(QB.length)+" سؤالاً","t1"],
     ["#about","info","عن المقرر","المحاور ومصدر المادة","t4"],
@@ -243,7 +244,7 @@ function viewStudy(id){
      </div>
    </header>
    ${t.sum?`<details class="tsum"><summary><b>الخلاصة في ثلاثة أسطر</b><span>عرض</span></summary><ol>${t.sum.map(x=>`<li>${rich(x)}</li>`).join("")}</ol></details>`:""}<div class="reading">${t.blocks.map(blockHTML).join("")}</div>
-   ${t.ex.length?`<section class="stack"><h2 class="h2">{{ book.labels.examples_in_lesson }}</h2><div class="ex-grid">${t.ex.map(exCard).join("")}</div></section>`:""}
+   ${t.ex.length?`<section class="stack"><h2 class="h2">{% if "S2-3" in step2 %}${BOOK.labels.examples_in_lesson}{% else %}{{ book.labels.examples_in_lesson }}{% endif %}</h2><div class="ex-grid">${t.ex.map(exCard).join("")}</div></section>`:""}
    ${t.fc.length||t.qs.length?`<details class="selftest" id="selftest"><summary><h2 class="h2" style="font-size:17px">اختبر نفسك في هذا المطلب</h2><span class="tag">${[t.fc.length?toAr(t.fc.length)+" بطاقة":"",t.qs.length?toAr(t.qs.length)+" سؤال":""].filter(Boolean).join(" · ")}</span><em>افتح ▾</em></summary>
      <div>
       ${t.fc.map(c=>`<div class="mini-fc"><button class="q">${rich(c.q)}</button><div class="a">${rich(c.a)}</div></div>`).join("")}
@@ -275,7 +276,7 @@ function exCard(e){
 let fcState={cat:"الكل",onlyNew:false,i:0,flip:false,order:null};
 function viewReview(tab){
   tab=["cards","tables","capsules","ayat","sheet"].includes(tab)?tab:"cards";S.reviewTab=tab;save();
-  const tabs=[["cards","البطاقات"],["tables","الفروق"],["capsules","للحفظ"],["ayat","{{ book.labels.examples_short }}"],["sheet","الملزمة"]];
+  const tabs=[["cards","البطاقات"],["tables","الفروق"],["capsules","للحفظ"],{% if "S2-3" in step2 %}["ayat",BOOK.labels.examples_short]{% else %}["ayat","{{ book.labels.examples_short }}"]{% endif %},["sheet","الملزمة"]];
   V.innerHTML=`<div class="stack-lg"><header class="phead"><div class="eyebrow">مراجعة ليلة الاختبار</div><h1 class="h1">المراجعة السريعة</h1>
    <p class="lead">{{ book.labels.review_subtitle }}، كلها بأرقام صفحات الكتاب.</p></header>
    <div class="seg" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${k===tab}" data-t="${k}">${l}</button>`).join("")}</div>
@@ -524,7 +525,7 @@ function quizDone(){
 const IDX=[];
 TOPICS.forEach(t=>t.blocks.forEach((b,i)=>IDX.push({g:"المطالب",title:t.short+" · "+b.cleanLabel,text:[b.text,b.ayah,...(b.list||[])].filter(Boolean).join(" "),href:"#study-"+t.id,blk:i,tid:t.id})));
 FC.forEach(c=>IDX.push({g:"البطاقات",title:c.q,text:c.a,ans:c.a}));
-EX.forEach(e=>IDX.push({g:"{{ book.labels.examples_title }}",title:e.ayah+" "+e.surah,text:e.detail,href:"#review-ayat"}));
+{% if "S2-3" in step2 %}EX.forEach(e=>IDX.push({g:BOOK.labels.examples_title,{% else %}EX.forEach(e=>IDX.push({g:"{{ book.labels.examples_title }}",{% endif %}title:e.ayah+" "+e.surah,text:e.detail,href:"#review-ayat"}));
 QB.forEach(q=>IDX.push({g:"الأسئلة",title:q.q,text:q.options.join(" ")+" "+q.exp,ans:"الإجابة: "+q.options[q.correct]+" — "+q.exp}));
 IDX.forEach(x=>{x.n=norm(x.title+" "+x.text);});
 function snippet(text,qn){
@@ -538,7 +539,7 @@ function snippet(text,qn){
 }
 function doSearch(){
   const q=$("#q").value.trim(),R=$("#spRes");
-  if(q.length<2){R.innerHTML=`<div class="sr-g">جرّب</div><div class="sugg">{{ "${" }}{{ book.search.suggestions|js_array }}.map(w=>`<button class="chip" data-w="${w}">${w}</button>`).join("")}</div>`;
+  if(q.length<2){R.innerHTML=`<div class="sr-g">جرّب</div><div class="sugg">{% if "S2-3" in step2 %}${BOOK.search.suggestions.map({% else %}{{ "${" }}{{ book.search.suggestions|js_array }}.map({% endif %}w=>`<button class="chip" data-w="${w}">${w}</button>`).join("")}</div>`;
     R.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{$("#q").value=b.dataset.w;doSearch();});return;}
   const qn=norm(q);const hits=IDX.filter(x=>x.n.includes(qn));
   if(!hits.length){R.innerHTML=`<div class="card">لا نتائج لـ «${esc(q)}». جرّب كلمة أقصر أو بدون تشكيل.</div>`;return;}
@@ -568,11 +569,11 @@ applyPrefs();
 
 /* ---------- welcome popup (once per visit) ---------- */
 function showWelcome(force){
-  let seen=false;try{seen=sessionStorage.getItem("{{ book.welcome_session_key }}")==="1";}catch(e){}
+  let seen=false;try{seen={% if "S2-3" in step2 %}sessionStorage.getItem(BOOK.welcome_session_key){% else %}sessionStorage.getItem("{{ book.welcome_session_key }}"){% endif %}==="1";}catch(e){}
   if(seen&&!force)return;
   const w=$("#wel");w.hidden=false;document.body.style.overflow="hidden";
   $("#welIntro").hidden=!!force;$("#welPick").hidden=!force;
-  const close=()=>{w.hidden=true;document.body.style.overflow="";try{sessionStorage.setItem("{{ book.welcome_session_key }}","1");}catch(e){}};
+  const close=()=>{w.hidden=true;document.body.style.overflow="";{% if "S2-3" in step2 %}try{sessionStorage.setItem(BOOK.welcome_session_key,"1");}catch(e){}{% else %}try{sessionStorage.setItem("{{ book.welcome_session_key }}","1");}catch(e){}{% endif %}};
   const pick=()=>{$("#welIntro").hidden=true;$("#welPick").hidden=false;w.scrollTop=0;setTimeout(()=>w.querySelector(".pick").focus(),30);};
   $("#welGo").onclick=pick;$("#welDash").onclick=close;w.onclick=e=>{if(e.target===w)close();};
   w.querySelectorAll(".pick").forEach(p=>p.onclick=()=>{

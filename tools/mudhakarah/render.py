@@ -54,6 +54,43 @@ def js_array(values):
     return Markup(text)
 
 
+# S2-3 (O-5): the book-specific words the app script uses, gathered into one object at the
+# top of the script. Paths are into book.json; the object keeps the same shape.
+APP_CONFIG_FIELDS = (
+    ("storage_key",),
+    ("welcome_session_key",),
+    ("labels", "examples_title"),
+    ("labels", "examples_short"),
+    ("labels", "examples_count_noun"),
+    ("labels", "examples_in_lesson"),
+    ("search", "suggestions"),
+)
+
+
+def app_config(book):
+    """The app script's config object (S2-3) as compact JSON, refusing script breakers."""
+    config = {}
+    for path in APP_CONFIG_FIELDS:
+        value = book
+        for key in path:
+            if not isinstance(value, dict) or key not in value:
+                raise RenderRefused(f"app_config needs book.{'.'.join(path)}")
+            value = value[key]
+        ok = isinstance(value, str) or (isinstance(value, list) and all(isinstance(v, str) for v in value))
+        if not ok:
+            raise RenderRefused(f"book.{'.'.join(path)} must be a string or a list of strings")
+        target = config
+        for key in path[:-1]:
+            target = target.setdefault(key, {})
+        target[path[-1]] = value
+    text = json.dumps(config, ensure_ascii=False, separators=(",", ":"))
+    lowered = text.lower()
+    for bad in SCRIPT_BREAKERS:
+        if bad in lowered:
+            raise RenderRefused(f"a value in the app config contains '{bad}'")
+    return Markup(text)
+
+
 def url(value):
     """An https address written as is (no escaping, so '&' in the fonts address stays raw).
     Refused if it could leave an HTML attribute or a JavaScript string."""
@@ -81,7 +118,7 @@ def make_environment(repo_root):
         auto_reload=False,
         cache_size=0,
     )
-    env.filters.update(data_json=data_json, js_array=js_array, url=url, pct_hex=pct_hex)
+    env.filters.update(data_json=data_json, js_array=js_array, app_config=app_config, url=url, pct_hex=pct_hex)
     return env
 
 

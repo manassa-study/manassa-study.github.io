@@ -31,6 +31,14 @@ def page_url(built_page):
 
 
 @pytest.fixture(scope="session")
+def baseline_url():
+    """The Phase 1 baseline page, to compare what a student sees before and after step 2."""
+    from helpers import GOLDEN
+    with tempfile.TemporaryDirectory() as tmp, serve((GOLDEN / "MunazaraRashidiyaAQU.html").read_bytes(), tmp) as url:
+        yield url
+
+
+@pytest.fixture(scope="session")
 def browser():
     sync_api = pytest.importorskip("playwright.sync_api")
     with sync_api.sync_playwright() as p:
@@ -41,15 +49,15 @@ def browser():
 
 @pytest.fixture
 def open_page(browser):
-    """open_page(width=390, state=None, theme=None) -> (page, errors, blocked)."""
+    """open_page(width=390, state=None, color_scheme="light", welcome_seen=True) -> (page, errors, blocked)."""
     contexts = []
 
-    def _open(width=390, height=844, state=None, color_scheme="light"):
+    def _open(width=390, height=844, state=None, color_scheme="light", welcome_seen=True):
         ctx = browser.new_context(viewport={"width": width, "height": height}, color_scheme=color_scheme)
         contexts.append(ctx)
         blocked = []
         block_outside(ctx, blocked)
-        ctx.add_init_script(seed_script(state))
+        ctx.add_init_script(seed_script(state, welcome_seen=welcome_seen))
         page = ctx.new_page()
         errors = []
         page.on("pageerror", lambda e: errors.append(str(e)))

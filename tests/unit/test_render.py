@@ -5,7 +5,7 @@ import pytest
 
 from helpers import REPO
 from mudhakarah.errors import BuildStopped
-from mudhakarah.render import RenderRefused, data_json, js_array, make_environment, pct_hex, render, url
+from mudhakarah.render import RenderRefused, app_config, data_json, js_array, make_environment, pct_hex, render, url
 
 SAMPLE = {"BOOK_METADATA": {"title": "«عنوان» \"مقتبس\" & <b>"}, "n": [1, 2.5, True, None], "ar": "ﷺ ٔ"}
 
@@ -73,3 +73,29 @@ def test_dedication_card_is_refused_until_its_block_exists():
     with pytest.raises(BuildStopped) as e:
         render(REPO, {"features": {"dedication_card": True}}, {}, {})
     assert e.value.findings[0].code == "V1.feature-unavailable"
+
+
+def test_app_config_holds_exactly_the_listed_words():
+    """S2-3: storage key, welcome key, the four example labels and the search suggestions."""
+    book = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
+    config = json.loads(str(app_config(book)))
+    assert config == {
+        "storage_key": book["storage_key"], "welcome_session_key": book["welcome_session_key"],
+        "labels": {k: book["labels"][k] for k in
+                   ("examples_title", "examples_short", "examples_count_noun", "examples_in_lesson")},
+        "search": {"suggestions": book["search"]["suggestions"]},
+    }
+    assert "\n" not in str(app_config(book)) and " :" not in str(app_config(book))
+
+
+@pytest.mark.parametrize("change", [
+    lambda b: b["search"]["suggestions"].append("</script>"),
+    lambda b: b["labels"].update(examples_title="<!-- x"),
+    lambda b: b.pop("welcome_session_key"),
+    lambda b: b.update(storage_key=5),
+])
+def test_app_config_refuses_bad_values(change):
+    book = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
+    change(book)
+    with pytest.raises(RenderRefused):
+        app_config(book)
