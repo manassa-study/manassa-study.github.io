@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "slug": "madkhal-fiqh",
+  "title": "المدخل إلى الفقه الإسلامي",
+  "output": "fiqh/MadkhalFiqhAQU.html",
+  "og_image": "fiqh/og-madkhal.jpg",
+  "description": "كتاب «المدخل إلى الفقه الإسلامي» للدكتورة أسماء فتحي: الشريعة والفقه والقانون، وتاريخ التشريع في عصر الرسالة والصحابة والتابعين. ملخصات وخرائط ذهنية وبطاقات واختبارات، على منصة المذاكرة.",
+  "storage_key": "madkhal-fiqh-v1",
+  "welcome_session_key": "fiqh-wel",
+  "brand_mark": "ف",
+  "page_range": "ص ١٥ - ١٦٩",
+  "structure_summary": "أربعة فصول · ستة عشر مبحثاً · ",
+  "content": {
+    "loader": "python",
+    "files": [
+      "f1.py",
+      "f2.py",
+      "f3.py",
+      "f4.py",
+      "f5.py",
+      "f6.py",
+      "f7.py"
+    ],
+    "symbols": {
+      "meta": "META",
+      "cards": "FC",
+      "questions": "QRAW",
+      "examples": "EX",
+      "tables": "TB",
+      "maps": "MM",
+      "capsules": "CAPS"
+    },
+    "anchor": "chapter",
+    "chapters": [
+      {
+        "symbol": "CH1",
+        "quiz_name": "الفصل التمهيدي"
+      },
+      {
+        "symbol": "CH2",
+        "quiz_name": "الفصل الأول",
+        "from_page": 51
+      },
+      {
+        "symbol": "CH3",
+        "quiz_name": "الفصل الثاني",
+        "from_page": 105
+      },
+      {
+        "symbol": "CH4",
+        "quiz_name": "الفصل الثالث",
+        "from_page": 143
+      }
+    ],
+    "extras": []
+  },
+  "quiz": {
+    "shuffle": "sequential",
+    "seed": 1447
+  },
+  "labels": {
+    "examples_title": "الشواهد والأدلة",
+    "examples_short": "الشواهد",
+    "examples_count_noun": "شاهداً",
+    "examples_in_lesson": "شواهد هذا المطلب",
+    "review_subtitle": "التعريفات والفروق والأعلام والشواهد في مكان واحد"
+  },
+  "welcome": {
+    "aim": "التفقه في دينه وفهم أحكامه",
+    "study_line": "قراءة المطالب بالترتيب مع الشواهد وأسئلة"
+  },
+  "search": {
+    "placeholder": "ابحث: الحكم الوضعي، المرافعات، الفقهاء السبعة، التدرج...",
+    "suggestions": [
+      "الحكم الوضعي",
+      "الضرورات الخمس",
+      "القانون الخاص",
+      "التدرج في التشريع",
+      "المكي والمدني",
+      "المسألة المشرّكة",
+      "الفقهاء السبعة",
+      "مدرسة الرأي"
+    ]
+  },
+  "theme": {
+    "light": {
+      "accent": "#6d2f63",
+      "accent_ink": "#ffffff",
+      "accent_soft": "#f1e1ee",
+      "hero_1": "#3a1235",
+      "hero_2": "#6d2f63",
+      "paper": "#f5f0f4",
+      "surface": "#ffffff",
+      "surface_2": "#ece2ea",
+      "line": "#ddcdd9"
+    },
+    "dark": {
+      "accent": "#e3a0d6",
+      "accent_ink": "#2a0c25",
+      "accent_soft": "#3a1d35",
+      "hero_1": "#170a15",
+      "hero_2": "#3d1838",
+      "paper": "#130d12",
+      "surface": "#1c141b",
+      "surface_2": "#251b24",
+      "line": "#3b2c39"
+    },
+    "browser_theme_color": "#3a1235"
+  },
+  "dedication": {
+    "teacher": "د. ياسر الحوسني"
+  },
+  "features": {
+    "dedication_card": true
+  }
+}

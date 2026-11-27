@@ -141,8 +141,13 @@ CASES = {
     "V1.encoding": lambda t: build_with(t, lambda r: book_json(r).write_bytes(b'{"title": "\xff"}')),
     "V1.missing-file": lambda t: build_with(t, lambda r: book_json(r).unlink()),
     "V1.duplicate-switch": lambda t: c_v1(t, lambda b: b["features"].update(step2=["S2-1", "S2-1"])),
-    "V1.feature-unavailable": lambda t: c_v1(t, lambda b: b["features"].update(dedication_card=True)),
+    "V1.chapter-pages": lambda t: c_v1(t, lambda b: b["content"]["chapters"][1].update(from_page=5)),
     # V2 content structure
+    "V5.anchor": lambda t: (lambda d=pilot(): (
+        d[0]["content"].update(anchor="chapter"),
+        [c.update(from_page=p) for c, p in zip(d[0]["content"]["chapters"][1:], (30, 40, 90))],
+        d[1]["questions"][0].update(exp="بلا رقم صفحة"),
+        lambda: model.assemble(d[1], d[0]))[3])(),
     "V2.missing-file": lambda t: c_v1(t, lambda b: b["content"]["files"].append("m9.py")),
     "V2.content-error": lambda t: build_with(t, lambda r: append_content(r, "1/0")),
     "V2.missing-symbol": lambda t: c_v1(t, lambda b: b["content"]["symbols"].update(cards="NOPE")),

@@ -17,6 +17,7 @@ from markupsafe import Markup
 
 from . import TOOL_VERSION
 from .config import step2_changes
+from .model import anchor_kind
 from .errors import BLOCKING, BuildStopped, Finding
 
 TEMPLATE_DIR = Path("platform") / "templates"
@@ -128,18 +129,27 @@ def template_files(repo_root):
     return sorted(p for p in base.rglob("*.j2"))
 
 
+# The template's only conditionals besides the step-2 switches: blocks that one book has
+# and another lacks (spec section 4: a feature flag is used only where one book has a
+# block the others lack).
+FEATURES = ("dedication_card", "item_topics")
+
+
+def page_features(book):
+    """dedication_card: the welcome screen's dedication to the course teacher (book.json
+    features.dedication_card, with dedication.teacher). item_topics: the content gives cards
+    and questions their own topic, so the app's attach() keeps it (anchor 'topic')."""
+    return {"dedication_card": bool((book.get("features") or {}).get("dedication_card")),
+            "item_topics": anchor_kind(book) == "topic" if "content" in book else True}
+
+
 def render(repo_root, book, site, model, where="renderer"):
-    if book.get("features", {}).get("dedication_card"):
-        # Only the Fiqh page has this card. Its block joins the template when that book migrates.
-        raise BuildStopped("rendering", [Finding(
-            "V1.feature-unavailable", BLOCKING,
-            "features.dedication_card is true, but the template has no dedication card block yet "
-            "(it is added when the Fiqh book migrates)", where)])
     env = make_environment(repo_root)
     try:
         text = env.get_template(TEMPLATE_NAME).render(book=book, site=site, model=model,
                                                            step2=step2_changes(book),
-                                                           build={"template_version": TOOL_VERSION})
+                                                           build={"template_version": TOOL_VERSION},
+                                                           features=page_features(book))
     except UndefinedError as e:
         raise BuildStopped("rendering", [Finding("V8.undefined", BLOCKING,
                                                  f"the template uses an undefined value: {e}", where)])

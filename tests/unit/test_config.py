@@ -49,6 +49,10 @@ def test_valid_book_passes():
     (lambda b: b.update(title=""), "V1.empty"),
     (lambda b: b["content"]["chapters"].append({"symbol": "CH2", "quiz_name": "الباب الأول"}),
      "V1.duplicate-chapter"),
+    (lambda b: b["content"].update(anchor="page"), "V1.value"),
+    (lambda b: b["content"]["chapters"][0].update(from_page=10), "V1.chapter-pages"),
+    (lambda b: b.update(dedication={"teacher": "د. فلان"}), "V1.unknown-field"),
+    (lambda b: b.setdefault("features", {}).update(dedication_card=True), "V1.missing-field"),
     (lambda b: b.setdefault("features", {}).update(step2=["S2-9"]), "V1.value"),
     (lambda b: b.setdefault("features", {}).update(step2="S2-1"), "V1.type"),
     (lambda b: b.setdefault("features", {}).update(step2=["S2-1", "S2-1"]), "V1.duplicate-switch"),
@@ -80,3 +84,15 @@ def test_step2_switches_are_optional_and_listed_once():
     book.setdefault("features", {})["step2"] = list(config.STEP2_CHANGES)
     assert config.validate_book(book, folder_name="fixture-book") == []
     assert config.step2_changes(book) == frozenset({"S2-1", "S2-2", "S2-3"})
+
+
+def test_chapter_anchor_needs_increasing_from_pages():
+    fiqh = json.loads((REPO / "books" / "madkhal-fiqh" / "book.json").read_text(encoding="utf-8"))
+    assert config.validate_book(fiqh, folder_name="madkhal-fiqh") == []
+    for bad in ([None, 51, 51, 143], [None, 105, 51, 143], [1, 51, 105, 143], [None, None, 105, 143]):
+        b = copy.deepcopy(fiqh)
+        for ch, p in zip(b["content"]["chapters"], bad):
+            ch.pop("from_page", None)
+            if p is not None:
+                ch["from_page"] = p
+        assert "V1.chapter-pages" in codes(config.validate_book(b, folder_name="madkhal-fiqh")), bad

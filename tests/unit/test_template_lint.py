@@ -3,8 +3,11 @@ book words, no stray Jinja2 delimiters, LF only."""
 import json
 import re
 
+import pytest
+
 from helpers import PILOT, REPO
 from mudhakarah.config import STEP2_CHANGES
+from mudhakarah.render import FEATURES
 from mudhakarah.render import TEMPLATE_DIR, template_files
 
 TEMPLATES = template_files(REPO)
@@ -42,8 +45,12 @@ def test_no_type_branches():
         assert not re.search(r"\{%-?\s*(if|elif)\b[^%]*\btype\b", path.read_text(encoding="utf-8")), path
 
 
-def test_no_hard_coded_pilot_values():
-    book = json.loads((REPO / "books" / PILOT / "book.json").read_text(encoding="utf-8"))
+BOOKS = sorted(p.parent.name for p in (REPO / "books").glob("*/book.json"))
+
+
+@pytest.mark.parametrize("slug", BOOKS)
+def test_no_hard_coded_book_values(slug):
+    book = json.loads((REPO / "books" / slug / "book.json").read_text(encoding="utf-8"))
     site = json.loads((REPO / "platform" / "site.json").read_text(encoding="utf-8"))
     identity = {k: v for k, v in book.items() if k not in ("content", "quiz", "features", "schema_version")}
     values = {v for v in _leaves(identity) if len(v) >= 2} - SHARED_LITERALS
@@ -62,11 +69,16 @@ def test_lf_only_and_no_unknown_tags():
         text = raw.decode("utf-8")
         assert "{#" not in text
         # the only statements are includes of the partials (spec section 4, hierarchy) and
-        # the approved step-2 switches (docs/step-2-list.md): if "S2-n" in step2 / else / endif
+        # the approved step-2 switches (docs/step-2-list.md): if "S2-n" in step2 / else / endif,
+        # and the feature blocks one book has and another lacks: if features.<name>
         for stmt in re.findall(r"\{%(.*?)%\}", text, re.S):
             m = re.fullmatch(r'\s*if "(S2-[0-9]+)" in step2\s*', stmt)
             if m:
                 assert m.group(1) in STEP2_CHANGES, stmt
+                continue
+            m = re.fullmatch(r'\s*if features\.([a-z_]+)\s*', stmt)
+            if m:
+                assert m.group(1) in FEATURES, stmt
                 continue
             assert re.fullmatch(r'\s*(include "partials/[a-z.]+\.j2"|else|endif)\s*', stmt), stmt
 

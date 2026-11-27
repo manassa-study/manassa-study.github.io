@@ -57,7 +57,11 @@
     <h2 id="welT" class="wel-t">أهلاً بك في منصة مذاكرة {{ book.title }}</h2>
     <p class="wel-p">أخي القارئ، أختي القارئة: أسأل الله أن يجعل هذه المنصة عوناً لك على {{ book.welcome.aim }}، وأن يرزقك العلم النافع والعمل الصالح، ويفتح عليك فتوح العارفين، ويكتب لك التوفيق والنجاح في دراستك واختبارك.</p>
     <div class="ayah" style="font-size:24px;line-height:1.8">﴿وَقُل رَّبِّ زِدْنِي عِلْمًا﴾ <span class="ref">[طه: ١١٤]</span></div>
-    <div class="wel-sig">مع خالص الدعاء<br><b>محمد بلال البلوشي</b></div>
+{% if features.dedication_card %}    <div class="wel-dua">
+      <div class="wel-dk">وفاءً لأهل الفضل</div>
+      <div class="wel-h">وأخصّ بالدعاء أستاذي الفاضل <b class="wel-dr">{{ book.dedication.teacher }}</b> الذي درّسني هذا المقرر: جزاه الله عنّا خير الجزاء، وبارك في علمه وعمره وعمله، وجعل ما يبذله لطلابه في ميزان حسناته.</div>
+    </div>
+{% endif %}    <div class="wel-sig">مع خالص الدعاء<br><b>محمد بلال البلوشي</b></div>
     <button class="btn primary" id="welGo">ابدأ المذاكرة ←</button>
   </div>
   <div class="wel-card" id="welPick" hidden>

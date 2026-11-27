@@ -148,8 +148,11 @@ BOOK_FIELDS = {
         "files": F("list", check=_nonempty_list, items=F("str", check=lambda v: None if (
             v.endswith(".py") and "/" not in v and ".." not in v) else "must be a .py file name inside content/")),
         "symbols": F("dict", fields={k: F("str", check=_symbol) for k in CONTENT_SYMBOL_FIELDS}),
+        "anchor": F("str", required=False, check=lambda v: None if v in ("topic", "chapter") else
+                    "must be 'topic' or 'chapter' (O-3)"),
         "chapters": F("list", check=_nonempty_list, items=F("dict", fields={
-            "symbol": F("str", check=_symbol), "quiz_name": F("str")})),
+            "symbol": F("str", check=_symbol), "quiz_name": F("str"),
+            "from_page": F("int", required=False)})),
         "extras": F("list", required=False, items=F("str", check=_symbol)),
     }),
     "quiz": F("dict", fields={
@@ -166,6 +169,7 @@ BOOK_FIELDS = {
                                 "suggestions": F("list", check=_nonempty_list, items=F("str"))}),
     "theme": F("dict", fields={"light": _theme_mode(), "dark": _theme_mode(),
                                "browser_theme_color": F("str", check=_colour)}),
+    "dedication": F("dict", required=False, fields={"teacher": F("str")}),
     "features": F("dict", required=False, fields={
         "dedication_card": F("bool", required=False),
         "step2": F("list", required=False, items=F("str", check=_step2_id)),
@@ -220,9 +224,28 @@ def validate_book(book, folder_name=None, where="book.json"):
             out.append(Finding("V1.duplicate-chapter", BLOCKING, "chapter quiz names must be unique", where))
         if len(set(syms)) != len(syms):
             out.append(Finding("V1.duplicate-chapter", BLOCKING, "chapter symbols must be unique", where))
+    if isinstance(content, dict) and isinstance(content.get("chapters"), list):
+        chapters = [c for c in content["chapters"] if isinstance(c, dict)]
+        pages = [c.get("from_page") for c in chapters]
+        if content.get("anchor") == "chapter":
+            rest = pages[1:]
+            if pages[:1] != [None] or any(not isinstance(p, int) for p in rest) or rest != sorted(set(rest)):
+                out.append(Finding("V1.chapter-pages", BLOCKING,
+                                   "with anchor 'chapter', every chapter after the first needs a from_page, "
+                                   "in increasing order, and the first chapter none", where))
+        elif any(p is not None for p in pages):
+            out.append(Finding("V1.chapter-pages", BLOCKING,
+                               "from_page is only used with anchor 'chapter'", where))
     if isinstance(content, dict) and isinstance(content.get("files"), list):
         if len(set(content["files"])) != len(content["files"]):
             out.append(Finding("V1.duplicate-file", BLOCKING, "content files must be listed once", where))
+    features = book.get("features")
+    if isinstance(features, dict) and features.get("dedication_card") is True and "dedication" not in book:
+        out.append(Finding("V1.missing-field", BLOCKING,
+                           "features.dedication_card is on, so 'dedication.teacher' is required", where))
+    if "dedication" in book and not (isinstance(features, dict) and features.get("dedication_card") is True):
+        out.append(Finding("V1.unknown-field", BLOCKING,
+                           "'dedication' is only used when features.dedication_card is on", where))
     features = book.get("features")
     if isinstance(features, dict) and isinstance(features.get("step2"), list):
         if len(set(map(str, features["step2"]))) != len(features["step2"]):

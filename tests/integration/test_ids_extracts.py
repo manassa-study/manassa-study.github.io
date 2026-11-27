@@ -43,7 +43,7 @@ def test_extracts_are_the_phase0_files(name):
 def test_no_fingerprint_collisions(book_data):
     name, data = book_data
     raw, book, _ = extract_lock(data, name)
-    items = raw_items(raw)
+    items = raw_items(raw, book)
     for collection in ("cards", "questions"):
         dup = [fp for fp, n in collections.Counter(x["fp"] for x in items[collection]).items() if n > 1]
         assert dup == [], f"{name} {collection}: {len(dup)} colliding fingerprints"

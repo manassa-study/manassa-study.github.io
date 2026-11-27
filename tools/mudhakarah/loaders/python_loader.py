@@ -73,8 +73,19 @@ def load_python_content(repo_root, slug, book):
             extras[symbol] = ns[symbol]
     raw_content["extras"] = extras
 
+    # a symbol whose object is already part of a mapped structure (a section that a chapter
+    # lists, for example) is in the page, so it is not reported
+    reachable = set()
+    stack = [ns[s] for s in mapped if s in ns]
+    while stack:
+        x = stack.pop()
+        if id(x) in reachable or not isinstance(x, (dict, list)):
+            continue
+        reachable.add(id(x))
+        stack.extend(x.values() if isinstance(x, dict) else x)
     for symbol, value in ns.items():
-        if symbol.isupper() and not symbol.startswith("_") and symbol not in mapped and _looks_like_content(value):
+        if symbol.isupper() and not symbol.startswith("_") and symbol not in mapped and _looks_like_content(value) \
+                and id(value) not in reachable:
             findings.append(Finding("V2.unmapped-symbol", WARNING,
                                     f"content symbol '{symbol}' is defined but not mapped in book.json, "
                                     "so it is not in the page", where))
