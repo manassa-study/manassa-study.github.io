@@ -49,6 +49,9 @@ def test_valid_book_passes():
     (lambda b: b.update(title=""), "V1.empty"),
     (lambda b: b["content"]["chapters"].append({"symbol": "CH2", "quiz_name": "الباب الأول"}),
      "V1.duplicate-chapter"),
+    (lambda b: b.setdefault("features", {}).update(step2=["S2-9"]), "V1.value"),
+    (lambda b: b.setdefault("features", {}).update(step2="S2-1"), "V1.type"),
+    (lambda b: b.setdefault("features", {}).update(step2=["S2-1", "S2-1"]), "V1.duplicate-switch"),
 ])
 def test_book_errors_block(mutate, code):
     book = copy.deepcopy(VALID)
@@ -69,3 +72,11 @@ def test_read_json_reports_bad_files(tmp_path):
     assert codes(config.read_json(tmp_path / "a.json")[1]) == {"V1.json"}
     assert codes(config.read_json(tmp_path / "b.json")[1]) == {"V1.encoding"}
     assert codes(config.read_json(tmp_path / "missing.json")[1]) == {"V1.missing-file"}
+
+
+def test_step2_switches_are_optional_and_listed_once():
+    book = copy.deepcopy(VALID)
+    assert config.step2_changes(book) == frozenset()
+    book.setdefault("features", {})["step2"] = list(config.STEP2_CHANGES)
+    assert config.validate_book(book, folder_name="fixture-book") == []
+    assert config.step2_changes(book) == frozenset({"S2-1", "S2-2", "S2-3"})

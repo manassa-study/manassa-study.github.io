@@ -79,3 +79,16 @@ def test_installs_use_hashes(text):
     for ln in code_lines(text):
         if "pip install" in ln:
             assert "--require-hashes" in ln, ln
+
+
+def test_only_the_reports_job_is_advisory():
+    """From Phase 2 the browser job blocks (spec section 9); only the report job may fail softly."""
+    lines = code_lines((REPO / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8"))
+    job, advisory = None, []
+    for ln in lines:
+        m = re.match(r"^  ([a-z][a-z0-9-]*):\s*$", ln)
+        if m:
+            job = m.group(1)
+        if re.match(r"^\s+continue-on-error:\s*true\s*$", ln):
+            advisory.append(job)
+    assert advisory == ["reports"]

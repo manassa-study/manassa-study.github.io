@@ -118,11 +118,10 @@ jobs:
         run: python tools/check_reproducible.py
 
   browser:
-    # Advisory in Phase 1, blocking from the pilot migration (spec section 9).
+    # Blocking from the pilot migration (Phase 2, spec section 9); it was advisory in Phase 1.
     # No secrets; every request outside 127.0.0.1 is blocked, so Supabase is never reached.
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    continue-on-error: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:

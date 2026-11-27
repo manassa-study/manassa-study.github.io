@@ -96,6 +96,21 @@ def _symbol(v):
     return None if re.match(r"^[A-Z][A-Z0-9_]*$", v) else f"'{v}' is not an upper-case content symbol"
 
 
+# The approved step-2 changes (docs/step-2-list.md, decision N3). A book turns each one on
+# in features.step2; a book without the list builds exactly as in step 1.
+STEP2_CHANGES = ("S2-1", "S2-2", "S2-3")
+
+
+def _step2_id(v):
+    return None if v in STEP2_CHANGES else f"'{v}' is not an approved step-2 change ({', '.join(STEP2_CHANGES)})"
+
+
+def step2_changes(book):
+    """The step-2 changes this book has turned on, as a frozenset of ids."""
+    features = book.get("features") or {}
+    return frozenset(features.get("step2") or ())
+
+
 def _theme_mode():
     return F("dict", fields={t: F("str", check=_colour) for t in THEME_TOKENS})
 
@@ -151,7 +166,10 @@ BOOK_FIELDS = {
                                 "suggestions": F("list", check=_nonempty_list, items=F("str"))}),
     "theme": F("dict", fields={"light": _theme_mode(), "dark": _theme_mode(),
                                "browser_theme_color": F("str", check=_colour)}),
-    "features": F("dict", required=False, fields={"dedication_card": F("bool", required=False)}),
+    "features": F("dict", required=False, fields={
+        "dedication_card": F("bool", required=False),
+        "step2": F("list", required=False, items=F("str", check=_step2_id)),
+    }),
     "quran_check": F("dict", required=False, fields={
         "markers": F("bool", required=False),
         "fields": F("list", required=False, items=F("dict", fields={
@@ -205,6 +223,10 @@ def validate_book(book, folder_name=None, where="book.json"):
     if isinstance(content, dict) and isinstance(content.get("files"), list):
         if len(set(content["files"])) != len(content["files"]):
             out.append(Finding("V1.duplicate-file", BLOCKING, "content files must be listed once", where))
+    features = book.get("features")
+    if isinstance(features, dict) and isinstance(features.get("step2"), list):
+        if len(set(map(str, features["step2"]))) != len(features["step2"]):
+            out.append(Finding("V1.duplicate-switch", BLOCKING, "each step-2 change must be listed once", where))
     return out
 
 

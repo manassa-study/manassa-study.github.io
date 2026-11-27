@@ -1,7 +1,8 @@
 """The renderer (spec section 2, layer 4, and section 4).
 
-Jinja2 renders platform/templates/book.html.j2 with three values: `book`
-(book.json), `site` (platform/site.json) and `model` (the book model). The
+Jinja2 renders platform/templates/book.html.j2 with four values: `book`
+(book.json), `site` (platform/site.json), `model` (the book model) and `step2`
+(the approved step-2 changes the book has turned on, from features.step2). The
 environment is fixed so that output bytes depend only on the inputs:
 StrictUndefined, HTML autoescaping, keep_trailing_newline, no block trimming,
 LF line endings.
@@ -13,6 +14,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError, UndefinedError
 from markupsafe import Markup
 
+from .config import step2_changes
 from .errors import BLOCKING, BuildStopped, Finding
 
 TEMPLATE_DIR = Path("platform") / "templates"
@@ -96,7 +98,8 @@ def render(repo_root, book, site, model, where="renderer"):
             "(it is added when the Fiqh book migrates)", where)])
     env = make_environment(repo_root)
     try:
-        text = env.get_template(TEMPLATE_NAME).render(book=book, site=site, model=model)
+        text = env.get_template(TEMPLATE_NAME).render(book=book, site=site, model=model,
+                                                           step2=step2_changes(book))
     except UndefinedError as e:
         raise BuildStopped("rendering", [Finding("V8.undefined", BLOCKING,
                                                  f"the template uses an undefined value: {e}", where)])

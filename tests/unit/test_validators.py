@@ -166,6 +166,16 @@ def test_page_size_warnings():
     assert [f.severity for f in v08_html.check(big, {"storage_key": "k"}, "x")] == ["warning"]
 
 
+def test_opening_follows_the_s2_1_switch():
+    step1 = {"storage_key": "k"}
+    s21 = {"storage_key": "k", "features": {"step2": ["S2-1"]}}
+    assert v08_html.check(v08_html.STEP1_OPENING, step1, "x") == []
+    assert v08_html.check(v08_html.STEP2_OPENING, s21, "x") == []
+    assert [f.code for f in v08_html.check(v08_html.STEP2_OPENING, step1, "x")] == ["V8.opening"]
+    assert [f.code for f in v08_html.check(v08_html.STEP1_OPENING, s21, "x")] == ["V8.opening"]
+    assert [f.code for f in v08_html.check('<!doctype html><html lang="ar"><head>', s21, "x")] == ["V8.opening"]
+
+
 @pytest.mark.parametrize("key, page", [("madkhal-fiqh-v1", "fiqh/MadkhalFiqhAQU.html"),
                                        ("munazara-rashidiya-v1", "mantiq/MunazaraRashidiyaAQU.html"),
                                        ("takhreej-asaneed-v1", "hadith/TakhreejAsaneedAQU.html")])

@@ -17,3 +17,10 @@ Not on the list (they don't change output and are already in step 1): locked
 IDs and the option-order lock (design A).
 
 Decided on approval: S2-3 is done in the pilot (O-5).
+
+## How a book turns a change on
+
+Each change is a switch in the book's `book.json`, under `features.step2`, for
+example `"step2": ["S2-1"]`. The config check accepts only the ids in the table
+above, each once. A book without the list builds exactly as in step 1, so the
+other four books keep their published bytes until each one migrates (Phase 3).
