@@ -3,6 +3,7 @@
     ids review <slug> [--out FILE]          write a proposal (outside the repository by default)
     ids apply <slug> --proposal FILE --approver NAME --pull-request N [--date YYYY-MM-DD]
     ids bootstrap <slug> --commit SHA --approver NAME --pull-request N --date YYYY-MM-DD
+        [--allow-reconstructed-option-order]
     ids invariants <slug> [--base REF]      compare the lock with the one at REF (CI: origin/main)
 
 Only `apply` and `bootstrap` write, and only the lock file.
@@ -69,6 +70,8 @@ def main(repo, argv):
     b.add_argument("--approver", required=True)
     b.add_argument("--pull-request", type=int, required=True)
     b.add_argument("--date", required=True)
+    b.add_argument("--allow-reconstructed-option-order", action="store_true",
+                   help="capture exact displayed option order from the baseline when original source slots are unavailable")
     i = sub.add_parser("invariants")
     i.add_argument("slug")
     i.add_argument("--base", default="origin/main")
@@ -125,8 +128,11 @@ def main(repo, argv):
         commit = subprocess.run(["git", "-C", str(repo), "rev-parse", args.commit], capture_output=True,
                                 text=True, check=True).stdout.strip()
         info = {"from": book["output"], "commit": commit, "sha256": hashlib.sha256(page).hexdigest()}
+        if args.allow_reconstructed_option_order:
+            info["option_order"] = "captured-from-baseline"
         live = parse_data_line(page.decode("utf-8"))
-        new_lock = bootstrap(raw, book, live, info, args.approver, args.pull_request, args.date, where)
+        new_lock = bootstrap(raw, book, live, info, args.approver, args.pull_request, args.date, where,
+                             check_sequence=not args.allow_reconstructed_option_order)
         write_atomic(lock_path(repo, args.slug), dumps_lock(new_lock).encode("utf-8"))
         print(f"{args.slug}: lock bootstrapped from {info['from']} at {commit[:7]} (sha256 {info['sha256'][:12]}…): "
               f"{len(new_lock['cards']['items'])} cards, {len(new_lock['questions']['items'])} questions, "

@@ -1,0 +1,26 @@
+{
+  "rule": "N4: preserve the live lesson text with its existing page-reference exceptions",
+  "rule_decided_by": "Bilal",
+  "rule_decided_on": "2026-11-27",
+  "seeded_from": {
+    "page": "hadith/TakhreejAsaneedAQU.html",
+    "commit": "32aef51b48e2a2ddd058e99006951b9c7d4881c2"
+  },
+  "note": "These two blocks have no printed-page reference in the verified live payload. They remain unreviewed exceptions; no page number has been inferred or added.",
+  "exceptions": [
+    {
+      "kind": "block",
+      "topic": "t4",
+      "sha1": "caeac6246380eae78791e728a8c6d48450877d62",
+      "reason": "Present without a printed-page reference in the baseline; seeded to preserve the existing content unchanged. This is not a verified reference.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t4",
+      "sha1": "7202038b5d2113f1f49702485721b81dd1a82b19",
+      "reason": "Present without a printed-page reference in the baseline; seeded to preserve the existing content unchanged. This is not a verified reference.",
+      "review": "unreviewed"
+    }
+  ]
+}

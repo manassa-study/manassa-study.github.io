@@ -132,7 +132,7 @@ def template_files(repo_root):
 # The template's only conditionals besides the step-2 switches: blocks that one book has
 # and another lacks (spec section 4: a feature flag is used only where one book has a
 # block the others lack).
-FEATURES = ("dedication_card", "item_topics")
+FEATURES = ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment")
 
 
 def page_features(book):
@@ -140,7 +140,9 @@ def page_features(book):
     features.dedication_card, with dedication.teacher). item_topics: the content gives cards
     and questions their own topic, so the app's attach() keeps it (anchor 'topic')."""
     return {"dedication_card": bool((book.get("features") or {}).get("dedication_card")),
-            "item_topics": anchor_kind(book) == "topic" if "content" in book else True}
+            "item_topics": anchor_kind(book) == "topic" if "content" in book else True,
+            "example_ayah_plain": bool((book.get("features") or {}).get("example_ayah_plain")),
+            "author_first_segment": bool((book.get("features") or {}).get("author_first_segment"))}
 
 
 def render(repo_root, book, site, model, where="renderer"):

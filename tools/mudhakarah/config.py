@@ -172,6 +172,8 @@ BOOK_FIELDS = {
     "dedication": F("dict", required=False, fields={"teacher": F("str")}),
     "features": F("dict", required=False, fields={
         "dedication_card": F("bool", required=False),
+        "example_ayah_plain": F("bool", required=False),
+        "author_first_segment": F("bool", required=False),
         "step2": F("list", required=False, items=F("str", check=_step2_id)),
     }),
     "quran_check": F("dict", required=False, fields={

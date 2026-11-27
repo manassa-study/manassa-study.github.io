@@ -20,6 +20,8 @@ TYPE_REGISTRY = {
     "mc": {"labels": ["اختيار من متعدد"], "shape": "options"},
     "name-it": {"labels": ["ما اسم هذا؟"], "shape": "options"},
     "figures-views": {"labels": ["الأعلام والآراء"], "shape": "options"},  # المدخل إلى الفقه
+    "symbol-meaning": {"labels": ["الرمز ودلالته"], "shape": "options"},  # التخريج ودراسة الأسانيد
+    "book-author": {"labels": ["الكتاب ومؤلفه"], "shape": "options"},  # التخريج ودراسة الأسانيد
     "tf": {"labels": ["صح أو خطأ"], "shape": "true-false"},
 }
 LABEL_TO_KEY = {label: key for key, t in TYPE_REGISTRY.items() for label in t["labels"]}

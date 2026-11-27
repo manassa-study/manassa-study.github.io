@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "slug": "takhreej-asaneed",
+  "title": "التخريج ودراسة الأسانيد",
+  "output": "hadith/TakhreejAsaneedAQU.html",
+  "og_image": "hadith/og-takhreej.jpg",
+  "description": "كتاب «أصول التخريج ودراسة الأسانيد» للدكتور محمود الطحان: ملخصات وخرائط ذهنية وبطاقات واختبارات، على منصة المذاكرة.",
+  "storage_key": "takhreej-asaneed-v1",
+  "welcome_session_key": "takhreej-wel",
+  "brand_mark": "ت",
+  "page_range": "ص ٧ - ٢٠٥",
+  "structure_summary": "المقدمة وبابان · تسعة فصول · ",
+  "content": {
+    "loader": "python",
+    "files": [
+      "c1.py",
+      "c2.py",
+      "c3.py"
+    ],
+    "symbols": {
+      "meta": "META",
+      "cards": "FC",
+      "questions": "QRAW",
+      "examples": "EX",
+      "tables": "TB",
+      "maps": "MM",
+      "capsules": "CAPS"
+    },
+    "anchor": "chapter",
+    "chapters": [
+      {
+        "symbol": "CH1",
+        "quiz_name": "المقدمة والباب الأول"
+      },
+      {
+        "symbol": "CH2",
+        "quiz_name": "الباب الثاني",
+        "from_page": 134
+      }
+    ],
+    "extras": []
+  },
+  "quiz": {
+    "shuffle": "sequential",
+    "seed": 1447
+  },
+  "labels": {
+    "examples_title": "الأمثلة التطبيقية",
+    "examples_short": "الأمثلة",
+    "examples_count_noun": "مثالاً",
+    "examples_in_lesson": "شواهد هذا المطلب",
+    "review_subtitle": "التعريفات والفروق والأعلام والأمثلة في مكان واحد"
+  },
+  "welcome": {
+    "aim": "خدمة سنة نبيه ﷺ وفهمها",
+    "study_line": "قراءة المطالب بالترتيب مع الأمثلة وأسئلة"
+  },
+  "search": {
+    "placeholder": "ابحث: تحفة الأشراف، المعجم المفهرس، الجرح والتعديل...",
+    "suggestions": [
+      "الاستعلام اللفظي",
+      "تحفة الأشراف",
+      "الجامع الصغير",
+      "المعجم المفهرس",
+      "مفتاح كنوز السنة",
+      "تقريب التهذيب",
+      "صدوق",
+      "صحيح الإسناد"
+    ]
+  },
+  "theme": {
+    "light": {
+      "accent": "#0f6450",
+      "accent_ink": "#ffffff",
+      "accent_soft": "#d6ece4",
+      "hero_1": "#083d32",
+      "hero_2": "#0f6450",
+      "paper": "#eef4f1",
+      "surface": "#ffffff",
+      "surface_2": "#e1ebe6",
+      "line": "#cbdcd4"
+    },
+    "dark": {
+      "accent": "#5fcfae",
+      "accent_ink": "#04221a",
+      "accent_soft": "#12372d",
+      "hero_1": "#061812",
+      "hero_2": "#0e3a2f",
+      "paper": "#0b1310",
+      "surface": "#121d19",
+      "surface_2": "#192823",
+      "line": "#283b34"
+    },
+    "browser_theme_color": "#083d32"
+  },
+  "dedication": {
+    "teacher": "د. راسم النوري"
+  },
+  "features": {
+    "dedication_card": true,
+    "example_ayah_plain": true,
+    "author_first_segment": true
+  }
+}
