@@ -71,7 +71,7 @@ def test_quiz_preserves_baseline_order_and_handles_answers(open_tafseer, tafseer
     page.click("#qStart")
     first = expected[0]
     assert page.locator(".qrun .qtext").inner_text() == _visible_html(page, first["q"])
-    assert page.locator(".qrun .opt span:not(.l)").all_inner_texts() == [
+    assert page.locator(".qrun .opt > span:not(.l)").all_inner_texts() == [
         _visible_html(page, option) for option in first["options"]]
 
     page.click(f'.qrun .opt[data-oi="{first["correct"]}"]')
