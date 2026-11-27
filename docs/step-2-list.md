@@ -1,4 +1,6 @@
-# Step-2 list for the pilot (draft for approval, decision N3)
+# Step-2 list for the pilot (approved, decision N3)
+
+Approved by Bilal on 27 November 2026, with S2-3 (O-5) included for the pilot.
 
 Step 1 (Phase 1) changed no published byte. Step 2 is the list of deliberate
 changes to the pilot page, each approved by Bilal before Phase 2 starts, each in
@@ -14,5 +16,4 @@ must not change.
 Not on the list (they don't change output and are already in step 1): locked
 IDs and the option-order lock (design A).
 
-Open questions for approval: whether S2-3 is wanted for the pilot or kept for
-the second book's migration.
+Decided on approval: S2-3 is done in the pilot (O-5).
