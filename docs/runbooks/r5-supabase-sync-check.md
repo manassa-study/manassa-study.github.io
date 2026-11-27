@@ -63,3 +63,21 @@ Do not change Supabase settings to make it pass. Record what you saw, the time, 
 browser. A failed step 2 or 4 means the account copy does not load as before. Roll the pilot
 back by removing `S2-3` from `features.step2` (see `rolling-back-a-book.md`) while the cause is
 found, because S2-3 is the only Phase 2 change that touches the storage key's code.
+
+
+## Verification record — 27 November 2026
+
+| Step | Result | Note |
+| --- | --- | --- |
+| 1 | PASS | User confirmed sign-in and initial account sync message. |
+| 2 | PASS / applicable progress checked | User reported the test workflow was working. |
+| 3 | PASS | Lesson completion, card mastery and 10-question quiz progress saved. |
+| 4 | PASS | Same account progress appeared in a second browser. |
+| 5 | PASS, with observation | Offline local progress was retained; after reconnecting, progress saved and was visible in the other browser. The expected offline-warning message was **not observed**. |
+| 6 | NOT DONE | Optional read-only Supabase dashboard inspection was not independently performed. |
+| 7 | PASS | User confirmed sign-out in both browsers did not erase local progress. |
+| 8 | NOT DONE / not required | Test progress was not cleared. |
+
+**Checked by:** Bilal (manual live test, user-confirmed).  
+**Date:** 27 November 2026.  
+**Account:** Test account; exact account identifier intentionally not recorded here.
