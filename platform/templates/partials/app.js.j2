@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 {% if "S2-3" in step2 %}const BOOK={{ book|app_config }};
-{% endif %}const {BOOK_METADATA:META, DEEP_STUDY_DATA:CH, QURANIC_EXAMPLES:EX, FLASHCARDS:FC, COMPARISON_TABLES:TB, MIND_MAPS:MM, QUIZ_BANK:QB, CAPSULES:CAPS} = D;
+{% endif %}const {BOOK_METADATA:META, DEEP_STUDY_DATA:CH, QURANIC_EXAMPLES:EX, FLASHCARDS:FC, COMPARISON_TABLES:TB, MIND_MAPS:MM, QUIZ_BANK:QB, CAPSULES:CAPS} = D;{% if features.book_drill %}const DR=D.DRILL||[];{% endif %}
 
 /* ---------- storage ---------- */
 {% if "S2-3" in step2 %}const KEY=BOOK.storage_key;{% else %}const KEY="{{ book.storage_key }}";{% endif %}
@@ -197,6 +197,19 @@ function viewAbout(){
   </div>`;
 }
 
+{% if features.book_drill -%}
+function tableHTML(tb,inTopic=false){
+  return `<section class="cmp${inTopic?" in-topic":""}">${inTopic?"":`<h3>${rich(tb.title||"")}</h3>`}<div style="overflow-x:auto"><table><thead><tr>${tb.headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${tb.rows.map(row=>{const cells=row.filter((c,i)=>i===0||c!=="");const span=cells.length===2&&row.length>2;return `<tr>${cells.map((c,i)=>`<td data-h="${esc(tb.headers[i])}"${span&&i===1?` colspan="${row.length-1}" class="rj"`:""}>${rich(c)}</td>`).join("")}</tr>`;}).join("")}</tbody></table></div></section>`;
+}
+function blockHTML(b,i){
+  let h=`<details class="blk${b.exam?" exam":""}${b.key?" key":""}" id="b${i}"${i===0||b.key?" open":""}><summary><h3>${rich(b.cleanLabel)}${b.exam?` <span class="tag exam">موضع سؤال امتحاني</span>`:""}${b.key?` <span class="tag gold">خلاصة منهجية · مهم للاختبار</span>`:""}</h3></summary><div class="blk-b">`;
+  if(b.text)h+=`<p>${rich(b.text)}</p>`;
+  if(b.ayah){const m=b.ayah.match(/^(﴿[^﴾]*﴾)\s*(.*)$/);h+=`<div class="ayah-box"><span class="ayah">${esc(m?m[1]:b.ayah)}</span>${m&&m[2]?`<span class="ref">${esc(m[2])}</span>`:""}</div>`;}
+  if(b.list)h+=list(b.list);
+  if(b.table)h+=tableHTML(b.table,true);
+  return h+`</div></details>`;
+}
+{% else -%}
 function blockHTML(b,i){
   let h=`<details class="blk${b.exam?" exam":""}" id="b${i}"${i===0?" open":""}><summary><h3>${rich(b.cleanLabel)}${b.exam?` <span class="tag exam">موضع سؤال امتحاني</span>`:""}</h3></summary><div class="blk-b">`;
   if(b.text)h+=`<p>${rich(b.text)}</p>`;
@@ -204,6 +217,7 @@ function blockHTML(b,i){
   if(b.list)h+=list(b.list);
   return h+`</div></details>`;
 }
+{% endif -%}
 function questionBlock(q,i,prefix){
   return `<div class="qcard" data-q="${q.id}" data-prefix="${prefix}">
     <div class="row"><span class="tag">${esc(q.type)}</span></div>
@@ -275,15 +289,15 @@ function exCard(e){
 /* review */
 let fcState={cat:"الكل",onlyNew:false,i:0,flip:false,order:null};
 function viewReview(tab){
-  tab=["cards","tables","capsules","ayat","sheet"].includes(tab)?tab:"cards";S.reviewTab=tab;save();
-  const tabs=[["cards","البطاقات"],["tables","الفروق"],["capsules","للحفظ"],{% if "S2-3" in step2 %}["ayat",BOOK.labels.examples_short]{% else %}["ayat","{{ book.labels.examples_short }}"]{% endif %},["sheet","الملزمة"]];
+  tab=["cards","tables","capsules","ayat","sheet"{% if features.book_drill %},"drill"{% endif %}].includes(tab)?tab:"cards";S.reviewTab=tab;save();
+  const tabs=[["cards","البطاقات"],["tables","الفروق"],["capsules","للحفظ"],{% if "S2-3" in step2 %}["ayat",BOOK.labels.examples_short]{% else %}["ayat","{{ book.labels.examples_short }}"]{% endif %},["sheet","الملزمة"]{% if features.book_drill %},["drill","تنوع أم تضاد"]{% endif %}];
   V.innerHTML=`<div class="stack-lg"><header class="phead"><div class="eyebrow">مراجعة ليلة الاختبار</div><h1 class="h1">المراجعة السريعة</h1>
    <p class="lead">{{ book.labels.review_subtitle }}، كلها بأرقام صفحات الكتاب.</p></header>
    <div class="seg" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${k===tab}" data-t="${k}">${l}</button>`).join("")}</div>
    <div id="rv"></div></div>`;
   V.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{location.hash="review-"+b.dataset.t;});
   const R=$("#rv");
-  if(tab==="cards")renderCards(R);
+  if(tab==="cards")renderCards(R);{% if features.book_drill %}if(tab==="drill")renderDrill(R);{% endif %}
   if(tab==="tables")R.innerHTML=`<div class="stack">${TB.map(tb=>`<section class="cmp"><h3>${rich(tb.title)}</h3><div style="overflow-x:auto"><table><thead><tr>${tb.headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${tb.rows.map(r=>`<tr>${r.map((c,i)=>`<td data-h="${esc(tb.headers[i])}">${rich(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></section>`).join("")}</div>`;
   if(tab==="capsules")R.innerHTML=`<div class="caps">${CAPS.map(g=>`<section class="card"><h3>${esc(g.title)}</h3><ul>${g.items.map(it=>`<li><b>${rich(it.k)}</b> ${rich(it.v)}</li>`).join("")}</ul></section>`).join("")}</div>`;
   if(tab==="sheet"){R.innerHTML=`<div class="sheet"><div class="sheet-bar no-print"><p>كل المطالب في صفحات قليلة: خلاصة كل مطلب في ثلاثة أسطر، ثم كبسولات الحفظ. اطبعها أو احفظها PDF.</p><button class="btn primary" id="shPrint">اطبع الملزمة</button></div>
@@ -299,6 +313,23 @@ function viewReview(tab){
     draw();
   }
 }
+{% if features.book_drill -%}
+let drillState={order:null,i:0,answers:{},pick:null};
+function renderDrill(R){
+  if(!DR.length)return;
+  if(!drillState.order)drillState.order=shuffle(DR.map((_,i)=>i));
+  const score=Object.values(drillState.answers).filter(Boolean).length;
+  if(drillState.i>=drillState.order.length){
+    R.innerHTML=`<div class="card stack"><div class="eyebrow">انتهى التدريب</div><h2 class="h1">${toAr(score)} من ${toAr(DR.length)}</h2><p>${score===DR.length?"ممتاز، ميّزت كل المواضع.":"راجع المواضع التي أخطأت فيها، ثم أعد التدريب."}</p><div class="row"><button class="btn primary" id="drAgain">أعد التدريب</button><a class="btn" href="#study-${(TOPICS.find(t=>/أنواع اختلاف المفسرين/.test(t.title))||TOPICS[0]).id}">راجع أنواع الاختلاف</a></div></div>`;
+    $("#drAgain").onclick=()=>{drillState={order:null,i:0,answers:{},pick:null};renderDrill(R);};
+    return;
+  }
+  const index=drillState.order[drillState.i],item=DR[index],answered=Object.prototype.hasOwnProperty.call(drillState.answers,index);
+  R.innerHTML=`<div class="stack"><p class="muted" style="text-align:center">في كل موضع: هل يمكن الجمع بين أقوال المفسرين (تنوع)، أم هي متنافية تحتاج إلى ترجيح (تضاد)؟ التصنيف كما نصّ عليه الكتاب.</p><section class="card stack"><div class="row" style="justify-content:space-between"><span>الموضع ${toAr(drillState.i+1)} من ${toAr(DR.length)}</span><span>صحيح: ${toAr(score)}</span></div><div class="bar"><i style="width:${drillState.i/DR.length*100}%"></i></div><h3>${rich(item.w)}</h3><div class="row">${["تنوع","تضاد"].map(choice=>`<button class="btn ${answered&&choice===item.k?"primary":""}" data-drill="${choice}" ${answered?"disabled":""}>اختلاف ${choice}</button>`).join("")}</div>${answered?`<div class="exp ${drillState.answers[index]?"ok":"no"}"><b>${drillState.answers[index]?"أصبت. ":`الصواب: اختلاف ${item.k}. `}</b>${rich(item.why)} <span class="pg">${esc(item.p)}</span></div><button class="btn primary" id="drNext">التالي</button>`:""}</section></div>`;
+  R.querySelectorAll("[data-drill]").forEach(button=>button.onclick=()=>{drillState.pick=button.dataset.drill;drillState.answers[index]=drillState.pick===item.k;renderDrill(R);});
+  const next=$("#drNext");if(next)next.onclick=()=>{drillState.i++;drillState.pick=null;renderDrill(R);};
+}
+{% endif -%}
 function fcList(){
   let l=FC.filter(c=>fcState.cat==="الكل"||c.cat===fcState.cat);
   if(fcState.onlyNew)l=l.filter(c=>!S.mastered[c.id]);
@@ -384,6 +415,33 @@ function mmIndex(m){
   return `<div class="mt-grid">${m.branches.map((b,i)=>`<section class="mt-card" style="--c:var(--b${i%4+1})"><header class="mt-h"><span class="mt-i">${toAr(i+1)}</span><div class="mt-t static">${rich(b.t)}<small>${esc(b.ch)}${b.tag?" · "+esc(b.tag):""}</small></div></header>
     <ul class="mt idx">${b.links.map(t=>`<li class="lf"><a class="row1" href="#study-${t.id}"><span class="w">${esc(t.short)}</span><span class="pg">${esc(t.pages)}</span>${S.done[t.id]?`<span class="ok">✓</span>`:""}</a></li>`).join("")}</ul></section>`).join("")}</div>`;
 }
+{% if features.book_drill -%}
+function mmBook4(m,recall){
+  return `<div class="mt-grid book4-map">${m.branches.map((branch,i)=>`<section class="mt-card" style="--c:var(--b${i%4+1})"><header class="mt-h"><span class="mt-i">${toAr(i+1)}</span><button class="mt-t" type="button">${rich(branch.title)}<small>${esc(branch.badge)} · ${esc(branch.summary)}</small></button></header><ul class="mt">${branch.items.map(item=>`<li class="lf"><span class="row1">${rich(item)}</span></li>`).join("")}<li class="lf"><details><summary>${esc(branch.badge)}</summary><p>${rich(branch.modalDetails)}</p></details></li></ul></section>`).join("")}</div>`;
+}
+function viewMaps(idx){
+  const book4=MM.length>0&&!!MM[0].centerTitle;
+  const maps=book4?[bookMap(),...MM]:[...MM,bookMap()];idx=Math.min(Math.max(+idx||0,0),maps.length-1);S.mapIdx=idx;save();
+  const m=maps[idx],isIndex=m.type==="index",recall=!!S.mmRecall&&!isIndex;
+  const title=m.centerTitle||m.title.replace(/^الخريطة [^:]+:\s*/,"");
+  const subtitle=m.centerSub||m.sub||"";
+  const groups=book4?[["نظرة عامة",[0]],["الفصل الأول",[1,2]],["الفصل الثاني",[3,4]],["النماذج التطبيقية",[5,6,7]]]:[...new Set(maps.map(x=>x.group))].map(g=>[g,maps.map((x,i)=>x.group===g?i:-1).filter(i=>i>=0)]);
+  const mapType=m.type||(m.centerTitle?"book4":"index");
+  const tip=mapType==="book4"?"الرقم الذهبي يبين عدد النقاط في الفرع. استخدم وضع التسميع لاسترجاع النقاط قبل كشفها.":{tree:"كلمات مفتاحية مختصرة؛ الرقم الذهبي هو عدد العناصر المطلوب حفظها.",timeline:"اختر لوناً لترى أين ظهر وكيف امتد عبر القرون.",chains:"كل سلسلة تُقرأ من الأقدم إلى الأحدث، والرقم هو القرن.",index:"فهرس سريع لكل المطالب."}[mapType];
+  V.innerHTML=`<div class="stack-lg"><header class="phead"><div class="eyebrow">خرائط المراجعة السريعة</div><h1 class="h1">${esc(title)}</h1><p class="lead">${rich(subtitle)}</p></header><details class="mm2-dd" id="mmDD"${S.mmPick?" open":""}><summary><b class="no">${toAr(idx+1)}</b><span>${esc(title)}</span><em>تغيير الخريطة (${toAr(maps.length)}) ▾</em></summary><nav class="mm2-pick" aria-label="اختر خريطة">${groups.map(([group,indices])=>`<div class="mm2-g"><span>${esc(group)}</span><div>${indices.map(i=>{const x=maps[i],label=x.centerTitle||x.title.replace(/^الخريطة [^:]+:\s*/,"");return `<button aria-pressed="${i===idx}" data-i="${i}"><b class="no">${toAr(i+1)}</b><span>${esc(label)}</span></button>`;}).join("")}</div></div>`).join("")}</nav></details><div class="mm2-bar"><p>${tip}</p>${isIndex?"":`<div class="row"><button class="btn ${recall?"primary":"ghost"}" id="mmRecall" aria-pressed="${recall}">${recall?"وضع التسميع مُفعّل":"وضع التسميع"}</button>${recall?`<button class="btn ghost" id="mmShow">اكشف الكل</button>`:""}</div>`}</div>${recall?`<p class="mm2-hint">تذكّر النقاط قبل كشفها، ثم افتح الفرع لمراجعة التفاصيل.</p>`:""}<div class="mm2 mm2-${mapType}${recall?" recall":""}" id="mm2">${m.centerTitle?mmBook4(m,recall):mapType==="tree"?mmTree(m):mapType==="timeline"?mmTimeline(m):mapType==="chains"?mmChains(m):mmIndex(m)}</div><div class="row" style="justify-content:space-between">${idx>0?`<a class="btn ghost" href="#maps-${idx-1}">→ ${esc(maps[idx-1].centerTitle||maps[idx-1].title)}</a>`:"<span></span>"}${idx<maps.length-1?`<a class="btn" href="#maps-${idx+1}">${esc(maps[idx+1].centerTitle||maps[idx+1].title)} ←</a>`:""}</div></div>`;
+  V.querySelectorAll(".mm2-pick button").forEach(b=>b.onclick=()=>{S.mmPick=false;save();location.hash="maps-"+b.dataset.i;});
+  const dd=$("#mmDD");if(dd)dd.ontoggle=()=>{S.mmPick=dd.open;save();};
+  const recallButton=$("#mmRecall");if(recallButton)recallButton.onclick=()=>{S.mmRecall=!S.mmRecall;save();viewMaps(idx);};
+  const box=$("#mm2"),show=$("#mmShow");if(show)show.onclick=()=>{box.querySelectorAll(".nd.hasc,.mt-card").forEach(n=>n.classList.add("open"));box.querySelectorAll(".lf,.tl-it,.ch-s").forEach(n=>{n.classList.add("shown");n.classList.remove("hidden");});};
+  box.querySelectorAll(".nd.hasc>.row1").forEach(b=>b.onclick=()=>{const p=b.parentElement,c=recall?"open":"closed";p.classList.toggle(c);b.setAttribute("aria-expanded",p.classList.contains("open")||(!recall&&!p.classList.contains("closed")));});
+  box.querySelectorAll(".mt-t:not(.static)").forEach(b=>b.onclick=()=>b.closest(".mt-card").classList.toggle("open"));
+  box.querySelectorAll(".lf.kv").forEach(l=>l.onclick=()=>l.classList.toggle("shown"));
+  box.querySelectorAll(".tl-reveal").forEach(b=>b.onclick=()=>b.closest(".tl-it").classList.add("shown"));
+  box.querySelectorAll(".tl-it").forEach(it=>it.querySelector(".tl-body").onclick=()=>it.classList.add("shown"));
+  box.querySelectorAll(".tl-f").forEach(f=>f.onclick=()=>{const k=f.dataset.k;box.querySelectorAll(".tl-f").forEach(x=>x.setAttribute("aria-pressed",x===f));box.classList.toggle("filtered",!!k);box.querySelectorAll(".bk").forEach(b=>b.classList.toggle("hit",!!k&&b.dataset.k===k));box.querySelectorAll(".tl-it").forEach(it=>it.classList.toggle("hit",!!k&&it.dataset.ks.split(" ").includes(k)));});
+  box.querySelectorAll(".ch-b").forEach(b=>b.onclick=()=>b.parentElement.classList.toggle("shown"));
+}
+{% else -%}
 function viewMaps(idx){
   const maps=[...MM,bookMap()];idx=Math.min(Math.max(+idx||0,0),maps.length-1);S.mapIdx=idx;save();
   const m=maps[idx];const recall=!!S.mmRecall&&m.type!=="index";
@@ -414,7 +472,7 @@ function viewMaps(idx){
   /* chains */
   box.querySelectorAll(".ch-b").forEach(b=>b.onclick=()=>b.parentElement.classList.toggle("shown"));
 }
-
+{% endif %}
 /* quiz */
 const QZ={phase:"setup",mode:"practice",ch:"الكل",type:"الكل",shuffle:true,wrongOnly:false,bank:false,sec:"",cnt:20,qs:[],ans:{},i:0,deadline:0,timer:null};
 function viewQuiz(){

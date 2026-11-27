@@ -133,7 +133,7 @@ def template_files(repo_root):
 # and another lacks (spec section 4: a feature flag is used only where one book has a
 # block the others lack).
 FEATURES = ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment",
-            "fold_examples", "author_institution")
+            "fold_examples", "author_institution", "book_drill")
 
 
 def page_features(book):
@@ -145,7 +145,8 @@ def page_features(book):
             "example_ayah_plain": bool((book.get("features") or {}).get("example_ayah_plain")),
             "author_first_segment": bool((book.get("features") or {}).get("author_first_segment")),
             "fold_examples": bool((book.get("features") or {}).get("fold_examples")),
-            "author_institution": bool((book.get("features") or {}).get("author_institution"))}
+            "author_institution": bool((book.get("features") or {}).get("author_institution")),
+            "book_drill": "DRILL" in (book.get("content", {}).get("extras") or [])}
 
 
 def render(repo_root, book, site, model, where="renderer"):

@@ -1,0 +1,327 @@
+{
+  "rule": "N4: preserve the baseline lesson text with its existing page-reference exceptions",
+  "rule_decided_by": "Bilal",
+  "rule_decided_on": "2026-11-27",
+  "seeded_from": {
+    "page": "Tafseer/TafseerMaqaranAQU.html",
+    "commit": "fbbbae5b51e526d6f5e27e3f6dac7d8fdf22f6b2"
+  },
+  "note": "These baseline items have no printed-page reference in the preserved Phase 0 payload. They remain unreviewed exceptions; no page number has been inferred or added.",
+  "exceptions": [
+    {
+      "kind": "block",
+      "topic": "t1",
+      "sha1": "9d1b62691d20aa6d7a68a832d934295d57c8a3da",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t1",
+      "sha1": "6042a4ec0f7105caf59a7ca0b478b6d6c9071a0c",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t1",
+      "sha1": "f3f6b035235e7699c7d5df6d2969a58398cd5b63",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t2",
+      "sha1": "53d2fe5f74bf44a1132606c2416c52e9b67cb65b",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t2",
+      "sha1": "80fbf0a51369d2f7487ce3cb7906ea59f61985be",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t2",
+      "sha1": "b257895f4b97acc9c9a504586894fb07074daf15",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t3",
+      "sha1": "6758103736530757f77da39c0b995ae4e37edb13",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t3",
+      "sha1": "50bb9817015a5e27eccb958de5d5e8b8fd1b6622",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t3",
+      "sha1": "60b1c62a11522f21a65eece19aa56621048b119c",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t3",
+      "sha1": "4aabc96ec67d77d7ce2ae727d75eb5db0529499a",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t3",
+      "sha1": "ffbced230a4455fbacee86142c9f9c247b5074bf",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t4",
+      "sha1": "5e54d9fcaa7b21b917f454a2eb73a316c50f8d53",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t5",
+      "sha1": "8db96a827fb67b30b1370e5e79f86193a4368c74",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t5",
+      "sha1": "284be00ad7ab39e84c4099407d6a3c7fd2cdfb65",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t5",
+      "sha1": "2df0e5ed2027926290b46a8e02899db1eed26561",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t5",
+      "sha1": "fa0b06c71e38b8f76ce8961efb13de0a8a1959d9",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t6",
+      "sha1": "a592475e5a21bd342dc8219705ec306e27cc5ee2",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t6",
+      "sha1": "f7d6e555875ac5a68ecc59b94292f3122c89191f",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t7",
+      "sha1": "efd49ccb9d56ba6b89e31dab6dac2a476d14afe6",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t7",
+      "sha1": "6d29a5812a10de3ca343d6d611e495f2f6ecbefd",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t7",
+      "sha1": "eb0334bdabbe1d4e42e5fa2f2c5b9608d0352ec6",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t8",
+      "sha1": "0dd5533b6c3d75c01d708c26218e3b51ce3d4279",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t8",
+      "sha1": "825092eea88a412bd5804302d83a06bbde7bf1e2",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t8",
+      "sha1": "22e9b4a3c1eca8aa0b78fe0d49c2cedbf4c4abaa",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t8",
+      "sha1": "eec8a8bec014d6f0d4552a96858b07a9873ceedd",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t9",
+      "sha1": "2d093cf5139a2697b500cd704393cc07aff7c41a",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t9",
+      "sha1": "33ba5e76e5a68ae0eeb1446494c733020a0983a0",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t10",
+      "sha1": "0d6192151a916dacd7a638df939d252d19d1fdaa",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t10",
+      "sha1": "2ccbbcb54f409fca3c482d3151a29a691595cb83",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t10",
+      "sha1": "6d5e561db1ac0296f01d70f9d314ae9702f6db25",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t10",
+      "sha1": "772217c49b9b7e1c605f8943c2de0a1b1b1a26c5",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t11",
+      "sha1": "83d0f47b0abd1591577528385fc7ad7254d8b84e",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t11",
+      "sha1": "4b7c8e39f0dca9e3034ec0cf54a2cf10cbf7dfd8",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t12",
+      "sha1": "08976da3ee2067c40f6afdde100fa1f3cc3dc1a0",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t13",
+      "sha1": "4adf5c0cb529e44bf80a9789eb7afe695f5723e5",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t13",
+      "sha1": "19665cf157e7369212a2b1d712ee7be8200fa4a8",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t14",
+      "sha1": "6dc9b9c7060ce5088dd993fb63c5b53d80bf8d0a",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t15",
+      "sha1": "b52a042f823f8c27d1af11c7dca8875b9a3753c9",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t15",
+      "sha1": "dd72bfdc0330fcec24975305070365aa0ed289f5",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t16",
+      "sha1": "f6241bb0f272fdb8ce950c0e0fd486c9d53820cb",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t16",
+      "sha1": "255656ffc57c6ace0ddbfa336139b8fa48c5b84e",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t17",
+      "sha1": "4880c25bdb85fb8a237592b311c0786c33d2f4c6",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t18",
+      "sha1": "ca48866b085a09ff769649a0d4a37a6f556d3f0e",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t19",
+      "sha1": "a806fbe61e32e4f5663b06a86945d5c8a882c652",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t20",
+      "sha1": "bfcee7e5b62db28374c5a108a4b2c786b48c933d",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    }
+  ]
+}

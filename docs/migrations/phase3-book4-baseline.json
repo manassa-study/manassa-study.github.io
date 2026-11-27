@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "book": "tafseer-maqaran",
+  "title_ar": "\u0627\u0644\u062a\u0641\u0633\u064a\u0631 \u0627\u0644\u0645\u0642\u0627\u0631\u0646",
+  "storage_key": "tafsir-muqaran-v1",
+  "published_path": "Tafseer/TafseerMaqaranAQU.html",
+  "source": {
+    "repository": "manassa-study/Tafseer",
+    "commit": "fbbbae5b51e526d6f5e27e3f6dac7d8fdf22f6b2",
+    "page": "TafseerMaqaranAQU.html",
+    "checkout_path": ".baseline/tafseer",
+    "sha256": "18cffb3b449490d3c8613411a2db2ef945244da98bc2ea49147fa287e81f9b27"
+  },
+  "fixture": {
+    "path": "tests/fixtures/extracts/TafseerMaqaranAQU.data.json",
+    "sha256": "412786e767e5ca520af023965f9cd368aad7d320461cd0a5bc0310a284986b81"
+  },
+  "section_counts": {
+    "DEEP_STUDY_DATA": 2,
+    "QURANIC_EXAMPLES": 28,
+    "FLASHCARDS": 26,
+    "COMPARISON_TABLES": 13,
+    "MIND_MAPS": 7,
+    "QUIZ_BANK": 44,
+    "CAPSULES": 4,
+    "DRILL": 12
+  }
+}

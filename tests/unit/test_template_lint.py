@@ -77,11 +77,11 @@ def test_lf_only_and_no_unknown_tags():
             if m:
                 assert m.group(1) in STEP2_CHANGES, stmt
                 continue
-            m = re.fullmatch(r'\s*if features\.([a-z_]+)\s*', stmt)
+            m = re.fullmatch(r'\s*if features\.([a-z_]+)\s*-?\s*', stmt)
             if m:
                 assert m.group(1) in FEATURES, stmt
                 continue
-            assert re.fullmatch(r'\s*(include "partials/[a-z.]+\.j2"|else|endif)\s*', stmt), stmt
+            assert re.fullmatch(r'\s*(include "partials/[a-z.]+\.j2"|else|endif)\s*-?\s*', stmt), stmt
 
 
 def test_every_expression_uses_known_roots():
