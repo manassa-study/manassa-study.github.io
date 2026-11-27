@@ -104,7 +104,8 @@
   "features": {
     "dedication_card": false,
     "step2": [
-      "S2-1"
+      "S2-1",
+      "S2-2"
     ]
   }
 }

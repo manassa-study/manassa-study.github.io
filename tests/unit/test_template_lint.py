@@ -75,10 +75,22 @@ def test_every_expression_uses_known_roots():
     for path in TEMPLATES:
         for expr in re.findall(r"\{\{(.*?)\}\}", path.read_text(encoding="utf-8")):
             expr = expr.strip()
-            assert re.match(r'^(\(?(book|site|model)\b|"\$\{"$)', expr), expr
+            assert re.match(r'^(\(?(book|site|model)\b|build\.template_version$|"\$\{"$)', expr), expr
 
 
 def test_every_partial_is_included_once():
     text = "".join(p.read_text(encoding="utf-8") for p in TEMPLATES)
     for name in PARTIALS:
         assert text.count(f'{{% include "partials/{name}" %}}') == 1, name
+
+
+def test_template_version_tag_is_present_and_matches_the_tool_version():
+    """S2-2 (R2): a page built with the switch carries exactly one tag naming the tool version."""
+    from mudhakarah import TOOL_VERSION
+    book = json.loads((REPO / "books" / PILOT / "book.json").read_text(encoding="utf-8"))
+    assert "S2-2" in book["features"]["step2"]
+    assert re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", TOOL_VERSION)
+    page = (REPO / book["output"]).read_text(encoding="utf-8")
+    head = page.split("</head>", 1)[0]
+    assert re.findall(r'<meta name="mudhakarah:template" content="([^"]*)">', page) == [TOOL_VERSION]
+    assert f'<meta name="mudhakarah:template" content="{TOOL_VERSION}">' in head

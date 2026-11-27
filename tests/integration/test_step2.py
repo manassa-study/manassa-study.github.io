@@ -17,6 +17,7 @@ import json
 import pytest
 
 from helpers import GOLDEN, PILOT, PILOT_PAGE, PILOT_SHA256, REPO, STEP2_GOLDEN, make_repo
+from mudhakarah import TOOL_VERSION
 from mudhakarah.config import STEP2_CHANGES
 from mudhakarah.pipeline import run_book
 
@@ -25,6 +26,9 @@ BASELINE = GOLDEN / "MunazaraRashidiyaAQU.html"
 # change id -> [(text in the baseline page, its replacement, how many times)]
 APPROVED = {
     "S2-1": [("<!doctype html><html><head>", '<!doctype html><html lang="ar" dir="rtl"><head>', 1)],
+    "S2-2": [('<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">',
+              '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
+              f'<meta name="mudhakarah:template" content="{TOOL_VERSION}">', 1)],
 }
 
 

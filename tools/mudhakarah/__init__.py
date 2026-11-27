@@ -5,4 +5,4 @@ configuration, the ID lock or templates; only the writer stage writes the
 generated page to its published path.
 """
 
-TOOL_VERSION = "1.0.0"
+TOOL_VERSION = "1.1.0"

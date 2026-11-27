@@ -1,8 +1,9 @@
 """The renderer (spec section 2, layer 4, and section 4).
 
-Jinja2 renders platform/templates/book.html.j2 with four values: `book`
-(book.json), `site` (platform/site.json), `model` (the book model) and `step2`
-(the approved step-2 changes the book has turned on, from features.step2). The
+Jinja2 renders platform/templates/book.html.j2 with five values: `book`
+(book.json), `site` (platform/site.json), `model` (the book model), `step2`
+(the approved step-2 changes the book has turned on, from features.step2) and
+`build` (the template version written by S2-2: the tool version). The
 environment is fixed so that output bytes depend only on the inputs:
 StrictUndefined, HTML autoescaping, keep_trailing_newline, no block trimming,
 LF line endings.
@@ -14,6 +15,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError, UndefinedError
 from markupsafe import Markup
 
+from . import TOOL_VERSION
 from .config import step2_changes
 from .errors import BLOCKING, BuildStopped, Finding
 
@@ -99,7 +101,8 @@ def render(repo_root, book, site, model, where="renderer"):
     env = make_environment(repo_root)
     try:
         text = env.get_template(TEMPLATE_NAME).render(book=book, site=site, model=model,
-                                                           step2=step2_changes(book))
+                                                           step2=step2_changes(book),
+                                                           build={"template_version": TOOL_VERSION})
     except UndefinedError as e:
         raise BuildStopped("rendering", [Finding("V8.undefined", BLOCKING,
                                                  f"the template uses an undefined value: {e}", where)])
