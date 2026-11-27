@@ -124,6 +124,6 @@
   },
   "duplicate_groups": [],
   "changes": [
-    {"seq": 1, "date": "2026-11-27", "collection": "all", "action": "bootstrap", "reason": "First lock, generated from the deployed page Tafseer/TafseerMaqaranAQU.html at fbbbae5", "approved_by": "Bilal", "pull_request": 0}
+    {"seq": 1, "date": "2026-11-27", "collection": "all", "action": "bootstrap", "reason": "First lock, generated from the deployed page Tafseer/TafseerMaqaranAQU.html at fbbbae5", "approved_by": "Bilal", "pull_request": 18}
   ]
 }
