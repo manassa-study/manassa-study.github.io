@@ -108,7 +108,7 @@ function viewHome(){
   const TILES=[
     ["#study-"+next.id,"study","الدراسة المعمّقة",toAr(TOPICS.length)+" مطلباً","t1"],
     ["#review-cards","review","بطاقات الاستذكار",toAr(FC.length)+" بطاقة","t2"],
-    ["#review-tables","table","جداول الفروق",toAr(TB.length)+" جدولاً","t3"],
+    ["#review-tables","table","جداول الفروق",toAr(TB.length)+" {{ book.labels.get("tables_count_suffix", "جدولاً") }}","t3"],
     ["#maps-0","maps","خرائط المراجعة",toAr(MM.length+1)+" خرائط","t4"],
     {% if "S2-3" in step2 %}["#review-ayat","ayah",BOOK.labels.examples_title,toAr(EX.length)+" "+BOOK.labels.examples_count_noun,"t2"],{% else %}["#review-ayat","ayah","{{ book.labels.examples_title }}",toAr(EX.length)+" {{ book.labels.examples_count_noun }}","t2"],{% endif %}
     ["#review-capsules","star","كبسولات الحفظ","أرقام وأعلام ومقولات","t3"],
@@ -121,8 +121,8 @@ function viewHome(){
       <div class="dhero-txt">
         <div class="dhero-by"><span>إعداد وتصميم</span><b>محمد بلال البلوشي</b></div>
         <div class="dhero-greet">${greet} · لوحة المذاكرة</div>
-        <h1 class="dhero-title">{{ book.title }}</h1>
-        <p class="dhero-sub">كتاب «${esc(META.title)}» · تأليف ${esc(META.authors{% if features.author_first_segment %}.split("،")[0]{% endif %})}</p>
+        <h1 class="dhero-title">{{ book.get("display_title", book.title) }}</h1>
+        <p class="dhero-sub">كتاب «${esc(META.title)}» · تأليف ${esc(META.authors{% if features.author_first_segment %}.split("،")[0]{% endif %})}{% if features.author_institution %} · ${esc(META.institution)}{% endif %}</p>
         <div class="row" style="margin-top:6px">
           <a class="btn gold" href="#study-${next.id}">${S.last?"تابع من حيث توقفت":"ابدأ الدراسة"} ←</a>
           <button class="btn glass" id="pickBtn">ماذا أذاكر اليوم؟</button>
@@ -146,7 +146,7 @@ function viewHome(){
     <div class="tiles">${TILES.map(([h,ic,t,s,c])=>`<a class="tile ${c}" href="${h}"><span class="tile-i"><svg viewBox="0 0 24 24">${ICONS[ic]}</svg></span><b>${t}</b><span>${s}</span></a>`).join("")}</div>
   </section>
 
-  <details class="hprog" id="progBox"${S.progOpen?" open":""}><summary><span class="prog-t">تقدّمي</span><span class="prog-s">المطالب ${toAr(done)}/${toAr(TOPICS.length)} · البطاقات ${toAr(mastered)}/${toAr(FC.length)} · أفضل نتيجة ${best===null?"—":toAr(best)+"٪"}</span><span class="prog-o">عرض</span></summary><div class="prog-in">
+  <details class="hprog" id="progBox"${S.progOpen?" open":""}><summary><span class="prog-t">تقدّمي</span><span class="prog-s">المطالب ${toAr(done)}/${toAr(TOPICS.length)} · البطاقات ${toAr(mastered)}/${toAr(FC.length)} · أفضل نتيجة ${best===null?"—":toAr(best)+"٪"}</span><span class="prog-o">{{ book.labels.get("disclosure_label", "عرض") }}</span></summary><div class="prog-in">
   <section class="kpis">
     <a class="kpi" href="#study-${next.id}">${ring(Math.round(done/TOPICS.length*100),58,toAr(done))}<div><b>المطالب المدروسة</b><span>${toAr(done)} من ${toAr(TOPICS.length)}</span></div></a>
     <a class="kpi" href="#review-cards">${ring(Math.round(mastered/FC.length*100),58,toAr(mastered),"var(--b3)")}<div><b>البطاقات المتقنة</b><span>${toAr(mastered)} من ${toAr(FC.length)}</span></div></a>
@@ -185,7 +185,7 @@ function viewHome(){
 function viewAbout(){
   V.innerHTML=`<div class="stack-lg">
   <header class="phead"><div class="eyebrow">عن المقرر والمادة</div><h1 class="h1">${esc(META.title)}</h1>
-    <p class="lead">${esc(META.authors.replace("&","و"))}</p></header>
+    <p class="lead">${esc(META.authors.replace("&","و"))}{% if features.author_institution %} · ${esc(META.institution)}{% endif %}</p></header>
   <section class="stack"><div class="sec-h"><span class="orn"></span><h2>محاور المقرر</h2><span class="orn"></span></div>
     <ol class="objs">${META.objectives.map(o=>`<li>${rich(o)}</li>`).join("")}</ol></section>
   <div class="note"><b style="font-family:var(--f-ui)">مصدر المحتوى: </b>${rich(META.originNote)}</div>
@@ -243,8 +243,8 @@ function viewStudy(id){
        <div class="row">${t.blocks.length>1?`<button class="btn ghost" id="blkAll">افتح كل الفقرات</button>`:""}${t.fc.length||t.qs.length?`<a class="btn ghost" href="#study-${t.id}" id="jumpTest">انتقل إلى «اختبر نفسك» ↓</a>`:""}</div>
      </div>
    </header>
-   ${t.sum?`<details class="tsum"><summary><b>الخلاصة في ثلاثة أسطر</b><span>عرض</span></summary><ol>${t.sum.map(x=>`<li>${rich(x)}</li>`).join("")}</ol></details>`:""}<div class="reading">${t.blocks.map(blockHTML).join("")}</div>
-   ${t.ex.length?`<section class="stack"><h2 class="h2">{% if "S2-3" in step2 %}${BOOK.labels.examples_in_lesson}{% else %}{{ book.labels.examples_in_lesson }}{% endif %}</h2><div class="ex-grid">${t.ex.map(exCard).join("")}</div></section>`:""}
+   ${t.sum?`<details class="tsum"><summary><b>الخلاصة في ثلاثة أسطر</b><span>{{ book.labels.get("disclosure_label", "عرض") }}</span></summary><ol>${t.sum.map(x=>`<li>${rich(x)}</li>`).join("")}</ol></details>`:""}<div class="reading">${t.blocks.map(blockHTML).join("")}</div>
+   ${t.ex.length?`{% if features.fold_examples %}<details class="selftest exfold"><summary><h2 class="h2" style="font-size:17px">{% if "S2-3" in step2 %}${BOOK.labels.examples_in_lesson}{% else %}{{ book.labels.examples_in_lesson }}{% endif %}</h2><span class="tag">${toAr(t.ex.length)} شاهد</span><em>افتح ▾</em></summary><div class="ex-grid" style="padding:16px 18px">${t.ex.map(exCard).join("")}</div></details>{% else %}<section class="stack"><h2 class="h2">{% if "S2-3" in step2 %}${BOOK.labels.examples_in_lesson}{% else %}{{ book.labels.examples_in_lesson }}{% endif %}</h2><div class="ex-grid">${t.ex.map(exCard).join("")}</div></section>{% endif %}`:""}
    ${t.fc.length||t.qs.length?`<details class="selftest" id="selftest"><summary><h2 class="h2" style="font-size:17px">اختبر نفسك في هذا المطلب</h2><span class="tag">${[t.fc.length?toAr(t.fc.length)+" بطاقة":"",t.qs.length?toAr(t.qs.length)+" سؤال":""].filter(Boolean).join(" · ")}</span><em>افتح ▾</em></summary>
      <div>
       ${t.fc.map(c=>`<div class="mini-fc"><button class="q">${rich(c.q)}</button><div class="a">${rich(c.a)}</div></div>`).join("")}
@@ -287,7 +287,7 @@ function viewReview(tab){
   if(tab==="tables")R.innerHTML=`<div class="stack">${TB.map(tb=>`<section class="cmp"><h3>${rich(tb.title)}</h3><div style="overflow-x:auto"><table><thead><tr>${tb.headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${tb.rows.map(r=>`<tr>${r.map((c,i)=>`<td data-h="${esc(tb.headers[i])}">${rich(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></section>`).join("")}</div>`;
   if(tab==="capsules")R.innerHTML=`<div class="caps">${CAPS.map(g=>`<section class="card"><h3>${esc(g.title)}</h3><ul>${g.items.map(it=>`<li><b>${rich(it.k)}</b> ${rich(it.v)}</li>`).join("")}</ul></section>`).join("")}</div>`;
   if(tab==="sheet"){R.innerHTML=`<div class="sheet"><div class="sheet-bar no-print"><p>كل المطالب في صفحات قليلة: خلاصة كل مطلب في ثلاثة أسطر، ثم كبسولات الحفظ. اطبعها أو احفظها PDF.</p><button class="btn primary" id="shPrint">اطبع الملزمة</button></div>
-    <header class="sheet-h"><b>ملزمة مراجعة «{{ book.title }}»</b><span>${toAr(TOPICS.length)} مطلباً · ص ١ - ${toAr(Math.max(...TOPICS.map(t=>t.to)))}</span></header>
+    <header class="sheet-h"><b>ملزمة مراجعة «{{ book.get("display_title", book.title) }}»</b><span>${toAr(TOPICS.length)} مطلباً · ص ١ - ${toAr(Math.max(...TOPICS.map(t=>t.to)))}</span></header>
     ${CH.map(c=>`<section class="sh-ch"><h2>${esc(c.title)}</h2>${c.sections.map(s=>`<div class="sh-sec"><h3>${esc(s.title)}</h3>${s.topics.map(t=>`<div class="sh-t"><a href="#study-${t.id}"><b>${esc(t.short||t.title)}</b> <small>${esc(t.pages)}</small></a>${t.sum?`<ol>${t.sum.map(x=>`<li>${rich(x)}</li>`).join("")}</ol>`:""}</div>`).join("")}</div>`).join("")}</section>`).join("")}
     <section class="sh-ch"><h2>كبسولات الحفظ</h2><div class="sh-caps">${CAPS.map(g=>`<div class="sh-sec"><h3>${esc(g.title)}</h3><ul>${g.items.map(it=>`<li><b>${rich(it.k)}</b> ${rich(it.v)}</li>`).join("")}</ul></div>`).join("")}</div></section></div>`;
     $("#shPrint").onclick=()=>window.print();}

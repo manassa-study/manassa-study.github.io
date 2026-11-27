@@ -132,7 +132,8 @@ def template_files(repo_root):
 # The template's only conditionals besides the step-2 switches: blocks that one book has
 # and another lacks (spec section 4: a feature flag is used only where one book has a
 # block the others lack).
-FEATURES = ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment")
+FEATURES = ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment",
+            "fold_examples", "author_institution")
 
 
 def page_features(book):
@@ -142,7 +143,9 @@ def page_features(book):
     return {"dedication_card": bool((book.get("features") or {}).get("dedication_card")),
             "item_topics": anchor_kind(book) == "topic" if "content" in book else True,
             "example_ayah_plain": bool((book.get("features") or {}).get("example_ayah_plain")),
-            "author_first_segment": bool((book.get("features") or {}).get("author_first_segment"))}
+            "author_first_segment": bool((book.get("features") or {}).get("author_first_segment")),
+            "fold_examples": bool((book.get("features") or {}).get("fold_examples")),
+            "author_institution": bool((book.get("features") or {}).get("author_institution"))}
 
 
 def render(repo_root, book, site, model, where="renderer"):

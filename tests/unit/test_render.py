@@ -70,18 +70,25 @@ def test_refused_value_stops_the_build(tmp_path):
 
 
 def test_feature_blocks_follow_the_book():
-    """The dedication card and attach()'s topic patch are the template's feature blocks."""
+    """Book-specific template blocks are enabled only by their owning book."""
     from mudhakarah.render import FEATURES, page_features
-    assert FEATURES == ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment")
+    assert FEATURES == ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment",
+                        "fold_examples", "author_institution")
     pilot = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
     fiqh = json.loads((REPO / "books" / "madkhal-fiqh" / "book.json").read_text(encoding="utf-8"))
     takhreej = json.loads((REPO / "books" / "takhreej-asaneed" / "book.json").read_text(encoding="utf-8"))
+    tafseer = json.loads((REPO / "books" / "tareekh-tafseer" / "book.json").read_text(encoding="utf-8"))
     assert page_features(pilot) == {"dedication_card": False, "item_topics": True,
-                                    "example_ayah_plain": False, "author_first_segment": False}
+                                    "example_ayah_plain": False, "author_first_segment": False,
+                                    "fold_examples": False, "author_institution": False}
     assert page_features(fiqh) == {"dedication_card": True, "item_topics": False,
-                                   "example_ayah_plain": False, "author_first_segment": False}
+                                   "example_ayah_plain": False, "author_first_segment": False,
+                                   "fold_examples": False, "author_institution": False}
     assert page_features(takhreej) == {"dedication_card": True, "item_topics": False,
-                                       "example_ayah_plain": True, "author_first_segment": True}
+                                       "example_ayah_plain": True, "author_first_segment": True,
+                                       "fold_examples": False, "author_institution": False}
+    assert page_features(tafseer)["fold_examples"] is True
+    assert page_features(tafseer)["author_institution"] is True
 
 
 def test_app_config_holds_exactly_the_listed_words():
@@ -95,6 +102,18 @@ def test_app_config_holds_exactly_the_listed_words():
         "search": {"suggestions": book["search"]["suggestions"]},
     }
     assert "\n" not in str(app_config(book)) and " :" not in str(app_config(book))
+
+
+def test_legacy_copy_labels_are_book_scoped():
+    from mudhakarah.pipeline import run_book
+    tafseer = run_book(REPO, "tareekh-tafseer").html.decode("utf-8")
+    pilot = run_book(REPO, "munazara-rashidiya").html.decode("utf-8")
+    assert 'toAr(TB.length)+" جداول"' in tafseer
+    assert '<span class="prog-o">عرض ▾</span>' in tafseer
+    assert '<span>عرض ▾</span>' in tafseer
+    assert 'toAr(TB.length)+" جدولاً"' in pilot
+    assert '<span class="prog-o">عرض</span>' in pilot
+    assert '<span>عرض</span>' in pilot
 
 
 @pytest.mark.parametrize("change", [

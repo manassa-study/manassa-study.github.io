@@ -7,7 +7,7 @@
     <a class="brand" href="#home">
       <span class="brand-mark" aria-hidden="true">{{ book.brand_mark }}</span>
       <span class="brand-txt">
-        <span class="brand-t">{{ book.title }}</span>
+        <span class="brand-t">{{ book.get("display_title", book.title) }}</span>
         <span class="brand-s">{{ site.platform_name }} · {{ book.page_range }}</span>
       </span>
     </a>
@@ -42,7 +42,7 @@
   <div class="gate-card">
     <div class="gate-mark" aria-hidden="true">ت</div>
     <div class="dhero-greet" style="text-align:center">أهلاً بك في {{ site.platform_name }}</div>
-    <h1 id="gateT" class="gate-t">{{ book.title }}</h1>
+    <h1 id="gateT" class="gate-t">{{ book.get("display_title", book.title) }}</h1>
     <p class="gate-p">قبل الدخول، سجّل اسمك ورقمك الجامعي وبريدك الإلكتروني في نموذج التسجيل. يستغرق ذلك أقل من دقيقة.</p>
     <ol class="gate-steps"><li>اضغط «افتح نموذج التسجيل» وأرسل بياناتك.</li><li>بعد الإرسال اضغط رابط المنصة في رسالة التأكيد، أو ارجع إلى هذه الصفحة.</li><li>اضغط «سجّلت، ادخل المنصة».</li></ol>
     <a class="btn gold" id="gateForm" target="_blank" rel="noopener" href="#">افتح نموذج التسجيل ↗</a>
@@ -54,7 +54,7 @@
   <div class="wel-card" id="welIntro">
     <div class="gate-mark" aria-hidden="true">ت</div>
     <div class="wel-k">السلام عليكم ورحمة الله وبركاته</div>
-    <h2 id="welT" class="wel-t">أهلاً بك في منصة مذاكرة {{ book.title }}</h2>
+    <h2 id="welT" class="wel-t">أهلاً بك في منصة مذاكرة {{ book.get("display_title", book.title) }}</h2>
     <p class="wel-p">أخي القارئ، أختي القارئة: أسأل الله أن يجعل هذه المنصة عوناً لك على {{ book.welcome.aim }}، وأن يرزقك العلم النافع والعمل الصالح، ويفتح عليك فتوح العارفين، ويكتب لك التوفيق والنجاح في دراستك واختبارك.</p>
     <div class="ayah" style="font-size:24px;line-height:1.8">﴿وَقُل رَّبِّ زِدْنِي عِلْمًا﴾ <span class="ref">[طه: ١١٤]</span></div>
 {% if features.dedication_card %}    <div class="wel-dua">

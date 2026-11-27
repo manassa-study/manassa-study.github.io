@@ -23,6 +23,8 @@ TYPE_REGISTRY = {
     "symbol-meaning": {"labels": ["الرمز ودلالته"], "shape": "options"},  # التخريج ودراسة الأسانيد
     "book-author": {"labels": ["الكتاب ومؤلفه"], "shape": "options"},  # التخريج ودراسة الأسانيد
     "tf": {"labels": ["صح أو خطأ"], "shape": "true-false"},
+    "chronology": {"labels": ["الترتيب الزمني"], "shape": "options"},  # تاريخ التفسير
+    "century": {"labels": ["في أي قرن؟"], "shape": "options", "option_counts": [3, 4]},  # تاريخ التفسير
 }
 LABEL_TO_KEY = {label: key for key, t in TYPE_REGISTRY.items() for label in t["labels"]}
 
@@ -127,9 +129,12 @@ def check_question_types(raw, where):
                 findings.append(Finding("V2.question", BLOCKING, f"question {i}: true/false needs 'tf'", where))
         else:
             opts = [q.get("correct")] + list(q.get("wrong") or [])
-            if len(opts) != 4 or any(not isinstance(o, str) or not o for o in opts) or len(set(opts)) != 4:
-                findings.append(Finding("V2.question", BLOCKING,
-                                        f"question {i}: needs one correct and three distinct wrong options", where))
+            allowed = TYPE_REGISTRY[key].get("option_counts")
+            bad_count = len(opts) not in allowed if allowed else len(opts) != 4
+            if bad_count or any(not isinstance(o, str) or not o for o in opts) or len(set(opts)) != len(opts):
+                message = (f"needs {', '.join(map(str, allowed))} distinct options" if allowed else
+                           "needs one correct and three distinct wrong options")
+                findings.append(Finding("V2.question", BLOCKING, f"question {i}: {message}", where))
     return findings
 
 
