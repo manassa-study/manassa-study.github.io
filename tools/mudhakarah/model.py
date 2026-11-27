@@ -23,6 +23,8 @@ TYPE_REGISTRY = {
     "symbol-meaning": {"labels": ["الرمز ودلالته"], "shape": "options"},  # التخريج ودراسة الأسانيد
     "book-author": {"labels": ["الكتاب ومؤلفه"], "shape": "options"},  # التخريج ودراسة الأسانيد
     "tf": {"labels": ["صح أو خطأ"], "shape": "true-false"},
+    "binary-judgment": {"labels": ["صح وخطأ"], "shape": "options", "option_counts": [2]},
+    "quran-evidence-analysis": {"labels": ["تحليل الشواهد القرآنية"], "shape": "options"},
     "chronology": {"labels": ["الترتيب الزمني"], "shape": "options"},  # تاريخ التفسير
     "century": {"labels": ["في أي قرن؟"], "shape": "options", "option_counts": [3, 4]},  # تاريخ التفسير
 }

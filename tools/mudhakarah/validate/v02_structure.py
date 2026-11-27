@@ -45,11 +45,13 @@ def check(raw, where):
                     if not isinstance(b, dict) or not _text(b.get("label")):
                         bad(f"{loc} needs a label")
                         continue
-                    has = [k for k in ("text", "list", "table") if k in b]
+                    has = [k for k in ("text", "list", "table", "ayah") if k in b]
                     if not has:
-                        bad(f"{loc} needs text, a list or a table")
+                        bad(f"{loc} needs text, a list, an ayah or a table")
                     if "text" in b and not _text(b["text"]):
                         bad(f"{loc} has empty text")
+                    if "ayah" in b and not _text(b["ayah"]):
+                        bad(f"{loc} has an empty ayah")
                     if "list" in b and (not isinstance(b["list"], list) or not b["list"]
                                         or not all(_text(x) for x in b["list"])):
                         bad(f"{loc} has an empty list or an empty list item")
@@ -72,8 +74,14 @@ def check(raw, where):
                 bad(f"table {i}, row {ri} has {len(row) if isinstance(row, list) else 0} cells for "
                     f"{len(headers)} headers")
     for i, m in enumerate(raw.get("maps", []), 1):
-        if m.get("type") not in MAP_TYPES:
-            bad(f"map {i} has unknown type '{m.get('type')}' (known: {', '.join(MAP_TYPES)})")
+        book4_map = (_text(m.get("centerTitle")) and _text(m.get("centerSub"))
+                     and isinstance(m.get("branches"), list) and m["branches"]
+                     and all(_text(b.get("title")) and _text(b.get("badge")) and _text(b.get("summary"))
+                             and isinstance(b.get("items"), list) and b["items"]
+                             and all(_text(item) for item in b["items"]) and _text(b.get("modalDetails"))
+                             for b in m["branches"]))
+        if m.get("type") not in MAP_TYPES and not book4_map:
+            bad(f"map {i} has unknown type '{m.get('type')}' and does not match the preserved Book 4 map shape")
         if not _text(m.get("title")):
             bad(f"map {i} needs a title")
     for i, cap in enumerate(raw.get("capsules", []), 1):

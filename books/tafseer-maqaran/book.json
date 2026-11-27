@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "slug": "tafseer-maqaran",
+  "title": "دراسة التفسير المقارن",
+  "output": "Tafseer/TafseerMaqaranAQU.html",
+  "og_image": "og-image.jpg",
+  "description": "كتاب التفسير المقارن: دراسة مقارنة للمناهج والأقوال التفسيرية.",
+  "storage_key": "tafsir-muqaran-v1",
+  "welcome_session_key": "tafsir-wel",
+  "brand_mark": "ق",
+  "page_range": "ص ١١ - ١٤١",
+  "structure_summary": "فصلان · ",
+  "content": {
+    "loader": "python",
+    "files": [
+      "c1.py"
+    ],
+    "symbols": {
+      "meta": "META",
+      "cards": "FC",
+      "questions": "QRAW",
+      "examples": "EX",
+      "tables": "TB",
+      "maps": "MM",
+      "capsules": "CAPS"
+    },
+    "anchor": "chapter",
+    "chapters": [
+      {
+        "symbol": "CH1",
+        "quiz_name": "الفصل الأول"
+      },
+      {
+        "symbol": "CH2",
+        "quiz_name": "الفصل الثاني",
+        "from_page": 45
+      }
+    ],
+    "extras": [
+      "DRILL"
+    ]
+  },
+  "quiz": {
+    "shuffle": "sequential",
+    "seed": 1447
+  },
+  "labels": {
+    "examples_title": "الشواهد القرآنية",
+    "examples_short": "الشواهد",
+    "examples_count_noun": "شاهداً",
+    "examples_in_lesson": "شواهد هذا المطلب",
+    "review_subtitle": "الشواهد والتعريفات والفروق في مكان واحد",
+    "tables_count_suffix": "جداول",
+    "disclosure_label": "عرض ▾"
+  },
+  "welcome": {
+    "aim": "فهم مناهج المفسرين",
+    "study_line": "قراءة المطالب مع الشواهد والتطبيقات"
+  },
+  "search": {
+    "placeholder": "ابحث في التفسير المقارن",
+    "suggestions": [
+      "التفسير المقارن",
+      "مناهج المفسرين",
+      "الترجيح",
+      "القراءات",
+      "الاستدلال"
+    ]
+  },
+  "theme": {
+    "light": {
+      "accent": "#0d5b49",
+      "accent_ink": "#ffffff",
+      "accent_soft": "#d8eee9",
+      "hero_1": "#073b33",
+      "hero_2": "#0d5b49",
+      "paper": "#eef4f1",
+      "surface": "#ffffff",
+      "surface_2": "#e1ebe6",
+      "line": "#cbdcd4"
+    },
+    "dark": {
+      "accent": "#5fc4a6",
+      "accent_ink": "#04221a",
+      "accent_soft": "#12372d",
+      "hero_1": "#061812",
+      "hero_2": "#0e3a2f",
+      "paper": "#0b1310",
+      "surface": "#121d19",
+      "surface_2": "#192823",
+      "line": "#283b34"
+    },
+    "browser_theme_color": "#0d5b49"
+  },
+  "features": {
+    "fold_examples": true,
+    "example_ayah_plain": true,
+    "author_first_segment": true,
+    "dedication_card": true,
+    "author_institution": true
+  },
+  "dedication": {
+    "teacher": "أ.د. أحمد سعد الخطيب"
+  },
+  "display_title": "دراسة التفسير المقارن"
+}

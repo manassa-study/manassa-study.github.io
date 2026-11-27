@@ -73,20 +73,20 @@ def test_feature_blocks_follow_the_book():
     """Book-specific template blocks are enabled only by their owning book."""
     from mudhakarah.render import FEATURES, page_features
     assert FEATURES == ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment",
-                        "fold_examples", "author_institution")
+                        "fold_examples", "author_institution", "book_drill")
     pilot = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
     fiqh = json.loads((REPO / "books" / "madkhal-fiqh" / "book.json").read_text(encoding="utf-8"))
     takhreej = json.loads((REPO / "books" / "takhreej-asaneed" / "book.json").read_text(encoding="utf-8"))
     tafseer = json.loads((REPO / "books" / "tareekh-tafseer" / "book.json").read_text(encoding="utf-8"))
     assert page_features(pilot) == {"dedication_card": False, "item_topics": True,
                                     "example_ayah_plain": False, "author_first_segment": False,
-                                    "fold_examples": False, "author_institution": False}
+                                    "fold_examples": False, "author_institution": False, "book_drill": False}
     assert page_features(fiqh) == {"dedication_card": True, "item_topics": False,
                                    "example_ayah_plain": False, "author_first_segment": False,
-                                   "fold_examples": False, "author_institution": False}
+                                   "fold_examples": False, "author_institution": False, "book_drill": False}
     assert page_features(takhreej) == {"dedication_card": True, "item_topics": False,
                                        "example_ayah_plain": True, "author_first_segment": True,
-                                       "fold_examples": False, "author_institution": False}
+                                       "fold_examples": False, "author_institution": False, "book_drill": False}
     assert page_features(tafseer)["fold_examples"] is True
     assert page_features(tafseer)["author_institution"] is True
 

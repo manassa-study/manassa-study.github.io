@@ -56,10 +56,11 @@ jobs:
           python-version: "3.11"
       - name: Install pinned build packages
         run: python -m pip install --require-hashes --no-deps -r requirements.txt
+      - name: Verify pinned Book 4 baseline preservation
+        run: python tools/check_book4_baseline.py
       - name: Every committed page equals a fresh build, all validators pass (V1-V11, V13)
-        # --baseline-data is the step-1 rule of V11: the data equals the bootstrap page's.
-        # It is removed when content changes resume after the pilot migration.
-        run: python tools/build.py check --all --baseline-data
+        # The one-time --baseline-data identity gate applied to the Book 3 pilot only.
+        run: python tools/build.py check --all
 
   id-invariants:
     runs-on: ubuntu-24.04

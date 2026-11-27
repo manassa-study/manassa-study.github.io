@@ -81,6 +81,13 @@ def test_installs_use_hashes(text):
             assert "--require-hashes" in ln, ln
 
 
+def test_book4_build_job_uses_its_pinned_baseline_guard():
+    lines = code_lines((REPO / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8"))
+    assert "        run: python tools/check_book4_baseline.py" in lines
+    assert "        run: python tools/build.py check --all" in lines
+    assert "        run: python tools/build.py check --all --baseline-data" not in lines
+
+
 def test_only_the_reports_job_is_advisory():
     """From Phase 2 the browser job blocks (spec section 9); only the report job may fail softly."""
     lines = code_lines((REPO / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8"))
