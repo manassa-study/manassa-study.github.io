@@ -72,11 +72,16 @@ def test_refused_value_stops_the_build(tmp_path):
 def test_feature_blocks_follow_the_book():
     """The dedication card and attach()'s topic patch are the template's feature blocks."""
     from mudhakarah.render import FEATURES, page_features
-    assert FEATURES == ("dedication_card", "item_topics")
+    assert FEATURES == ("dedication_card", "item_topics", "example_ayah_plain", "author_first_segment")
     pilot = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
     fiqh = json.loads((REPO / "books" / "madkhal-fiqh" / "book.json").read_text(encoding="utf-8"))
-    assert page_features(pilot) == {"dedication_card": False, "item_topics": True}
-    assert page_features(fiqh) == {"dedication_card": True, "item_topics": False}
+    takhreej = json.loads((REPO / "books" / "takhreej-asaneed" / "book.json").read_text(encoding="utf-8"))
+    assert page_features(pilot) == {"dedication_card": False, "item_topics": True,
+                                    "example_ayah_plain": False, "author_first_segment": False}
+    assert page_features(fiqh) == {"dedication_card": True, "item_topics": False,
+                                   "example_ayah_plain": False, "author_first_segment": False}
+    assert page_features(takhreej) == {"dedication_card": True, "item_topics": False,
+                                       "example_ayah_plain": True, "author_first_segment": True}
 
 
 def test_app_config_holds_exactly_the_listed_words():

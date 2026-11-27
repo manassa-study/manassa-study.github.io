@@ -81,7 +81,7 @@ const D = {{ model|data_json }};
 {% include "partials/auth.html.j2" %}<script>
 {% include "partials/app.js.j2" %}</script>
 <style>
-.ex .ayah.hd{font-family:var(--f-read);font-size:calc(20px*var(--scale))}
+{% if features.example_ayah_plain %}.ex .ayah{font-family:var(--f-read);font-size:calc(20px*var(--scale))}{% else %}.ex .ayah.hd{font-family:var(--f-read);font-size:calc(20px*var(--scale))}{% endif %}
 /* ===== clear expand / collapse controls ===== */
 :root{--chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='{{ book.theme.light.accent|pct_hex }}' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='{{ book.theme.dark.accent|pct_hex }}' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}}

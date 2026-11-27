@@ -122,7 +122,7 @@ function viewHome(){
         <div class="dhero-by"><span>إعداد وتصميم</span><b>محمد بلال البلوشي</b></div>
         <div class="dhero-greet">${greet} · لوحة المذاكرة</div>
         <h1 class="dhero-title">{{ book.title }}</h1>
-        <p class="dhero-sub">كتاب «${esc(META.title)}» · تأليف ${esc(META.authors)}</p>
+        <p class="dhero-sub">كتاب «${esc(META.title)}» · تأليف ${esc(META.authors{% if features.author_first_segment %}.split("،")[0]{% endif %})}</p>
         <div class="row" style="margin-top:6px">
           <a class="btn gold" href="#study-${next.id}">${S.last?"تابع من حيث توقفت":"ابدأ الدراسة"} ←</a>
           <button class="btn glass" id="pickBtn">ماذا أذاكر اليوم؟</button>
@@ -269,7 +269,7 @@ function viewStudy(id){
 
 function exCard(e){
   return `<article class="card ex"><div class="row" style="justify-content:space-between"><span class="tag gold">${esc(e.surah)}</span><span class="tag">${esc(e.category)}</span></div>
-    <div class="ayah${e.ayah.startsWith("﴿")?"":" hd"}">${esc(e.ayah)}</div><p class="d">${rich(e.detail)}</p></article>`;
+    <div class="ayah{% if features.example_ayah_plain %}{% else %}${e.ayah.startsWith("﴿")?"":" hd"}{% endif %}">${esc(e.ayah)}</div><p class="d">${rich(e.detail)}</p></article>`;
 }
 
 /* review */
