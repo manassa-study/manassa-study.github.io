@@ -36,12 +36,76 @@ def test_quran_references(text, problems):
     assert len(quran_reference_problems(text)) == problems
 
 
-def test_v6_warns_only_and_is_quiet_on_the_pilot():
-    assert v06_references.check(LIVE, "x") == []
+PAGE_EXCEPTIONS = json.loads((REPO / "books" / "munazara-rashidiya" / "page-references.json").read_text(encoding="utf-8"))
+
+
+def test_v6_is_quiet_on_the_pilot_with_its_exceptions():
+    assert v06_references.check(LIVE, "x", PAGE_EXCEPTIONS) == []
+    assert v06_references.check_exceptions_file(PAGE_EXCEPTIONS, "x") == []
+
+
+def test_v6_exceptions_seeded_exactly_from_the_live_page():
+    # 37 lesson blocks and 6 explanations of the live page have no «ص»; nothing else is excepted
+    kinds = [e["kind"] for e in PAGE_EXCEPTIONS["exceptions"]]
+    assert kinds.count("block") == 37 and kinds.count("explanation") == 6
+    without = v06_references.check(LIVE, "x")
+    assert len(without) == 43 and {f.code for f in without} == {"V6.page-reference-missing"}
+    assert all(f.severity == "blocking" for f in without)
+
+
+def test_v6_reference_format_and_quran_stay_warnings():
     bad = copy.deepcopy(LIVE)
     bad["FLASHCARDS"][0]["a"] += " (البقرة: ٣٠٠)"
-    found = v06_references.check(bad, "x")
-    assert [f.severity for f in found] == ["warning"]
+    bad["QUIZ_BANK"][0]["exp"] += " ص٢٢"
+    found = v06_references.check(bad, "x", PAGE_EXCEPTIONS)
+    assert sorted(f.code for f in found) == ["V6.page-reference", "V6.quran-reference"]
+    assert {f.severity for f in found} == {"warning"}
+
+
+def test_v6_editing_an_excepted_item_blocks_again():
+    bad = copy.deepcopy(LIVE)
+    q = next(q for q in bad["QUIZ_BANK"] if q["id"] == 2)
+    q["exp"] += " زيادة"
+    found = v06_references.check(bad, "x", PAGE_EXCEPTIONS)
+    assert [f.code for f in found if f.severity == "blocking"] == ["V6.page-reference-missing"]
+    assert [f.code for f in found if f.severity == "warning"] == ["V6.stale-exception"]
+
+
+def test_v6_adding_a_reference_leaves_a_stale_exception_warning():
+    fixed = copy.deepcopy(LIVE)
+    q = next(q for q in fixed["QUIZ_BANK"] if q["id"] == 2)
+    q["exp"] += " (ص ٢٢)"
+    found = v06_references.check(fixed, "x", PAGE_EXCEPTIONS)
+    assert [(f.code, f.severity) for f in found] == [("V6.stale-exception", "warning")]
+
+
+def test_v6_new_block_without_reference_blocks():
+    bad = copy.deepcopy(LIVE)
+    bad["DEEP_STUDY_DATA"][0]["sections"][0]["topics"][0]["blocks"].append({"label": "جديد", "text": "شرح جديد"})
+    found = v06_references.check(bad, "x", PAGE_EXCEPTIONS)
+    assert [f.code for f in found] == ["V6.page-reference-missing"]
+
+
+def test_v6_reordering_blocks_keeps_exceptions():
+    moved = copy.deepcopy(LIVE)
+    blocks = moved["DEEP_STUDY_DATA"][0]["sections"][0]["topics"][0]["blocks"]
+    blocks.reverse()
+    assert v06_references.check(moved, "x", PAGE_EXCEPTIONS) == []
+
+
+@pytest.mark.parametrize("change", [
+    lambda e: e.pop("exceptions"),
+    lambda e: e["exceptions"][0].update(kind="table"),
+    lambda e: e["exceptions"][0].pop("topic"),
+    lambda e: e["exceptions"][-1].update(question="2"),
+    lambda e: e["exceptions"][0].update(sha1="abc"),
+    lambda e: e["exceptions"][0].update(reason=" "),
+    lambda e: e["exceptions"].append(dict(e["exceptions"][0])),
+])
+def test_v6_exceptions_file_shape(change):
+    data = copy.deepcopy(PAGE_EXCEPTIONS)
+    change(data)
+    assert [f.code for f in v06_references.check_exceptions_file(data, "x")] == ["V6.exceptions-invalid"]
 
 
 def test_near_duplicate_is_a_warning():

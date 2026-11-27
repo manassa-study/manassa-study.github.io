@@ -13,7 +13,7 @@ from .loaders import load_content
 from .model import assemble, check_raw
 from .output import manifest, manifest_bytes, sha256_bytes, verify_output, write_atomic
 from .render import TEMPLATE_DIR, render, template_files
-from .validate import model_findings, v07_assets, v08_html, v11_integrity
+from .validate import model_findings, v06_references, v07_assets, v08_html, v11_integrity
 
 
 @dataclass
@@ -28,6 +28,20 @@ class BuildResult:
 
 def _rel(repo_root, path):
     return Path(path).resolve().relative_to(Path(repo_root).resolve()).as_posix()
+
+
+def load_page_exceptions(repo_root, slug):
+    """The book's page-reference exceptions (V6, rule N4), or None when it has none."""
+    import json
+    path = Path(repo_root) / "books" / slug / v06_references.EXCEPTIONS_NAME
+    where = f"books/{slug}/{v06_references.EXCEPTIONS_NAME}"
+    if not path.is_file():
+        return None, []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as e:
+        return None, [Finding("V6.exceptions-invalid", BLOCKING, f"not valid JSON: {e}", where)]
+    return data, v06_references.check_exceptions_file(data, where)
 
 
 def run_book(repo_root, slug):
@@ -45,6 +59,8 @@ def run_book(repo_root, slug):
             "V3.no-lock", BLOCKING, f"{LOCK_NAME} not found; a published book is bootstrapped from its live page "
             "(ids bootstrap), a new book gets its first IDs through ids review and ids apply", where)])
     report.stop_if_blocking("configuration", check_lock_identity(lock, book, f"{where}/{LOCK_NAME}"))
+    page_exceptions, findings = load_page_exceptions(repo_root, slug)
+    report.stop_if_blocking("configuration", findings)
 
     # Stage 2: content loading
     raw, content_hashes, findings = load_content(repo_root, slug, book)
@@ -61,7 +77,7 @@ def run_book(repo_root, slug):
     report.stop_if_blocking("assembly and ID binding", findings)
 
     # Stage 4: model validation (section 7)
-    report.stop_if_blocking("model validation", model_findings(raw, model, book, where))
+    report.stop_if_blocking("model validation", model_findings(raw, model, book, where, page_exceptions))
 
     # Stage 5: rendering
     text = render(repo_root, book, site, model, where=where)
@@ -85,6 +101,9 @@ def run_book(repo_root, slug):
     for name, digest in content_hashes.items():
         inputs[f"books/{slug}/content/{name}"] = digest
     inputs[f"books/{slug}/{LOCK_NAME}"] = sha256_bytes((repo_root / "books" / slug / LOCK_NAME).read_bytes())
+    exceptions_file = repo_root / "books" / slug / v06_references.EXCEPTIONS_NAME
+    if exceptions_file.is_file():
+        inputs[f"books/{slug}/{v06_references.EXCEPTIONS_NAME}"] = sha256_bytes(exceptions_file.read_bytes())
     for path in template_files(repo_root):
         inputs[_rel(repo_root, path)] = sha256_bytes(path.read_bytes())
     m = manifest(repo_root, slug, inputs, book["output"], html, report.findings)

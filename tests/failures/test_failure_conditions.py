@@ -201,6 +201,11 @@ CASES = {
     "V5.topic": lambda t: build_with(t, lambda r: append_content(r, 'FC[0]["topic"] = "t999"')),
     "V5.link": lambda t: (lambda d=pilot(): (d[3]["FLASHCARDS"][0].update(a="انظر #study-t999"),
                                             lambda: v05_links.check(d[3], W))[1])(),
+    # V6 references (rule N4)
+    "V6.page-reference-missing": lambda t: build_with(t, lambda r: edit_json(
+        r / "books" / PILOT / "page-references.json", lambda e: e["exceptions"].pop(0))),
+    "V6.exceptions-invalid": lambda t: build_with(t, lambda r: (
+        r / "books" / PILOT / "page-references.json").write_text("{not json", encoding="utf-8")),
     # V7 assets
     "V7.missing-asset": lambda t: build_with(t, lambda r: (r / "mantiq" / "og-munazara.jpg").unlink()),
     # V8 HTML output

@@ -23,6 +23,7 @@ When the tool exists:
    approved report).
 3. For each, compare the quoted text, the cited reference and the edition's text
    of that verse. Decide: correct as is, fix the content, or fix the reference.
-4. Record the sign-off as decided by O-10 (still open).
+4. Record the sign-off as decided by O-10: Bilal's approval of the pull request
+   that references the report, until he names subject reviewers in writing.
 5. The report never blocks a build. A wrong quotation is fixed in the content
    through the normal [content change](changing-content.md).

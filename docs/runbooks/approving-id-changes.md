@@ -5,7 +5,7 @@ IDs. The build never guesses an ID: anything it can't match with certainty stops
 it. This runbook is how a person decides. Rules: Architecture Specification,
 section 6. Normalization: [normalization.md](../normalization.md).
 
-Who approves: decision O-8. Until Bilal names someone else in writing, Bilal
+Who approves: decision O-8 (decided 27 November 2026). Until Bilal names someone else in writing, Bilal
 approves every lock change; merging the pull request is the approval, and each
 `changes` entry records the approver and the pull request.
 

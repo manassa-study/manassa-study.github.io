@@ -6,5 +6,8 @@
 - **Content files:** `content/m1.py` to `m5.py`, copied unchanged from the project folder
   (`munazara-canvas/source/`) in Phase 1, M2. Their SHA-256 values equal those in the Phase 0
   preservation package (`05-recovered-sources/munazara-canvas/source/`).
-- **Reviewers:** ID changes and content-change reports are approved as recorded in the
-  decision register (O-8, O-10).
+- **Page-reference exceptions:** `page-references.json` lists the 37 lesson blocks and 6
+  question explanations that had no «ص» in the live page at de019d2 (rule N4). They are
+  seeded, not reviewed: each should get a reference or a real reason when content changes resume.
+- **Reviewers:** Bilal approves ID changes (O-8) and signs off content-change reports by
+  approving the pull request (O-10), until he names others in writing.
