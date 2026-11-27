@@ -36,3 +36,26 @@ A direct transformation from the rendered fixture into source modules would requ
 - No Supabase action, merge, or deployment was performed.
 
 **Environment limitation:** repository API access is available for inspection and branch/document creation, but this session's container cannot resolve GitHub to clone the repository or execute its project tooling. Therefore Step 3 cannot be safely completed to build-ready status in this environment.
+
+
+## Concrete migration execution checklist (next working environment)
+
+This checklist is deliberately executable-order oriented. It does not authorize content edits or deployment.
+
+1. **Checkout and establish identity:** checkout `phase3-book2-migration-prep`; confirm `git status` is clean, record the baseline commit and page SHA-256, and verify fixture SHA-256 against `tests/integration/test_ids_extracts.py`.
+2. **Inspect preservation/source conventions:** inspect `books/madkhal-fiqh/content/`, its `book.json`, and `tools/mudhakarah/loaders.py`; identify the required raw symbol conventions. Do not use the fixture as a substitute for an original manuscript/content source.
+3. **Mechanical reconstruction:** write a temporary extraction/reconstruction script outside committed source first. Convert the fixture to raw source with quiz answers represented as source correct-answer plus wrong-answer slots, preserving display order; for true/false use the repository's exact convention. Derive chapter mapping from the page's question chapter names, and validate every item maps exactly once.
+4. **Run helper tests:** use `register_extract_types`, `raw_from_extract`, and `extract_lock` only as test helpers to check payload shape and collision behavior—not as a production migration shortcut. Confirm the source model assembles back to the exact fixture data.
+5. **Book config and content files:** only after those checks, author the book config and structured content modules following the real loader schema. Preserve title/description, output, storage key, welcome key, labels, theme, and special script placement.
+6. **ID bootstrap:** use the repository's CLI against the actual baseline page/commit, never manually author IDs or lock JSON. Verify bootstrap invariants and question option order.
+7. **Build and equivalence:** run `python3 tools/build.py check takhreej-asaneed`, diff output, data-line identity and reproducibility checks. Expected page difference must be zero unless an explicitly approved migration difference is documented.
+8. **Tests:** run unit, integration, failure-condition and browser tests; exercise route navigation, card review, quiz modes, progress persistence key, theme/preferences, registration/welcome gates, and responsive RTL layouts.
+9. **Review boundary:** create a PR only with reproducible evidence, migration report and clearly scoped files. Do not merge or deploy without explicit approval.
+
+### Specific reconstruction risks to watch
+
+- Quiz type labels and their registry keys must be supported; do not invent type mappings.
+- Correct-answer source slots and option order must preserve the rendered answer order and correct index.
+- Chapter names are embedded in the rendered quiz bank and must be mapped without silently reclassifying questions.
+- Cards/questions may have no explicit topic; anchor/fingerprint policy must be selected according to the governing decisions and confirmed against the actual model.
+- Exact equality of the data payload is necessary but not sufficient: script ordering, runtime interactions, and browser equivalence remain unverified.
