@@ -4,7 +4,7 @@
   "storage_key": "tareekh-tafseer-v1",
   "output": "Tafseer/TareekhTafseerAQU.html",
   "fingerprint": {"algorithm": "sha1", "normalization": "ar-norm-1", "cards": ["chapter", "q"], "questions": ["chapter", "type_key", "q", "options_sorted", "correct"]},
-  "bootstrap": {"from": "Tafseer/TareekhTafseerAQU.html", "commit": "fbbbae5b51e526d6f5e27e3f6dac7d8fdf22f6b2", "sha256": "f1c593e681ba643e3f7398df2289ee47e278c4e9dbf007ce2b1aa4a106c03323", "option_order": "captured-from-baseline"},
+  "bootstrap": {"from": "Tafseer/TareekhTafseerAQU.html", "commit": "fbbbae5b51e526d6f5e27e3f6dac7d8fdf22f6b2", "sha256": "f1c593e681ba643e3f7398df2289ee47e278c4e9dbf007ce2b1aa4a106c03323", "option_order": "captured-from-baseline", "repository": "manassa-study/Tafseer", "repository_page": "TareekhTafseerAQU.html", "checkout_path": ".baseline/tafseer"},
   "topics": [
     {"id": "t1"},
     {"id": "t2"},
