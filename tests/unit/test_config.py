@@ -33,13 +33,19 @@ def test_valid_book_passes():
     assert config.validate_book(VALID, folder_name="fixture-book") == []
 
 
+def test_tafseer_published_folder_is_approved():
+    book = copy.deepcopy(VALID)
+    book["output"] = "Tafseer/TareekhTafseerAQU.html"
+    assert config.validate_book(book) == []
+
+
 @pytest.mark.parametrize("mutate,code", [
     (lambda b: b.update(colour_typo="x"), "V1.unknown-field"),
     (lambda b: b["theme"]["light"].update(acent="#000000"), "V1.unknown-field"),
     (lambda b: b.pop("storage_key"), "V1.missing-field"),
     (lambda b: b["theme"]["dark"].pop("line"), "V1.missing-field"),
     (lambda b: b["theme"]["light"].update(accent="red"), "V1.value"),
-    (lambda b: b.update(output="Tafseer/Other.html"), "V1.value"),
+    (lambda b: b.update(output="unknown/Other.html"), "V1.value"),
     (lambda b: b.update(output="mantiq/../index.html"), "V1.value"),
     (lambda b: b.update(slug="Fixture_Book"), "V1.value"),
     (lambda b: b.update(schema_version=2), "V1.value"),

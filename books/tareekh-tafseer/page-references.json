@@ -1,0 +1,26 @@
+{
+  "rule": "N4: preserve the baseline lesson text with its existing page-reference exceptions",
+  "rule_decided_by": "Bilal",
+  "rule_decided_on": "2026-11-27",
+  "seeded_from": {
+    "page": "Tafseer/TareekhTafseerAQU.html",
+    "commit": "fbbbae5b51e526d6f5e27e3f6dac7d8fdf22f6b2"
+  },
+  "note": "These two blocks have no printed-page reference in the preserved Phase 0 payload. They remain unreviewed exceptions; no page number has been inferred or added.",
+  "exceptions": [
+    {
+      "kind": "block",
+      "topic": "t1",
+      "sha1": "e6ea229503ba8f4ac75202486c2b636b9ec6e572",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t4",
+      "sha1": "d9ba3b2ba31344257b0be27156c121593a545463",
+      "reason": "Present without a printed-page reference in the preserved baseline payload; retained unchanged. No page number has been inferred. Scholarly reference review remains pending.",
+      "review": "unreviewed"
+    }
+  ]
+}

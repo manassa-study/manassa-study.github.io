@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "slug": "tareekh-tafseer",
+  "title": "دراسة تاريخ التفسير",
+  "output": "Tafseer/TareekhTafseerAQU.html",
+  "og_image": "og-image.jpg",
+  "description": "كتاب «التفسير: تاريخه وسماته من عصر الرسالة حتى العصر الحاضر» لأ.د. أحمد سعد الخطيب. ملخصات وشواهد وخرائط وبطاقات وأسئلة.",
+  "storage_key": "tareekh-tafseer-v1",
+  "welcome_session_key": "tareekh-wel",
+  "brand_mark": "ت",
+  "page_range": "ص ١ - ٢٠٦",
+  "structure_summary": "قسمان · عشرون مبحثاً · ",
+  "content": {
+    "loader": "python",
+    "files": [
+      "c1.py"
+    ],
+    "symbols": {
+      "meta": "META",
+      "cards": "FC",
+      "questions": "QRAW",
+      "examples": "EX",
+      "tables": "TB",
+      "maps": "MM",
+      "capsules": "CAPS"
+    },
+    "anchor": "chapter",
+    "chapters": [
+      {
+        "symbol": "CH1",
+        "quiz_name": "القسم الأول"
+      },
+      {
+        "symbol": "CH2",
+        "quiz_name": "القسم الثاني",
+        "from_page": 85
+      }
+    ],
+    "extras": []
+  },
+  "quiz": {
+    "shuffle": "sequential",
+    "seed": 1447
+  },
+  "labels": {
+    "examples_title": "الشواهد القرآنية",
+    "examples_short": "الشواهد",
+    "examples_count_noun": "شاهداً",
+    "examples_in_lesson": "شواهد هذا المطلب",
+    "review_subtitle": "التعريفات والفروق والأعلام والشواهد في مكان واحد",
+    "tables_count_suffix": "جداول",
+    "disclosure_label": "عرض ▾"
+  },
+  "welcome": {
+    "aim": "فهم كتابه الكريم",
+    "study_line": "قراءة المطالب بالترتيب مع الشواهد وأسئلة"
+  },
+  "search": {
+    "placeholder": "ابحث: الإسرائيليات، ابن جريج، الإشاري، الفرّاء...",
+    "suggestions": [
+      "الإسرائيليات",
+      "ابن عباس",
+      "الإشاري",
+      "الموضوعي",
+      "يحيى بن سلام",
+      "القراءة التفسيرية",
+      "المشني",
+      "التأويل"
+    ]
+  },
+  "theme": {
+    "light": {
+      "accent": "#1a4f8b",
+      "accent_ink": "#ffffff",
+      "accent_soft": "#d8e5f5",
+      "hero_1": "#0b2a52",
+      "hero_2": "#1a4f8b",
+      "paper": "#eef2f7",
+      "surface": "#ffffff",
+      "surface_2": "#e3e9f2",
+      "line": "#cfd8e5"
+    },
+    "dark": {
+      "accent": "#6ea8ec",
+      "accent_ink": "#061833",
+      "accent_soft": "#17304f",
+      "hero_1": "#0a1628",
+      "hero_2": "#13305a",
+      "paper": "#0c121c",
+      "surface": "#131c2a",
+      "surface_2": "#1a2536",
+      "line": "#2a3850"
+    },
+    "browser_theme_color": "#1a4f8b"
+  },
+  "features": {
+    "fold_examples": true,
+    "example_ayah_plain": true,
+    "author_first_segment": true,
+    "dedication_card": true,
+    "author_institution": true
+  },
+  "dedication": {
+    "teacher": "أ.د. أحمد سعد الخطيب"
+  },
+  "display_title": "تاريخ التفسير"
+}

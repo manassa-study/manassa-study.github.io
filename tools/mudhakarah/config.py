@@ -14,7 +14,7 @@ SCHEMA_VERSION = 1
 
 # Folders a generated book page may be written to. A platform rule, kept in code
 # so a book cannot widen it (spec section 5, stage 1).
-PUBLISHED_BOOK_FOLDERS = ("fiqh/", "hadith/", "mantiq/")
+PUBLISHED_BOOK_FOLDERS = ("fiqh/", "hadith/", "mantiq/", "Tafseer/")
 
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 COLOUR_RE = re.compile(r"^#[0-9a-f]{6}$")
@@ -132,6 +132,7 @@ BOOK_FIELDS = {
     "slug": F("str", check=lambda v: None if SLUG_RE.match(v) else
               "use lowercase letters, digits and hyphens"),
     "title": F("str"),
+    "display_title": F("str", required=False),
     "output": F("str", check=lambda v: None if (v.endswith(".html") and v.startswith(PUBLISHED_BOOK_FOLDERS)
                                                 and ".." not in v and not v.startswith("/")) else
                 f"must be an .html path under one of {', '.join(PUBLISHED_BOOK_FOLDERS)}"),
@@ -163,6 +164,8 @@ BOOK_FIELDS = {
     "labels": F("dict", fields={
         "examples_title": F("str"), "examples_short": F("str"), "examples_count_noun": F("str"),
         "examples_in_lesson": F("str"), "review_subtitle": F("str"),
+        "tables_count_suffix": F("str", required=False),
+        "disclosure_label": F("str", required=False),
     }),
     "welcome": F("dict", fields={"aim": F("str"), "study_line": F("str")}),
     "search": F("dict", fields={"placeholder": F("str"),
@@ -173,6 +176,8 @@ BOOK_FIELDS = {
     "features": F("dict", required=False, fields={
         "dedication_card": F("bool", required=False),
         "example_ayah_plain": F("bool", required=False),
+        "fold_examples": F("bool", required=False),
+        "author_institution": F("bool", required=False),
         "author_first_segment": F("bool", required=False),
         "step2": F("list", required=False, items=F("str", check=_step2_id)),
     }),

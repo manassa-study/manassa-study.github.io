@@ -44,15 +44,42 @@ def _data_or_none(text):
 
 
 def _baseline_data(slug, result):
-    """V11 step 1: the data line equals the data line of the page the lock was bootstrapped from."""
+    """V11 step 1: compare against the bootstrap page in its pinned source repository."""
     import subprocess
     from mudhakarah.errors import BLOCKING, Finding
     boot = (read_lock(REPO, slug) or {}).get("bootstrap")
     if not boot:
         return [Finding("V11.data-changed", BLOCKING, "the lock has no bootstrap page to compare with", slug)]
-    r = subprocess.run(["git", "-C", str(REPO), "show", f"{boot['commit']}:{boot['from']}"], capture_output=True)
+
+    source_page = boot.get("repository_page", boot["from"])
+    checkout_path = boot.get("checkout_path")
+    if checkout_path:
+        if not boot.get("repository"):
+            return [Finding("V11.data-changed", BLOCKING,
+                            "the external bootstrap checkout has no repository identity", slug)]
+        baseline_repo = (REPO / checkout_path).resolve()
+        try:
+            baseline_repo.relative_to(REPO.resolve())
+        except ValueError:
+            return [Finding("V11.data-changed", BLOCKING,
+                            "the bootstrap checkout path must stay inside the repository workspace", slug)]
+        if not baseline_repo.is_dir():
+            return [Finding("V11.data-changed", BLOCKING,
+                            f"cannot read {source_page} at {boot['commit'][:7]} from "
+                            f"{boot['repository']}: pinned checkout is missing", slug)]
+    elif boot.get("repository"):
+        return [Finding("V11.data-changed", BLOCKING,
+                        f"cannot read {source_page} at {boot['commit'][:7]} from "
+                        f"{boot['repository']}: pinned checkout path is missing", slug)]
+    else:
+        baseline_repo = REPO
+
+    r = subprocess.run(["git", "-C", str(baseline_repo), "show",
+                        f"{boot['commit']}:{source_page}"], capture_output=True)
     if r.returncode != 0:
-        return [Finding("V11.data-changed", BLOCKING, f"cannot read {boot['from']} at {boot['commit'][:7]}", slug)]
+        source = f" from {boot['repository']}" if boot.get("repository") else ""
+        return [Finding("V11.data-changed", BLOCKING,
+                        f"cannot read {source_page} at {boot['commit'][:7]}{source}", slug)]
     return v11_integrity.step1_data_identity(result.html.decode("utf-8"), r.stdout.decode("utf-8"), slug)
 
 

@@ -11,8 +11,9 @@ from mudhakarah.render import FEATURES
 from mudhakarah.render import TEMPLATE_DIR, template_files
 
 TEMPLATES = template_files(REPO)
-# Shared literals that happen to equal a pilot value but belong to every page.
-SHARED_LITERALS = {"#ffffff"}
+# Shared literals that happen to equal book values but belong to every page.
+# These are global style literals or shared UI copy, not book-specific template values.
+SHARED_LITERALS = {"#ffffff", "#0c121c", "#6ea8ec", "جداول"}
 
 
 def _leaves(x):
