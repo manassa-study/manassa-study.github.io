@@ -65,6 +65,7 @@ def test_quiz_preserves_baseline_order_and_handles_answers(open_tafseer, tafseer
     assert actual == [{"id": q["id"], "q": q["q"], "options": q["options"]} for q in expected]
 
     page.click('.chip[data-cnt="0"]')
+    page.click("#qMore summary")
     if page.get_attribute("#qShuf", "aria-pressed") == "true":
         page.click("#qShuf")
     page.click("#qStart")
@@ -132,8 +133,7 @@ def test_drill_accepts_the_source_classification_and_finishes(open_tafseer, tafs
         page.click(f'[data-drill="{item["k"]}"]')
         assert page.locator("#rv .exp.ok").count() == 1
         assert page.locator("#rv .pg").inner_text() == item["p"]
-        if index + 1 < len(LIVE["DRILL"]):
-            page.click("#drNext")
+        page.click("#drNext")
     result = page.locator("#rv h2").inner_text().translate(str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789"))
     assert "12 من 12" in result
     assert errors == []
