@@ -39,9 +39,36 @@ def test_quran_references(text, problems):
 PAGE_EXCEPTIONS = json.loads((REPO / "books" / "munazara-rashidiya" / "page-references.json").read_text(encoding="utf-8"))
 
 
-def test_v6_is_quiet_on_the_pilot_with_its_exceptions():
-    assert v06_references.check(LIVE, "x", PAGE_EXCEPTIONS) == []
+UNREVIEWED = ("V6.unreviewed-exceptions", "warning")
+
+
+def codes(found):
+    return [(f.code, f.severity) for f in found]
+
+
+def test_v6_on_the_pilot_only_warns_that_its_exceptions_are_unreviewed():
+    found = v06_references.check(LIVE, "x", PAGE_EXCEPTIONS)
+    assert codes(found) == [UNREVIEWED]
+    assert "43 page-reference exception(s)" in found[0].message and "not verified" in found[0].message
     assert v06_references.check_exceptions_file(PAGE_EXCEPTIONS, "x") == []
+
+
+def test_v6_seeded_exceptions_are_all_marked_unreviewed_and_carry_no_approver():
+    assert "approved_by" not in PAGE_EXCEPTIONS and PAGE_EXCEPTIONS["rule_decided_by"] == "Bilal"
+    assert all(e["review"] == "unreviewed" for e in PAGE_EXCEPTIONS["exceptions"])
+    assert not any("reviewed_by" in e or "approved_by" in e for e in PAGE_EXCEPTIONS["exceptions"])
+
+
+def test_v6_warning_counts_only_unreviewed_exceptions():
+    data = copy.deepcopy(PAGE_EXCEPTIONS)
+    for e in data["exceptions"][:40]:
+        e.update(review="reviewed", reviewed_by="Reviewer", reviewed_on="2027-01-01")
+    assert v06_references.check_exceptions_file(data, "x") == []
+    found = v06_references.check(LIVE, "x", data)
+    assert codes(found) == [UNREVIEWED] and found[0].message.startswith("3 page-reference")
+    for e in data["exceptions"]:
+        e.update(review="reviewed", reviewed_by="Reviewer", reviewed_on="2027-01-01")
+    assert v06_references.check(LIVE, "x", data) == []
 
 
 def test_v6_exceptions_seeded_exactly_from_the_live_page():
@@ -58,7 +85,7 @@ def test_v6_reference_format_and_quran_stay_warnings():
     bad["FLASHCARDS"][0]["a"] += " (البقرة: ٣٠٠)"
     bad["QUIZ_BANK"][0]["exp"] += " ص٢٢"
     found = v06_references.check(bad, "x", PAGE_EXCEPTIONS)
-    assert sorted(f.code for f in found) == ["V6.page-reference", "V6.quran-reference"]
+    assert sorted(f.code for f in found) == ["V6.page-reference", "V6.quran-reference", "V6.unreviewed-exceptions"]
     assert {f.severity for f in found} == {"warning"}
 
 
@@ -68,7 +95,8 @@ def test_v6_editing_an_excepted_item_blocks_again():
     q["exp"] += " زيادة"
     found = v06_references.check(bad, "x", PAGE_EXCEPTIONS)
     assert [f.code for f in found if f.severity == "blocking"] == ["V6.page-reference-missing"]
-    assert [f.code for f in found if f.severity == "warning"] == ["V6.stale-exception"]
+    assert sorted(f.code for f in found if f.severity == "warning") == ["V6.stale-exception",
+                                                                         "V6.unreviewed-exceptions"]
 
 
 def test_v6_adding_a_reference_leaves_a_stale_exception_warning():
@@ -76,21 +104,21 @@ def test_v6_adding_a_reference_leaves_a_stale_exception_warning():
     q = next(q for q in fixed["QUIZ_BANK"] if q["id"] == 2)
     q["exp"] += " (ص ٢٢)"
     found = v06_references.check(fixed, "x", PAGE_EXCEPTIONS)
-    assert [(f.code, f.severity) for f in found] == [("V6.stale-exception", "warning")]
+    assert sorted(codes(found)) == [("V6.stale-exception", "warning"), UNREVIEWED]
 
 
 def test_v6_new_block_without_reference_blocks():
     bad = copy.deepcopy(LIVE)
     bad["DEEP_STUDY_DATA"][0]["sections"][0]["topics"][0]["blocks"].append({"label": "جديد", "text": "شرح جديد"})
     found = v06_references.check(bad, "x", PAGE_EXCEPTIONS)
-    assert [f.code for f in found] == ["V6.page-reference-missing"]
+    assert codes(found) == [("V6.page-reference-missing", "blocking"), UNREVIEWED]
 
 
 def test_v6_reordering_blocks_keeps_exceptions():
     moved = copy.deepcopy(LIVE)
     blocks = moved["DEEP_STUDY_DATA"][0]["sections"][0]["topics"][0]["blocks"]
     blocks.reverse()
-    assert v06_references.check(moved, "x", PAGE_EXCEPTIONS) == []
+    assert codes(v06_references.check(moved, "x", PAGE_EXCEPTIONS)) == [UNREVIEWED]
 
 
 @pytest.mark.parametrize("change", [
@@ -101,6 +129,12 @@ def test_v6_reordering_blocks_keeps_exceptions():
     lambda e: e["exceptions"][0].update(sha1="abc"),
     lambda e: e["exceptions"][0].update(reason=" "),
     lambda e: e["exceptions"].append(dict(e["exceptions"][0])),
+    lambda e: e["exceptions"][0].pop("review"),
+    lambda e: e["exceptions"][0].update(review="verified"),
+    lambda e: e["exceptions"][0].update(review="reviewed"),
+    lambda e: e["exceptions"][0].update(review="reviewed", reviewed_by="X"),
+    lambda e: e["exceptions"][0].update(approved_by="X"),
+    lambda e: e.update(approved_by="Bilal"),
 ])
 def test_v6_exceptions_file_shape(change):
     data = copy.deepcopy(PAGE_EXCEPTIONS)

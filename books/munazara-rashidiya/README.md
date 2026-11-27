@@ -8,6 +8,8 @@
   preservation package (`05-recovered-sources/munazara-canvas/source/`).
 - **Page-reference exceptions:** `page-references.json` lists the 37 lesson blocks and 6
   question explanations that had no «ص» in the live page at de019d2 (rule N4). They are
-  seeded, not reviewed: each should get a reference or a real reason when content changes resume.
+  seeded, not reviewed: each entry says `"review": "unreviewed"`, and every build warns until each
+  one gets a reference, or a named reviewer marks it reviewed (`reviewed_by`, `reviewed_on`).
+  An exception is never a verified reference.
 - **Reviewers:** Bilal approves ID changes (O-8) and signs off content-change reports by
   approving the pull request (O-10), until he names others in writing.

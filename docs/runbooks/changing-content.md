@@ -18,7 +18,10 @@ migration (Phase 2); in Phase 1 the content is frozen.
      explanation needs a page reference «ص …». A new or edited item without one
      stops the build; the message names the item. Add the reference. Only if the
      item truly has no page (decided in review), add the entry the message prints
-     to `books/<slug>/page-references.json` with a real reason. Editing an
+     to `books/<slug>/page-references.json` with a real reason, and mark it
+     `"review": "reviewed"` with `reviewed_by` and `reviewed_on`. Unreviewed
+     exceptions (the seeded ones) make every build warn with their count; an
+     exception is never a verified reference. Editing an
      excepted item makes it fail again, so it is looked at again. A warning that
      an exception is stale means the item now has a reference: delete that entry.
    - Warnings (for example a changed card back, F1) are fine but must be

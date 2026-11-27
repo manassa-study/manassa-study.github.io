@@ -8,6 +8,10 @@ and the SHA-1 of the item exactly as written, so any edit to an excepted item ma
 it fail again until it gets a reference or is reviewed and listed again. A listed
 exception that matches nothing is a warning (it can be removed).
 
+An exception is never a verified reference. Each one says `"review": "unreviewed"`
+(seeded, nobody has looked at it) or `"review": "reviewed"` with `reviewed_by` and
+`reviewed_on`. While any exception is unreviewed, every build warns with the count.
+
 The format of references is a warning: a well-formed reference is «ص» followed by
 a page number, or a range «ص ٢٢ - ٩٣» whose end is not before its start. A
 reference counts as present even if its format is wrong; the format warning says
@@ -153,6 +157,9 @@ def check_exceptions_file(data, where):
     bad = lambda msg: [Finding("V6.exceptions-invalid", BLOCKING, msg, where)]
     if not isinstance(data, dict) or not isinstance(data.get("exceptions"), list):
         return bad("must be an object with an 'exceptions' list")
+    if "approved_by" in data:
+        return bad("the file has no approver: the rule's decider is rule_decided_by, and each exception "
+                   "records its own review")
     seen = set()
     for n, e in enumerate(data["exceptions"]):
         if not isinstance(e, dict) or e.get("kind") not in ("block", "explanation"):
@@ -165,6 +172,13 @@ def check_exceptions_file(data, where):
             return bad(f"exception {n + 1}: sha1 must be 40 lowercase hex digits")
         if not (isinstance(e.get("reason"), str) and e["reason"].strip()):
             return bad(f"exception {n + 1}: every exception gives a reason")
+        if e.get("review") not in ("unreviewed", "reviewed"):
+            return bad(f"exception {n + 1}: review must be 'unreviewed' or 'reviewed'")
+        if e["review"] == "reviewed" and not all(
+                isinstance(e.get(k), str) and e[k].strip() for k in ("reviewed_by", "reviewed_on")):
+            return bad(f"exception {n + 1}: a reviewed exception names reviewed_by and reviewed_on")
+        if "approved_by" in e:
+            return bad(f"exception {n + 1}: use review, reviewed_by and reviewed_on, not approved_by")
         if _key(e) in seen:
             return bad(f"exception {n + 1} is listed twice")
         seen.add(_key(e))
@@ -192,6 +206,12 @@ def check(model, where, exceptions=None):
         out.append(Finding("V6.page-reference-missing", BLOCKING,
                            f"{label} has no page reference («ص …»); add one, or after review list it in "
                            f"{EXCEPTIONS_NAME}: {entry}", where))
+    unreviewed = sum(1 for e in (exceptions or {}).get("exceptions", []) if e.get("review") != "reviewed")
+    if unreviewed:
+        out.append(Finding("V6.unreviewed-exceptions", WARNING,
+                           f"{unreviewed} page-reference exception(s) in {EXCEPTIONS_NAME} are unreviewed: they are "
+                           "not verified references; review each and mark it reviewed, or give the item a reference",
+                           where))
     for k in sorted(listed - used, key=str):
         out.append(Finding("V6.stale-exception", WARNING,
                            f"{EXCEPTIONS_NAME} lists {k[0]} {k[1] or k[2]} ({k[3][:12]}…), which no longer needs "
