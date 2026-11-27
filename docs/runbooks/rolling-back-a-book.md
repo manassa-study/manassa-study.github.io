@@ -23,5 +23,16 @@ previous page and its sources.
    that a saved progress state still loads (the browser test
    `test_saved_progress_from_the_live_page_loads_unchanged` uses the same check).
 
+## Rolling back one step-2 change
+
+The template keeps the step-1 text for every step-2 change, so a single change
+can be undone without restoring old files: remove its id from
+`features.step2` in the book's `book.json`, run
+`python3 tools/build.py build <slug>`, and open a pull request with the
+regenerated page. With no id left, the pilot builds to the Phase 1 baseline
+byte for byte (`tests/integration/test_step2.py`). The golden page
+`tests/golden/MunazaraRashidiyaAQU.step2.html` and the expected diffs in that
+test are updated in the same pull request.
+
 Student progress is safe in a rollback as long as the storage key and the IDs
 are unchanged, which the build enforces.

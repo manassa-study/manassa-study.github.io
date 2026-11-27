@@ -37,9 +37,11 @@ migration (Phase 2); in Phase 1 the content is frozen.
 6. Sign-off follows decision O-10 (decided 27 November 2026): Bilal's approval of
    the pull request that references the content-change report is the sign-off,
    until he names subject reviewers in writing.
-   CI must be green: `test`, `build-check`, `reproducibility`, `id-invariants`.
+   CI must be green: `test`, `build-check`, `reproducibility`, `id-invariants`, and
+   `browser` (blocking from Phase 2).
 7. Merging deploys through GitHub Pages. Check the live page afterwards.
 
-While Phase 1's step-1 rule is active, `build-check` runs with
+While the step-1 data rule is active (Phase 1 and the step-2 migration, which
+changes no data), `build-check` runs with
 `--baseline-data`, which requires the data to equal the baseline page. That flag
 is removed from CI in the pull request that resumes content changes.

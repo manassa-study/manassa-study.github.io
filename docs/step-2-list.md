@@ -24,3 +24,6 @@ Each change is a switch in the book's `book.json`, under `features.step2`, for
 example `"step2": ["S2-1"]`. The config check accepts only the ids in the table
 above, each once. A book without the list builds exactly as in step 1, so the
 other four books keep their published bytes until each one migrates (Phase 3).
+
+The pilot turned on all three in Phase 2 (commits P2-2, P2-3 and P2-4); see
+`docs/migrations/munazara-rashidiya.md`.
