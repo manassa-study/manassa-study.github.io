@@ -52,7 +52,7 @@ CH.forEach((c,ci)=>c.sections.forEach((s,si)=>s.topics.forEach(t=>{
 })));
 const topicByPage=p=>TOPICS.find(t=>p>=t.from&&p<=t.to);
 const byId=Object.fromEntries(TOPICS.map(t=>[t.id,t]));
-function attach(arr,field){arr.forEach(x=>{if(x.topic&&byId[x.topic])return;const p=pagesOf(x[field])[0];const t=p&&topicByPage(p);x.topic=t?t.id:null;});}
+{% if features.item_topics %}function attach(arr,field){arr.forEach(x=>{if(x.topic&&byId[x.topic])return;const p=pagesOf(x[field])[0];const t=p&&topicByPage(p);x.topic=t?t.id:null;});}{% else %}function attach(arr,field){arr.forEach(x=>{const p=pagesOf(x[field])[0];const t=p&&topicByPage(p);x.topic=t?t.id:null;});}{% endif %}
 attach(FC,"a");attach(QB,"exp");attach(EX,"detail");
 TOPICS.forEach(t=>{t.fc=FC.filter(x=>x.topic===t.id);t.qs=QB.filter(x=>x.topic===t.id);t.ex=EX.filter(x=>x.topic===t.id);t.hasExam=t.blocks.some(b=>b.exam)||t.fc.length>0;});
 

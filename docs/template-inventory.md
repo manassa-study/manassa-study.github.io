@@ -13,9 +13,10 @@ line was compared line by line with the pilot's.
 
 Known differences beyond the values `book.json` already holds:
 
-- المدخل إلى الفقه: the dedication card (the `features.dedication_card` flag; its
-  block joins the template at that migration, and the build refuses the flag
-  until then), its own `attach()` without the pilot's topic patch.
+- المدخل إلى الفقه: the dedication card and its own `attach()` without the pilot's
+  topic patch. **Migrated in Phase 3 (book 1):** both are now feature blocks of the
+  template (`features.dedication_card` with `dedication.teacher`, and `item_topics`,
+  which follows `content.anchor`), and the book builds byte for byte.
 - Tafseer-repository pages: titles without the platform suffix, no `og:url`,
   different card and question shapes without `topic` (fingerprint anchor O-3),
   other question types (for example «صح وخطأ», «الترتيب الزمني») that join the

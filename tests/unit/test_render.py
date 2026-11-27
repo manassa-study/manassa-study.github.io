@@ -69,10 +69,14 @@ def test_refused_value_stops_the_build(tmp_path):
     assert e.value.findings[0].code == "V8.refused"
 
 
-def test_dedication_card_is_refused_until_its_block_exists():
-    with pytest.raises(BuildStopped) as e:
-        render(REPO, {"features": {"dedication_card": True}}, {}, {})
-    assert e.value.findings[0].code == "V1.feature-unavailable"
+def test_feature_blocks_follow_the_book():
+    """The dedication card and attach()'s topic patch are the template's feature blocks."""
+    from mudhakarah.render import FEATURES, page_features
+    assert FEATURES == ("dedication_card", "item_topics")
+    pilot = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
+    fiqh = json.loads((REPO / "books" / "madkhal-fiqh" / "book.json").read_text(encoding="utf-8"))
+    assert page_features(pilot) == {"dedication_card": False, "item_topics": True}
+    assert page_features(fiqh) == {"dedication_card": True, "item_topics": False}
 
 
 def test_app_config_holds_exactly_the_listed_words():

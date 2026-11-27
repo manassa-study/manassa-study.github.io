@@ -15,16 +15,16 @@ WELCOME_KEY = "munazara-wel"
 
 
 @contextlib.contextmanager
-def serve(html_bytes, workdir):
+def serve(html_bytes, workdir, page_path=PAGE_PATH):
     root = Path(workdir)
-    (root / PAGE_PATH).parent.mkdir(parents=True, exist_ok=True)
-    (root / PAGE_PATH).write_bytes(html_bytes)
+    (root / page_path).parent.mkdir(parents=True, exist_ok=True)
+    (root / page_path).write_bytes(html_bytes)
     handler = functools.partial(_Quiet, directory=str(root))
     httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
     t = threading.Thread(target=httpd.serve_forever, daemon=True)
     t.start()
     try:
-        yield f"http://127.0.0.1:{httpd.server_address[1]}/{PAGE_PATH}"
+        yield f"http://127.0.0.1:{httpd.server_address[1]}/{page_path}"
     finally:
         httpd.shutdown()
 
@@ -49,12 +49,12 @@ def block_outside(context, blocked):
     context.route("**/*", handler)
 
 
-def seed_script(state=None, welcome_seen=True):
+def seed_script(state=None, welcome_seen=True, storage_key=STORAGE_KEY, welcome_key=WELCOME_KEY):
     """Runs before the page's own scripts on every load: a registered student who has
     seen the welcome popup, optionally with saved progress (only if none is stored yet)."""
     import json
     state = dict(state or {}, registered=True) if state is not None else {"registered": True}
-    return (f"(function(){{try{{if(!localStorage.getItem({json.dumps(STORAGE_KEY)}))"
-            f"localStorage.setItem({json.dumps(STORAGE_KEY)},{json.dumps(json.dumps(state, ensure_ascii=False))});"
-            + (f"sessionStorage.setItem({json.dumps(WELCOME_KEY)},'1');" if welcome_seen else "")
+    return (f"(function(){{try{{if(!localStorage.getItem({json.dumps(storage_key)}))"
+            f"localStorage.setItem({json.dumps(storage_key)},{json.dumps(json.dumps(state, ensure_ascii=False))});"
+            + (f"sessionStorage.setItem({json.dumps(welcome_key)},'1');" if welcome_seen else "")
             + "}catch(e){}})();")

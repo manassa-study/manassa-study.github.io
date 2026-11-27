@@ -11,7 +11,8 @@ import random
 from pathlib import Path
 
 from .errors import BLOCKING, WARNING, BuildStopped, Finding
-from .model import TRUE_FALSE_OPTIONS, TYPE_REGISTRY, sequential_orders, source_options, type_key
+from .model import (TRUE_FALSE_OPTIONS, TYPE_REGISTRY, anchor_kind, item_anchor, sequential_orders, source_options,
+                    type_key)
 from .normalize import (ALGORITHM, CARD_FIELDS, NORMALIZATION, QUESTION_FIELDS, card_fingerprint,
                         content_hash, normalize, question_fingerprint, shown_hash)
 
@@ -42,15 +43,43 @@ def correct_text(q):
     return TRUE_FALSE_OPTIONS[0] if q["tf"] else TRUE_FALSE_OPTIONS[1]
 
 
-def raw_items(raw):
-    """The cards and questions of raw content with their fingerprints and content hashes."""
-    cards = [{"pos": i, "topic": c.get("topic"), "fp": card_fingerprint(c.get("topic"), c.get("q")),
-              "content": content_hash(c, CARD_NON_CONTENT), "raw": c} for i, c in enumerate(raw["cards"])]
+def fingerprint_fields(book):
+    """The fingerprint fields recorded in the lock: the anchor is named for what it is (O-3)."""
+    anchor = anchor_kind(book)
+    return ([anchor if f == "topic" else f for f in CARD_FIELDS],
+            [anchor if f == "topic" else f for f in QUESTION_FIELDS])
+
+
+def anchor_of(entry):
+    """A lock entry's anchor value, under 'topic' or 'chapter'."""
+    return entry.get("topic", entry.get("chapter"))
+
+
+def _entry(book, **fields):
+    """A lock entry, with its anchor under the book's anchor name."""
+    anchor = fields.pop("anchor")
+    out = {}
+    for k, v in fields.items():
+        out[k] = v
+        if k == "content":
+            out[anchor_kind(book)] = anchor
+    return out
+
+
+def raw_items(raw, book):
+    """The cards and questions of raw content with their fingerprints and content hashes.
+    Each item's `topic` here is its anchor (its topic, or its chapter in a book without topics)."""
+    cards = []
+    for i, c in enumerate(raw["cards"]):
+        a = item_anchor(book, "cards", c)
+        cards.append({"pos": i, "topic": a, "fp": card_fingerprint(a, c.get("q")),
+                      "content": content_hash(c, CARD_NON_CONTENT), "raw": c})
     questions = []
     for i, q in enumerate(raw["questions"]):
         opts = source_options(q) if has_options(q) else None
-        questions.append({"pos": i, "topic": q.get("topic"),
-                          "fp": question_fingerprint(q.get("topic"), type_key(q), q.get("q"), opts, correct_text(q)),
+        a = item_anchor(book, "questions", q)
+        questions.append({"pos": i, "topic": a,
+                          "fp": question_fingerprint(a, type_key(q), q.get("q"), opts, correct_text(q)),
                           "content": content_hash(q), "raw": q})
     return {"cards": cards, "questions": questions}
 
@@ -117,7 +146,7 @@ def empty_lock(book):
         "storage_key": book["storage_key"],
         "output": book["output"],
         "fingerprint": {"algorithm": ALGORITHM, "normalization": NORMALIZATION,
-                        "cards": list(CARD_FIELDS), "questions": list(QUESTION_FIELDS)},
+                        "cards": fingerprint_fields(book)[0], "questions": fingerprint_fields(book)[1]},
         "bootstrap": None,
         "topics": [],
         "chapters": [],
@@ -145,7 +174,7 @@ def check_lock_identity(lock, book, where):
                            "the published address must not change", where))
     fpcfg = lock.get("fingerprint", {})
     if (fpcfg.get("algorithm"), fpcfg.get("normalization"), fpcfg.get("cards"), fpcfg.get("questions")) != \
-            (ALGORITHM, NORMALIZATION, CARD_FIELDS, QUESTION_FIELDS):
+            (ALGORITHM, NORMALIZATION, *fingerprint_fields(book)):
         out.append(Finding("V3.fingerprint-settings", BLOCKING,
                            "the lock's fingerprint settings differ from the tool's; a normalization change "
                            "needs a new version and a migration", where))
@@ -202,7 +231,7 @@ def bind(raw, book, lock, where, previous=None):
     committed page, used only to show old items beside new ones in review cases."""
     old_views = previous_views(previous)
     findings, cases = [], []
-    items = raw_items(raw)
+    items = raw_items(raw, book)
     seq = [0]
 
     def case(kind, collection, **kw):
@@ -303,11 +332,11 @@ def bind(raw, book, lock, where, previous=None):
         miss_views, unb_views = [], []
         for it in missing:
             old = old_views[collection].get(it["id"], {})
-            c = case("missing", collection, id=it["id"], topic=it["topic"], locked_fp=it["fp"], old_item=old or None)
-            miss_views.append({"id": it["id"], "topic": it["topic"], "q": old.get("q", ""),
+            c = case("missing", collection, id=it["id"], topic=anchor_of(it), locked_fp=it["fp"], old_item=old or None)
+            miss_views.append({"id": it["id"], "topic": anchor_of(it), "q": old.get("q", ""),
                                "options": old.get("options"), "case": c["case"]})
             findings.append(Finding("V3.missing", BLOCKING,
-                                    f"{collection[:-1]} ID {it['id']} (topic {it['topic']}) is in the lock but no "
+                                    f"{collection[:-1]} ID {it['id']} ({anchor_kind(book)} {anchor_of(it)}) is in the lock but no "
                                     f"content item matches it (review case {c['case']})", where))
         for x in unbound:
             view = _view(collection, x["raw"])
@@ -316,7 +345,7 @@ def bind(raw, book, lock, where, previous=None):
             unb_views.append({"case": c["case"], "topic": x["topic"], "q": view["q"],
                               "options": view.get("options")})
             findings.append(Finding("V3.unbound", BLOCKING,
-                                    f"{collection[:-1]} at position {x['pos'] + 1} (topic {x['topic']}) matches "
+                                    f"{collection[:-1]} at position {x['pos'] + 1} ({anchor_kind(book)} {x['topic']}) matches "
                                     f"no lock ID (review case {c['case']})", where))
         if missing and unbound:
             sugg = _suggest(miss_views, unb_views, collection)
@@ -394,7 +423,7 @@ def bootstrap(raw, book, live, page_info, approved_by, pull_request, date, where
     findings = []
     lock = empty_lock(book)
     lock["bootstrap"] = page_info
-    items = raw_items(raw)
+    items = raw_items(raw, book)
 
     live_topics = [t["id"] for ch in live["DEEP_STUDY_DATA"] for s in ch["sections"] for t in s["topics"]]
     if live_topics != content_topics(raw):
@@ -415,7 +444,7 @@ def bootstrap(raw, book, live, page_info, approved_by, pull_request, date, where
     # cards: the live fingerprint of each card must match exactly one source card
     live_cards = {}
     for c in live["FLASHCARDS"]:
-        live_cards.setdefault(card_fingerprint(c.get("topic"), c.get("q")), []).append(c)
+        live_cards.setdefault(card_fingerprint(item_anchor(book, "cards", c), c.get("q")), []).append(c)
     for x in items["cards"]:
         hits = live_cards.get(x["fp"], [])
         if len(hits) != 1:
@@ -427,8 +456,8 @@ def bootstrap(raw, book, live, page_info, approved_by, pull_request, date, where
         if {k: v for k, v in lc.items() if k != "id"} != src_view:
             findings.append(Finding("V3.bootstrap-bind", BLOCKING,
                                     f"source card {x['pos'] + 1} differs from live card {lc['id']}", where))
-        lock["cards"]["items"].append({"id": lc["id"], "fp": x["fp"], "content": x["content"],
-                                       "topic": x["topic"], "status": "active"})
+        lock["cards"]["items"].append(_entry(book, id=lc["id"], fp=x["fp"], content=x["content"],
+                                             anchor=x["topic"], status="active"))
     if len(live["FLASHCARDS"]) != len(items["cards"]):
         findings.append(Finding("V3.bootstrap-bind", BLOCKING, "card counts differ between source and live page",
                                 where))
@@ -438,7 +467,7 @@ def bootstrap(raw, book, live, page_info, approved_by, pull_request, date, where
     for q in live["QUIZ_BANK"]:
         tf = q["options"] == list(TRUE_FALSE_OPTIONS)
         key = type_key(q)
-        fp = question_fingerprint(q.get("topic"), key, q["q"], None if (key and not has_options(q)) else q["options"],
+        fp = question_fingerprint(item_anchor(book, "questions", q), key, q["q"], None if (key and not has_options(q)) else q["options"],
                                   q["options"][q["correct"]])
         live_q.setdefault(fp, []).append((q, tf))
     reference = sequential_orders(raw, book) if check_sequence else [None] * len(items["questions"])
@@ -450,7 +479,7 @@ def bootstrap(raw, book, live, page_info, approved_by, pull_request, date, where
             continue
         lq, _ = hits[0]
         q = x["raw"]
-        entry = {"id": lq["id"], "fp": x["fp"], "content": x["content"], "topic": x["topic"], "status": "active"}
+        entry = _entry(book, id=lq["id"], fp=x["fp"], content=x["content"], anchor=x["topic"], status="active")
         if has_options(q):
             opts = source_options(q)
             order = [opts.index(o) for o in lq["options"]]
@@ -546,7 +575,7 @@ def apply(raw, book, lock, proposal, approved_by, pull_request, date, where, pre
     if errs:
         raise BuildStopped("ID apply", errs)
 
-    items = raw_items(raw)
+    items = raw_items(raw, book)
     seq = len(new_lock["changes"])
     summary = {}
 
@@ -558,7 +587,7 @@ def apply(raw, book, lock, proposal, approved_by, pull_request, date, where, pre
         summary[action] = summary.get(action, 0) + 1
 
     def new_entry(collection, x, qid):
-        entry = {"id": qid, "fp": x["fp"], "content": x["content"], "topic": x["topic"], "status": "active"}
+        entry = _entry(book, id=qid, fp=x["fp"], content=x["content"], anchor=x["topic"], status="active")
         if collection == "questions" and has_options(x["raw"]):
             opts = source_options(x["raw"])
             entry["order"] = seeded_order(book["quiz"]["seed"], qid, len(opts))
@@ -588,7 +617,7 @@ def apply(raw, book, lock, proposal, approved_by, pull_request, date, where, pre
             else:
                 it = by_id(col, d["same_as"])
                 old_fp = it["fp"]
-                it.update(fp=x["fp"], content=x["content"], topic=x["topic"])
+                it.update({"fp": x["fp"], "content": x["content"], anchor_kind(book): x["topic"]})
                 if col == "questions" and "order" in it:
                     # options are placed by the recorded slot order, so an edited option keeps its position
                     opts = source_options(x["raw"])

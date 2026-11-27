@@ -4,6 +4,7 @@ The book model is exactly the object written into the page as `const D = …;`,
 with its eight keys in this order and nothing else.
 """
 import random
+import re
 
 from .errors import BLOCKING, BuildStopped, Finding
 
@@ -18,6 +19,7 @@ TRUE_FALSE_OPTIONS = ("صح", "خطأ")
 TYPE_REGISTRY = {
     "mc": {"labels": ["اختيار من متعدد"], "shape": "options"},
     "name-it": {"labels": ["ما اسم هذا؟"], "shape": "options"},
+    "figures-views": {"labels": ["الأعلام والآراء"], "shape": "options"},  # المدخل إلى الفقه
     "tf": {"labels": ["صح أو خطأ"], "shape": "true-false"},
 }
 LABEL_TO_KEY = {label: key for key, t in TYPE_REGISTRY.items() for label in t["labels"]}
@@ -25,6 +27,50 @@ LABEL_TO_KEY = {label: key for key, t in TYPE_REGISTRY.items() for label in t["l
 
 def type_key(question):
     return LABEL_TO_KEY.get(question.get("type"))
+
+
+# Anchors (O-3). A book whose cards and questions carry a `topic` anchors them to it;
+# a book without topics ("anchor": "chapter" in book.json) anchors each card and question
+# to its chapter, found from the first «ص N» in the question's explanation or the card's
+# answer and the chapters' `from_page`, exactly as that book's legacy build named quiz
+# chapters. Examples are not anchored in such a book.
+ANCHORS = ("topic", "chapter")
+ANCHOR_TEXT = {"cards": "a", "questions": "exp"}
+_ARABIC_DIGITS = "٠١٢٣٤٥٦٧٨٩"
+_PAGE_RE = re.compile(r"ص\s*(\d+)")
+
+
+def anchor_kind(book):
+    return book["content"].get("anchor", "topic")
+
+
+def first_page(text):
+    """The first page number «ص N» in a text (Arabic-Indic or ASCII digits), or None."""
+    if not isinstance(text, str):
+        return None
+    ascii_text = "".join(str(_ARABIC_DIGITS.index(c)) if c in _ARABIC_DIGITS else c for c in text)
+    m = _PAGE_RE.search(ascii_text)
+    return int(m.group(1)) if m else None
+
+
+def page_chapter(book, text):
+    """The quiz name of the chapter a page falls in: the last chapter whose from_page is at
+    or below it (the first chapter has none). None if the text has no page."""
+    page = first_page(text)
+    if page is None:
+        return None
+    name = None
+    for ch in book["content"]["chapters"]:
+        if ch.get("from_page") is None or page >= ch["from_page"]:
+            name = ch["quiz_name"]
+    return name
+
+
+def item_anchor(book, collection, item):
+    """The value a card or question is anchored to in its fingerprint (O-2, O-3)."""
+    if anchor_kind(book) == "topic":
+        return item.get("topic")
+    return page_chapter(book, item.get(ANCHOR_TEXT[collection]))
 
 
 def chapter_names(raw, book):
@@ -89,6 +135,14 @@ def check_raw(raw, book, where):
     """The checks the assembler needs before it can use an item: known question types
     and valid options (V2), and every item's topic exists (V5)."""
     findings = check_question_types(raw, where)
+    if anchor_kind(book) == "chapter":
+        for collection, kind in (("questions", "question"), ("cards", "card")):
+            for i, x in enumerate(raw[collection], 1):
+                if item_anchor(book, collection, x) is None:
+                    findings.append(Finding("V5.anchor", BLOCKING,
+                                            f"{kind} {i}: no «ص» page in its {ANCHOR_TEXT[collection]}, so its "
+                                            "chapter (its ID anchor, O-3) can't be found", where))
+        return findings
     names = chapter_names(raw, book)
     for i, q in enumerate(raw["questions"], 1):
         if q.get("topic") not in names:
@@ -136,8 +190,12 @@ def assemble(raw, book, ids=None, where="assembler"):
         else:
             options = [opts[s] for s in order]
             correct = order.index(0)
-        bank.append({"id": qid, "chapter": names[q["topic"]], "type": q["type"], "q": q["q"],
-                     "options": options, "correct": correct, "exp": q["exp"], "topic": q["topic"]})
+        if anchor_kind(book) == "topic":
+            bank.append({"id": qid, "chapter": names[q["topic"]], "type": q["type"], "q": q["q"],
+                         "options": options, "correct": correct, "exp": q["exp"], "topic": q["topic"]})
+        else:  # no topic in the content: the chapter comes from the page (the book's legacy build)
+            bank.append({"id": qid, "chapter": page_chapter(book, q["exp"]), "type": q["type"], "q": q["q"],
+                         "options": options, "correct": correct, "exp": q["exp"]})
         # invariant (section 6): the option at `correct` is the source's correct answer
         expected = q["correct"] if order is not None else (TRUE_FALSE_OPTIONS[0] if q["tf"] else TRUE_FALSE_OPTIONS[1])
         if options[correct] != expected:
