@@ -1,0 +1,101 @@
+{% include "partials/head.html.j2" %}<style>
+{% include "partials/styles.css.j2" %}</style>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <button class="ibtn only-mobile" id="tocBtn" aria-label="فهرس الكتاب"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
+    <a class="brand" href="#home">
+      <span class="brand-mark" aria-hidden="true">{{ book.brand_mark }}</span>
+      <span class="brand-txt">
+        <span class="brand-t">{{ book.title }}</span>
+        <span class="brand-s">{{ site.platform_name }} · {{ book.page_range }}</span>
+      </span>
+    </a>
+    <nav class="tnav" aria-label="الأقسام" id="tnav"></nav>
+    <button class="ibtn" id="searchBtn" aria-label="البحث في المحتوى"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></button>
+    <button class="ibtn" id="fontBtn" aria-label="حجم الخط"><svg viewBox="0 0 24 24"><path d="M4 18 9 6l5 12M5.8 14h6.4M15 18l3-7 3 7M15.9 16h4.2"/></svg></button>
+    <button class="ibtn" id="themeBtn" aria-label="تبديل الوضع الليلي"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="side" id="side" aria-label="فهرس الكتاب">
+    <div class="side-h"><b>فهرس الكتاب</b><button class="ibtn side-close" id="sideClose" aria-label="إغلاق الفهرس"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="side-body" id="sideBody"></div>
+  </aside>
+  <main id="view" tabindex="-1"></main>
+</div>
+<div class="scrim" id="scrim" hidden></div>
+
+<nav class="bnav" aria-label="الأقسام"><div class="bnav-in" id="bnav"></div></nav>
+
+<div class="sp" id="sp" hidden role="dialog" aria-label="البحث">
+  <div class="sp-h">
+    <label for="q" class="sr">ابحث في الكتاب</label>
+    <input id="q" type="search" placeholder="{{ book.search.placeholder }}" autocomplete="off">
+    <button class="btn" id="spClose">إغلاق</button>
+  </div>
+  <div class="sp-b"><div id="spRes"></div></div>
+</div>
+
+<div class="gate" id="gate" hidden role="dialog" aria-labelledby="gateT">
+  <div class="gate-card">
+    <div class="gate-mark" aria-hidden="true">ت</div>
+    <div class="dhero-greet" style="text-align:center">أهلاً بك في {{ site.platform_name }}</div>
+    <h1 id="gateT" class="gate-t">{{ book.title }}</h1>
+    <p class="gate-p">قبل الدخول، سجّل اسمك ورقمك الجامعي وبريدك الإلكتروني في نموذج التسجيل. يستغرق ذلك أقل من دقيقة.</p>
+    <ol class="gate-steps"><li>اضغط «افتح نموذج التسجيل» وأرسل بياناتك.</li><li>بعد الإرسال اضغط رابط المنصة في رسالة التأكيد، أو ارجع إلى هذه الصفحة.</li><li>اضغط «سجّلت، ادخل المنصة».</li></ol>
+    <a class="btn gold" id="gateForm" target="_blank" rel="noopener" href="#">افتح نموذج التسجيل ↗</a>
+    <button class="btn glass" id="gateIn" disabled>سجّلت، ادخل المنصة</button>
+    <small class="gate-s">تصميم: محمد بلال البلوشي<br>تُحفظ بياناتك في نموذج Google الخاص بهذه المنصة فقط.</small>
+  </div>
+</div>
+<div class="wel" id="wel" hidden role="dialog" aria-labelledby="welT">
+  <div class="wel-card" id="welIntro">
+    <div class="gate-mark" aria-hidden="true">ت</div>
+    <div class="wel-k">السلام عليكم ورحمة الله وبركاته</div>
+    <h2 id="welT" class="wel-t">أهلاً بك في منصة مذاكرة {{ book.title }}</h2>
+    <p class="wel-p">أخي القارئ، أختي القارئة: أسأل الله أن يجعل هذه المنصة عوناً لك على {{ book.welcome.aim }}، وأن يرزقك العلم النافع والعمل الصالح، ويفتح عليك فتوح العارفين، ويكتب لك التوفيق والنجاح في دراستك واختبارك.</p>
+    <div class="ayah" style="font-size:24px;line-height:1.8">﴿وَقُل رَّبِّ زِدْنِي عِلْمًا﴾ <span class="ref">[طه: ١١٤]</span></div>
+    <div class="wel-sig">مع خالص الدعاء<br><b>محمد بلال البلوشي</b></div>
+    <button class="btn primary" id="welGo">ابدأ المذاكرة ←</button>
+  </div>
+  <div class="wel-card" id="welPick" hidden>
+    <div class="wel-k">ماذا تريد أن تذاكر اليوم؟</div>
+    <h2 class="wel-t">اختر طريقة المذاكرة</h2>
+    <div class="picks">
+      <button class="pick p1" data-go="exam"><span class="pick-i"><svg viewBox="0 0 24 24"><path d="M9 11l2 2 4-4"/><rect x="4" y="4" width="16" height="16" rx="3"/></svg></span><span><b>استعداد للاختبار</b><small>اختبار محاكي بمؤقت، ثم تقرير بأخطائك والمطالب التي تحتاج مراجعتها.</small></span></button>
+      <button class="pick p2" data-go="revision"><span class="pick-i"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="13" height="15" rx="2"/><path d="M8 3h10a2 2 0 0 1 2 2v12M8 10h5M8 14h5"/></svg></span><span><b>مراجعة سريعة</b><small>بطاقات الاستذكار، وجداول الفروق، وكبسولات الحفظ.</small></span></button>
+      <button class="pick p3" data-go="deep"><span class="pick-i"><svg viewBox="0 0 24 24"><path d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13c-3-.5-6 0-8 1.5zM12 6v13"/></svg></span><span><b>دراسة معمّقة</b><small>{{ book.welcome.study_line }} «اختبر نفسك».</small></span></button>
+    </div>
+    <button class="btn ghost" id="welDash">تصفّح لوحة المذاكرة فقط</button>
+  </div>
+</div>
+<script>
+const D = {{ model|data_json }};
+</script>
+{% include "partials/auth.html.j2" %}<script>
+{% include "partials/app.js.j2" %}</script>
+<style>
+.ex .ayah.hd{font-family:var(--f-read);font-size:calc(20px*var(--scale))}
+/* ===== clear expand / collapse controls ===== */
+:root{--chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='{{ book.theme.light.accent|pct_hex }}' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='{{ book.theme.dark.accent|pct_hex }}' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}}
+:root[data-theme="dark"]{--chev:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='{{ book.theme.dark.accent|pct_hex }}' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+details.blk>summary::before,.tsum>summary::before,.selftest>summary::before,.fc-filt>summary i,.qmore>summary i,.car{
+  content:"";flex:none;width:32px;height:32px;border-radius:50%;font-size:0;color:transparent;display:inline-block;
+  background:var(--accent-soft) var(--chev) center/18px no-repeat;border:1.5px solid color-mix(in srgb,var(--accent) 40%,transparent);
+  transition:transform .2s,background-color .2s;line-height:0;transform:none}
+details.blk>summary::before{margin-top:4px}
+details.blk[open]>summary::before,.tsum[open]>summary::before,.selftest[open]>summary::before,.fc-filt[open]>summary i,.qmore[open]>summary i{transform:rotate(180deg)}
+details.blk.exam>summary::before{border-color:color-mix(in srgb,var(--exam) 55%,transparent)}
+details.blk>summary{border-radius:12px;padding:12px 8px;margin:0 -8px;transition:background-color .15s}
+details.blk>summary:hover,.tsum>summary:hover{background:color-mix(in srgb,var(--accent-soft) 55%,transparent)}
+details.blk>summary:hover::before,.tsum>summary:hover::before,.selftest>summary:hover::before{background-color:color-mix(in srgb,var(--accent) 22%,var(--accent-soft))}
+details.blk:not([open])>summary::after{content:"عرض";flex:none;align-self:center;font-family:var(--f-ui);font-size:12.5px;font-weight:700;color:var(--accent);padding:3px 12px;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+.tsum>summary span,.selftest>summary em,.hprog .prog-o,.mm2-dd>summary em{font-style:normal;font-size:13px!important;font-weight:700;color:var(--accent)!important;padding:4px 14px;border-radius:999px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);white-space:nowrap}
+.selftest>summary::before{order:-1}
+.car{width:28px;height:28px;background-size:15px;align-self:center;margin-inline-start:auto;transform:rotate(180deg)}
+.nd.hasc.closed>.row1 .car,.recall .nd.hasc:not(.open)>.row1 .car{transform:none}
+</style>
+{% include "partials/report.html.j2" %}</body></html>

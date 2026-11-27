@@ -1,0 +1,45 @@
+{
+  "source": "tests/golden/MunazaraRashidiyaAQU.html (baseline de019d2)",
+  "queries": {
+    "المنع": {
+      "header": "١١٦ نتيجة",
+      "results": 80
+    },
+    "السند المساوي": {
+      "header": "٢ نتيجة",
+      "results": 2
+    },
+    "النقض الإجمالي": {
+      "header": "١٦ نتيجة",
+      "results": 16
+    },
+    "المعارضة بالقلب": {
+      "header": "١٢ نتيجة",
+      "results": 12
+    },
+    "الغصب": {
+      "header": "٢٠ نتيجة",
+      "results": 20
+    },
+    "المقاطع": {
+      "header": "٩ نتيجة",
+      "results": 9
+    },
+    "المكابرة": {
+      "header": "١٧ نتيجة",
+      "results": 17
+    },
+    "التقريب": {
+      "header": "١٣ نتيجة",
+      "results": 13
+    },
+    "المناظرة": {
+      "header": "٦٣ نتيجة",
+      "results": 56
+    },
+    "الدليل": {
+      "header": "١٦١ نتيجة",
+      "results": 82
+    }
+  }
+}

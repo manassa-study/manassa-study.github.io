@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "book": "minimal",
+  "storage_key": "minimal-test-v1",
+  "output": "fiqh/MinimalTestAQU.html",
+  "fingerprint": {"algorithm": "sha1", "normalization": "ar-norm-1", "cards": ["topic", "q"], "questions": ["topic", "type_key", "q", "options_sorted", "correct"]},
+  "bootstrap": null,
+  "topics": [
+    {"id": "t1"},
+    {"id": "t2"}
+  ],
+  "chapters": [
+    {"quiz_name": "الفصل الأول"}
+  ],
+  "maps": [
+    {"id": "m1", "index": 0}
+  ],
+  "cards": {
+    "next_id": 4,
+    "items": [
+      {"id": 1, "fp": "e7162ed445e3f4b55a5ee02005bc1345c5661ddf", "content": "eaddb5c11fbd6b332c720263f2eeb3fbbabb6954", "topic": "t1", "status": "active"},
+      {"id": 2, "fp": "38b485d241ea1838c342d5211847097637de0d15", "content": "898c93dfd5da8c8727352b202c293de611c22313", "topic": "t1", "status": "active"},
+      {"id": 3, "fp": "86d869f8eef09956ad833fbe06efd0b583e41654", "content": "c3b17eaf0feb2ec7b69f3a1fc4d7ed9d94f139e2", "topic": "t2", "status": "active"}
+    ]
+  },
+  "questions": {
+    "next_id": 4,
+    "items": [
+      {"id": 1, "fp": "c534457dc27fc3a7da6feb0632f10fae73541e03", "content": "db1f1df76fa6f4a5f68881cb8a6017cf4f243219", "topic": "t1", "status": "active", "order": [0, 2, 3, 1], "shown": "20697af528e244a778ecff04168e1b3a5107542a"},
+      {"id": 2, "fp": "aebd70a893c35e6ff650bfffebb4b92b11e89c19", "content": "7597db524cda660cf2ce055d0947f36b6f765857", "topic": "t1", "status": "active"},
+      {"id": 3, "fp": "e0b5ce79911c828157db2efe83e980fe2afd20c3", "content": "7668eb724eb40d197f1d8617f8eb33cfaabf988c", "topic": "t2", "status": "active", "order": [3, 2, 1, 0], "shown": "604b132c2fea7cf0cdb531ff167dd30daca9da0a"}
+    ]
+  },
+  "duplicate_groups": [],
+  "changes": [
+    {"seq": 1, "date": "2026-11-27", "collection": "topics", "action": "new", "topic": "t1", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 2, "date": "2026-11-27", "collection": "topics", "action": "new", "topic": "t2", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 3, "date": "2026-11-27", "collection": "cards", "action": "new", "id": 1, "new_fp": "e7162ed445e3f4b55a5ee02005bc1345c5661ddf", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 4, "date": "2026-11-27", "collection": "cards", "action": "new", "id": 2, "new_fp": "38b485d241ea1838c342d5211847097637de0d15", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 5, "date": "2026-11-27", "collection": "cards", "action": "new", "id": 3, "new_fp": "86d869f8eef09956ad833fbe06efd0b583e41654", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 6, "date": "2026-11-27", "collection": "questions", "action": "new", "id": 1, "new_fp": "c534457dc27fc3a7da6feb0632f10fae73541e03", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 7, "date": "2026-11-27", "collection": "questions", "action": "new", "id": 2, "new_fp": "aebd70a893c35e6ff650bfffebb4b92b11e89c19", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 8, "date": "2026-11-27", "collection": "questions", "action": "new", "id": 3, "new_fp": "e0b5ce79911c828157db2efe83e980fe2afd20c3", "reason": "Fixture book: first IDs", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 9, "date": "2026-11-27", "collection": "chapters", "action": "update", "reason": "chapter quiz names recorded as they are now", "approved_by": "Test fixture", "pull_request": 0},
+    {"seq": 10, "date": "2026-11-27", "collection": "maps", "action": "update", "reason": "mind maps recorded as they are now", "approved_by": "Test fixture", "pull_request": 0}
+  ]
+}

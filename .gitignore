@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+# Build manifests are CI artifacts, not committed (spec section 5).
+reports/build/

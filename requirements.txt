@@ -1,0 +1,8 @@
+# Runtime dependencies of tools/build.py (AD-21: Jinja2 is the only templating dependency).
+# Python 3.11. Install with: pip install --require-hashes -r requirements.txt
+jinja2==3.1.6 \
+    --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67 \
+    --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d
+markupsafe==3.0.2 \
+    --hash=sha256:a123e330ef0853c6e822384873bef7507557d8e4a082961e1defa947aa59ba84 \
+    --hash=sha256:ee55d3edf80167e48ea11a923c7386f4669df67d7994554387f84e7d8b0a2bf0

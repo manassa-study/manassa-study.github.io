@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "slug": "minimal",
+  "title": "كتاب الاختبار",
+  "output": "fiqh/MinimalTestAQU.html",
+  "og_image": "fiqh/og-fiqh.jpg",
+  "description": "وصف كتاب الاختبار.",
+  "storage_key": "minimal-test-v1",
+  "welcome_session_key": "minimal-wel",
+  "brand_mark": "خ",
+  "page_range": "ص ١ - ٢",
+  "structure_summary": "فصل واحد · ",
+  "content": {
+    "loader": "python",
+    "files": ["c1.py"],
+    "symbols": {"meta": "META", "cards": "FC", "questions": "QRAW", "examples": "EX", "tables": "TB", "maps": "MM", "capsules": "CAPS"},
+    "chapters": [{"symbol": "CH1", "quiz_name": "الفصل الأول"}],
+    "extras": []
+  },
+  "quiz": {"shuffle": "sequential", "seed": 7},
+  "labels": {
+    "examples_title": "نماذج الاختبار",
+    "examples_short": "النماذج",
+    "examples_count_noun": "نموذجاً",
+    "examples_in_lesson": "نماذج هذا الدرس",
+    "review_subtitle": "خلاصة الاختبار في مكان واحد"
+  },
+  "welcome": {"aim": "غاية الاختبار", "study_line": "سطر الدراسة للاختبار"},
+  "search": {"placeholder": "ابحث في الاختبار...", "suggestions": ["أ", "ب"]},
+  "theme": {
+    "light": {"accent": "#123456", "accent_ink": "#fefefe", "accent_soft": "#abcdef", "hero_1": "#101010", "hero_2": "#202020",
+              "paper": "#303030", "surface": "#404040", "surface_2": "#505050", "line": "#606060"},
+    "dark": {"accent": "#654321", "accent_ink": "#010101", "accent_soft": "#fedcba", "hero_1": "#111111", "hero_2": "#222222",
+             "paper": "#333333", "surface": "#444444", "surface_2": "#555555", "line": "#666666"},
+    "browser_theme_color": "#101010"
+  },
+  "features": {"dedication_card": false}
+}

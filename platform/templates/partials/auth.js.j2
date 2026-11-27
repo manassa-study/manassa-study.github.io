@@ -1,0 +1,154 @@
+/* ACCOUNT-SETTINGS */
+(function(){
+  function g(id){return document.getElementById(id)}
+  var own=g("accP"),host=g("setp"),card;
+  /* the page may already have its own reading-settings dialog (#setp): add the account parts to it */
+  if(host){own.parentNode.removeChild(own);card=host.querySelector(".set-card");var t=g("setT");if(t)t.textContent="الإعدادات والحساب";}
+  else card=own.querySelector(".acc-card");
+  card.appendChild(g("accSections").content.cloneNode(true));
+  var P=host||own;
+  function ar(n){return typeof toAr==="function"?toAr(n):String(n)}
+  function enc(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o))))}
+  function dec(s){return JSON.parse(decodeURIComponent(escape(atob(s.replace(/\s+/g,"")))))}
+  function cnt(o){return o?Object.keys(o).filter(function(k){return o[k]}).length:0}
+  function paint(){
+    if(!host){var th=S.theme==="dark"?"dark":"light",sc=String(S.scale||1);
+      g("accTheme").querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.v===th)});
+      g("accSize").querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.v===sc)});}
+    var tot=(typeof TOPICS!=="undefined"&&TOPICS.length)||0,st=g("accStats");st.textContent="";
+    [[ar(cnt(S.done))+(tot?" / "+ar(tot):""),"مطالب أنهيتها"],[ar(cnt(S.mastered)),"بطاقات أتقنتها"],[ar((S.quizHist||[]).length),"اختبارات أدّيتها"]].forEach(function(x){
+      var d=document.createElement("div"),b=document.createElement("b"),s=document.createElement("span");b.textContent=x[0];s.textContent=x[1];d.appendChild(b);d.appendChild(s);st.appendChild(d)});
+  }
+  function fill(){g("accName").value=S.name||"";g("accMsg").textContent="";g("accNameMsg").textContent="";paint()}
+  function openOwn(){fill();own.hidden=false;setTimeout(function(){g("accClose").focus()},30)}
+  var fb=g("fontBtn"),tb=g("themeBtn");
+  if(host){
+    /* refresh our sections whenever the existing dialog opens */
+    new MutationObserver(function(){if(!host.hidden)fill()}).observe(host,{attributes:true,attributeFilter:["hidden"]});
+    if(!host.hidden)fill();
+  }else{
+    if(fb){fb.onclick=openOwn;fb.setAttribute("aria-label","الإعدادات والحساب")}
+    g("accClose").onclick=function(){own.hidden=true};
+    own.onclick=function(e){if(e.target===own)own.hidden=true};
+    document.addEventListener("keydown",function(e){if(e.key==="Escape")own.hidden=true});
+    g("accTheme").onclick=function(e){var v=e.target.dataset&&e.target.dataset.v;if(!v)return;S.theme=v;save();applyPrefs();paint()};
+    g("accSize").onclick=function(e){var v=e.target.dataset&&e.target.dataset.v;if(!v)return;S.scale=+v;save();applyPrefs();paint()};
+  }
+  /* a person icon in the top bar opens the same dialog */
+  if(tb){var b=document.createElement("button");b.className="ibtn";b.id="accBtn";b.setAttribute("aria-label","الحساب والإعدادات");
+    b.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>';
+    tb.parentNode.insertBefore(b,tb.nextSibling);b.onclick=function(){if(host&&fb)fb.click();else openOwn()};}
+  g("accName").onchange=function(){S.name=this.value.trim().slice(0,60);save();g("accNameMsg").textContent="حُفظ الاسم.";if(typeof route==="function"&&/^#?(home)?$/.test(location.hash))route()};
+  g("accReset").onclick=function(){if(!confirm("سيُمسح كل تقدّمك في هذا المقرر، على هذا الجهاز وفي حسابك: المطالب والبطاقات والاختبارات. هل أنت متأكد؟"))return;
+    var keep={theme:S.theme,scale:S.scale,rfont:S.rfont,name:S.name,registered:S.registered,formOpened:S.formOpened};
+    try{localStorage.setItem(KEY,JSON.stringify(keep))}catch(e){}
+    if(user){S=Object.assign({},keep);push().then(function(){location.reload()},function(){location.reload()})}else location.reload()};
+
+  /* ---------- Google sign-in + progress sync (Supabase) ---------- */
+  var SB_URL="{{ site.supabase_url|url }}",SB_KEY="{{ site.supabase_publishable_key }}";
+  var SB_JS="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+  var GICON='<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+  var sb=null,user=null,pushT=null,sbState="loading",syncMsg="";
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  function gBtn(label){var b=el("button","btn primary acc-g");b.innerHTML=GICON;b.appendChild(document.createTextNode(label));b.onclick=signIn;return b}
+  function setAcc(){
+    var box=g("accBox");if(!box)return;box.textContent="";
+    if(user){
+      var w=el("div","acc-who"),t=el("div");t.appendChild(el("b",null,"مسجّل الدخول ✓"));t.appendChild(el("small",null,user.email||""));w.appendChild(t);box.appendChild(w);
+      box.appendChild(el("div","acc-msg",syncMsg||"تقدّمك يُحفظ في حسابك ويظهر على كل أجهزتك."));
+      var r=el("div","acc-row"),o=el("button","btn","تسجيل الخروج");o.onclick=signOut;r.appendChild(o);box.appendChild(r);
+    }else if(sbState==="ready"){
+      box.appendChild(el("p",null,"سجّل الدخول بحساب Google أو بالبريد الإلكتروني ليُحفظ تقدّمك في حسابك، فتجده على الجوال والحاسوب معاً."));
+      var r2=el("div","acc-row");r2.appendChild(gBtn("تسجيل الدخول بحساب Google"));box.appendChild(r2);
+      box.appendChild(mailBox("btn"));
+    }else{
+      box.appendChild(el("p",null,sbState==="loading"?"جارٍ تجهيز تسجيل الدخول…":"تسجيل الدخول بحساب Google متاح على موقع المنصة. تقدّمك محفوظ على هذا الجهاز."));
+    }
+    gateBtn();
+  }
+  /* sign-in is required: the welcome gate stays until the student signs in with Google */
+  var authKnown=false;
+  function gateBtn(){
+    var gt=g("gate");if(!gt)return;var card=gt.querySelector(".gate-card");if(!card)return;
+    if(sbState!=="ready"||!authKnown)return;   /* sign-in unavailable here: keep the page's own gate */
+    if(user){if(!gt.hidden){S.registered=true;origSave();gt.hidden=true;document.body.style.overflow="";if(typeof showWelcome==="function")showWelcome();if(typeof route==="function")route()}return}
+    if(!card.getAttribute("data-acc")){card.setAttribute("data-acc","1");
+      ["gateForm","gateIn"].forEach(function(id){var e=g(id);if(e)e.hidden=true});
+      var st=card.querySelector(".gate-steps");if(st)st.hidden=true;
+      var p=card.querySelector(".gate-p");if(p)p.textContent="للدخول إلى المنصة سجّل الدخول بحساب Google أو ببريدك الإلكتروني. يُحفظ تقدّمك في حسابك فتجده على الجوال والحاسوب معاً.";
+      var b=gBtn("تسجيل الدخول بحساب Google");b.className="btn gold acc-g";b.id="accGateG";
+      var ref=g("gateForm");ref&&ref.parentNode?ref.parentNode.insertBefore(b,ref):card.appendChild(b);
+      var mb=mailBox("btn glass");b.parentNode.insertBefore(mb,b.nextSibling);
+      var sm=card.querySelector(".gate-s");if(sm){sm.textContent="تصميم: محمد بلال البلوشي";sm.appendChild(document.createElement("br"));var a=el("a",null,"سياسة الخصوصية");a.href="https://manassa-study.github.io/Tafseer/privacy.html";a.target="_blank";a.rel="noopener";a.style.color="inherit";sm.appendChild(a)}
+    }
+    var w=g("wel");if(w)w.hidden=true;P.hidden=true;
+    if(gt.hidden){gt.hidden=false;document.body.style.overflow="hidden";if(location.hash&&location.hash!=="#home")history.replaceState(null,"","#home")}
+  }
+  /* email sign-in with a one-time code (for students without a Google account) */
+  function mailBox(btnCls){
+    var wrap=el("div","acc-mail"),tog=el("button","acc-link","لا تملك حساب Google؟ ادخل ببريدك الإلكتروني"),form=el("div","acc-mail");form.hidden=true;form.style.marginTop="0";
+    var em=el("input");em.type="email";em.placeholder="بريدك الإلكتروني";em.autocomplete="email";em.dir="ltr";
+    var send=el("button",btnCls,"أرسل رمز الدخول"),code=el("input","code");code.inputMode="numeric";code.autocomplete="one-time-code";code.placeholder="••••••";code.maxLength=10;code.hidden=true;
+    var ver=el("button",btnCls,"تأكيد الرمز والدخول");ver.hidden=true;var msg=el("div","acc-mmsg");
+    tog.onclick=function(){form.hidden=!form.hidden;if(!form.hidden)em.focus()};
+    send.onclick=function(){var e=em.value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){msg.textContent="اكتب بريداً إلكترونياً صحيحاً.";return}
+      send.disabled=true;msg.textContent="جارٍ الإرسال…";
+      sb.auth.signInWithOtp({email:e,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}}).then(function(r){send.disabled=false;
+        if(r.error){msg.textContent=/rate|limit|seconds/i.test(r.error.message||"")?"طلبات كثيرة. انتظر دقيقة ثم أعد المحاولة.":"تعذّر الإرسال الآن. حاول مرة أخرى بعد قليل.";return}
+        code.hidden=false;ver.hidden=false;send.textContent="إعادة إرسال الرمز";msg.textContent="أرسلنا رمزاً إلى "+e+". اكتبه هنا (وانظر في مجلد الرسائل غير المرغوب فيها إن لم يصل).";code.focus()})};
+    ver.onclick=function(){var t=code.value.replace(/\D/g,"");if(t.length<6){msg.textContent="اكتب الرمز كاملاً كما وصلك.";return}
+      ver.disabled=true;msg.textContent="جارٍ التحقق…";
+      sb.auth.verifyOtp({email:em.value.trim(),token:t,type:"email"}).then(function(r){ver.disabled=false;
+        if(r.error){msg.textContent="الرمز غير صحيح أو انتهت صلاحيته. اطلب رمزاً جديداً.";return}msg.textContent="تم الدخول ✓"})};
+    code.onkeydown=function(e){if(e.key==="Enter")ver.click()};em.onkeydown=function(e){if(e.key==="Enter")send.click()};
+    [em,send,code,ver,msg].forEach(function(x){form.appendChild(x)});wrap.appendChild(tog);wrap.appendChild(form);return wrap;
+  }
+  function signIn(){if(!sb)return;sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:"select_account"}}})}
+  function signOut(){if(!sb)return;clearTimeout(pushT);sb.auth.signOut().then(function(){user=null;syncMsg="";setAcc()})}
+  function plain(o){return o&&typeof o==="object"&&!Array.isArray(o)}
+  function merge(loc,rem){
+    Object.keys(rem||{}).forEach(function(k){var a=loc[k],b=rem[k];
+      if(a==null||a===false)loc[k]=b;
+      else if(plain(a)&&plain(b))loc[k]=Object.assign({},b,a);
+      else if(Array.isArray(a)&&Array.isArray(b)){var seen={},out=[];b.concat(a).forEach(function(x){var j=JSON.stringify(x);if(!seen[j]){seen[j]=1;out.push(x)}});loc[k]=out}
+    });
+  }
+  function status(m){syncMsg=m;setAcc()}
+  function push(){
+    if(!sb||!user)return Promise.resolve();clearTimeout(pushT);pushT=null;
+    return sb.from("progress").upsert({user_id:user.id,course:KEY,state:S,updated_at:new Date().toISOString()}).then(function(r){
+      status(r.error?"تعذّر حفظ التقدّم في حسابك الآن، وهو محفوظ على هذا الجهاز.":"حُفظ تقدّمك في حسابك ✓")});
+  }
+  function pull(){
+    status("جارٍ مزامنة تقدّمك…");
+    return sb.from("progress").select("state").eq("user_id",user.id).eq("course",KEY).maybeSingle().then(function(r){
+      if(r.error){status("تعذّرت المزامنة الآن. تقدّمك محفوظ على هذا الجهاز.");return}
+      var before=JSON.stringify(S);if(r.data&&r.data.state)merge(S,r.data.state);
+      var md=user.user_metadata||{};if(!S.name&&(md.full_name||md.name))S.name=String(md.full_name||md.name).slice(0,60);
+      origSave();applyPrefs();if(JSON.stringify(S)!==before&&typeof route==="function")route();
+      if(!P.hidden)fill();
+      sb.from("profiles").upsert({id:user.id,email:user.email||null,name:S.name||null,last_seen:new Date().toISOString()}).then(function(){});
+      return push();
+    });
+  }
+  var origSave=save;
+  save=function(){origSave();if(user){clearTimeout(pushT);pushT=setTimeout(push,1500)}};
+  document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden"&&pushT)push()});
+  function startSb(){
+    try{sb=window.supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,detectSessionInUrl:true,flowType:"pkce",storageKey:"study-auth"}})}catch(e){sbState="off";setAcc();return}
+    sbState="ready";
+    sb.auth.onAuthStateChange(function(ev,session){
+      var u=session&&session.user;
+      authKnown=true;
+      if(/[?&]code=/.test(location.search))history.replaceState(null,"",location.pathname+location.hash);
+      if(u&&(!user||user.id!==u.id)){user=u;setAcc();setTimeout(pull,0)}
+      else if(!u&&user){user=null;setAcc()}
+      else setAcc();
+    });
+  }
+  if(location.protocol==="https:"&&!/claude|anthropic|claudeusercontent/.test(location.hostname)){
+    if(window.supabase)startSb();else{var sc=document.createElement("script");sc.src=SB_JS;sc.onload=startSb;sc.onerror=function(){sbState="off";setAcc()};document.head.appendChild(sc)}
+  }else sbState="off";
+  setAcc();
+})();
+/* /ACCOUNT-SETTINGS */

@@ -1,0 +1,431 @@
+{
+  "rule": "N4: every lesson block and question explanation carries a page reference («ص …») or is listed here (decided by Bilal, 2026-11-27)",
+  "rule_decided_by": "Bilal",
+  "rule_decided_on": "2026-11-27",
+  "seeded_from": {
+    "page": "mantiq/MunazaraRashidiyaAQU.html",
+    "commit": "de019d25ba8ea2be7f3dbc56b98de2a63248ea31"
+  },
+  "seeded_in_pull_request": 10,
+  "note": "The exceptions below were copied from the live page as it stands. None has been reviewed: an exception is not a verified reference, and \"review\": \"unreviewed\" stays until a named reviewer marks it reviewed.",
+  "exceptions": [
+    {
+      "kind": "block",
+      "topic": "t1",
+      "sha1": "063a11169a5a55c1686ea1c3e8b59693c02c1c63",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٢٢ - ٢٩",
+      "excerpt": "«الحمد لله الذي لا مانع لحكمه، ولا ناقض لقضائه وقدره، والصلاة على سيد أنبيائه، و",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t1",
+      "sha1": "d7f9c472f6fbf98c73624b40c466bfae8e24d948",
+      "label": "١. التعريف بالكتابين",
+      "topic_pages": "ص ٢٢ - ٢٩",
+      "excerpt": "المتن: «الرسالة الشريفية في آداب المناظرة» للسيد الشريف علي بن محمد الجرجاني، وي",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t2",
+      "sha1": "b7ed2dbc453ed36fe3d372e89fc453d3df104a2c",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٣٠",
+      "excerpt": "«وبعد؛ فهذه قواعد البحث متضمنةٌ لِمَا يجب استحضاره في فن المناظرة، الباحث عن كيف",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t3",
+      "sha1": "0d810a8f1c688540d7e8db6d95df70fd7fd82c7c",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٣١ - ٣٣",
+      "excerpt": "«المناظرة: توجّه المتخاصمين في النسبة بين الشيئين إظهاراً للصواب»",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t4",
+      "sha1": "84e93db5cdc41740f6085270b8ddd84d8f53c69f",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٣٣ - ٣٤",
+      "excerpt": "«المجادلة: هي المنازعة لا لإظهار الصواب، بل لإلزام الخصم. المكابرة: هذه، إلا أنه",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t4",
+      "sha1": "82d4d816e8718ff67dc11996b8191564249e6a63",
+      "label": "توضيح مبسّط: الفرق بين الثلاثة بسؤال واحد",
+      "topic_pages": "ص ٣٣ - ٣٤",
+      "excerpt": "اسأل: ما غرض المتكلم؟ / إظهار الصواب ← مناظرة. / إسكات الخصم وإلزامه فقط ← مجادل",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t5",
+      "sha1": "76316438e9d3c8a571851163338ba6ac20ae74ee",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٣٤ - ٣٥",
+      "excerpt": "«النقل: هو الإتيان بقول الغير على ما هو عليه بحسب المعنى مظهراً أنه قول الغير. ت",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t6",
+      "sha1": "8bf5790be1e00faf486a6d279ac2e1ddbe562b44",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٣٥ - ٣٨",
+      "excerpt": "«المدّعي: من نصب نفسه لإثبات الحكم بالدليل أو التنبيه. السائل: من نصب نفسه لنفيه",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t6",
+      "sha1": "4b394160dbb3fe38532a5f7d470e380540806ef3",
+      "label": "توضيح مبسّط: أين يقع المدعي بين أنواع الكلام؟",
+      "topic_pages": "ص ٣٥ - ٣٨",
+      "excerpt": "المتكلم إما أن يأتي بلفظ مهمل، أو بمفرد كـ«زيد»، أو بمركب ناقص كـ«غلام زيد»، أو ",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t7",
+      "sha1": "1ea1f5a0978a71532a858500bae54ea851ed0bdc",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٣٨ - ٣٩",
+      "excerpt": "«الدعوى: ما يشتمل على الحكم المقصود إثباته، ويسمى ذلك «مسألة» و«مبحثاً» و«نتيجة»",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t8",
+      "sha1": "3153eefde339be082f8fd8f3bcfa914fe88b80da",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٣٩ - ٤١",
+      "excerpt": "«التعريف: إما «حقيقي» يُقصد به تحصيل صورة غير حاصلة، فإن عُلم وجودها فـ«بحسب الح",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t9",
+      "sha1": "617c63f401ad2c2474cb1bd89ce1a2cb29468e72",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٤١ - ٤٤",
+      "excerpt": "«الدليل: هو المركب من قضيتين للتأدّي إلى مجهول نظري، وإن ذُكر ذلك لإزالة خفاء ال",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t10",
+      "sha1": "a5ed37d5cf1eb1cf8ea5450d4ee3e16c1e0bb87f",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٤٤ - ٤٧",
+      "excerpt": "«التقريب: سوق الدليل على وجه يستلزم المطلوب. التعليل: تبيين علة الشيء؛ والعلة ما",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t10",
+      "sha1": "ddfaa260fd83122620a9e55994240ba4599e8829",
+      "label": "توضيح مبسّط: ما معنى التقريب؟",
+      "topic_pages": "ص ٤٤ - ٤٧",
+      "excerpt": "أن يكون الدليل منطبقاً على الدعوى تماماً؛ فلو ادعى أن «كل إنسان حيوان» ثم أقام د",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t11",
+      "sha1": "fcb88943454730536ce56ebc5f9f5284bd69d5ed",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٤٨ - ٤٩",
+      "excerpt": "«المنع: طلب الدليل على مقدمة معينة، ويسمى «مناقضة» و«نقضاً تفصيلياً» أيضاً. والم",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t12",
+      "sha1": "8e74b6bc7838c7209ba7ac66b71d3d59c6d9fc99",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٥٠ - ٥١",
+      "excerpt": "«والسند: ما يُذكر لتقوية المنع، ويسمى «مستنداً» أيضاً»",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t12",
+      "sha1": "bb7896ccb40b6b7de001d4b47b5ffb77e6bc5d86",
+      "label": "توضيح مبسّط: أمثلة السند على مقدمة «هذا إنسان»",
+      "topic_pages": "ص ٥٠ - ٥١",
+      "excerpt": "المانع يقول: لا نسلّم أنه إنسان... ونقيض المقدمة: «ليس بإنسان». / سند أخص: «لم ل",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t13",
+      "sha1": "7fe37dcf729781efd6e26cd65eec1884282b212f",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٥١ - ٥٢",
+      "excerpt": "«النقض: إبطال الدليل بعد تمامه متمسكاً بشاهد يدل على عدم استحقاقه للاستدلال به، ",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t13",
+      "sha1": "61c95e31760157ab7ffa4e6ed521fe5a14deb454",
+      "label": "توضيح مبسّط: مثالان للنقض",
+      "topic_pages": "ص ٥١ - ٥٢",
+      "excerpt": "مثال التخلف: قال المعلل: هذه الآية تدل على الوجوب؛ لأنها أمر وكل أمر يدل على الو",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t14",
+      "sha1": "e0bb0d6be12521a50ab756f04e7b1764a6d1acae",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٥٣ - ٥٦",
+      "excerpt": "«المعارضة: إقامة الدليل على خلاف ما أقام الدليل عليه الخصم؛ فإن اتحد دليلاهما أو",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t15",
+      "sha1": "350519b83cd537cc6cfc5ce33657c75e50938f56",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٥٧",
+      "excerpt": "«التوجيه: أن يوجّه المناظر كلامه إلى كلام الخصم. والغصب: أخذ منصب الغير»",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t15",
+      "sha1": "1ed7980c6be4c0697309ed5c30a6c0e940473183",
+      "label": "توضيح مبسّط: ما «المنصب» هنا؟",
+      "topic_pages": "ص ٥٧",
+      "excerpt": "لكل طرف في المناظرة وظيفة: الناقل وظيفته تصحيح النقل، والمدعي وظيفته الاستدلال، ",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t16",
+      "sha1": "c12e4ea533667911726d08c0135c422be7727311",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٥٧ - ٥٨",
+      "excerpt": "«أجزاء البحث الثلاثة: «مبادٍ» هي تعيين المدّعى، و«أوساط» هي الدلائل، و«مقاطع» هي",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t16",
+      "sha1": "4903bd35f741b97468f1486d40a165238fca84fb",
+      "label": "توضيح مبسّط: البحث كالرحلة",
+      "topic_pages": "ص ٥٧ - ٥٨",
+      "excerpt": "المبادئ = نقطة الانطلاق: نحدد بالضبط ما الذي نختلف فيه. / الأوساط = الطريق: الأد",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t17",
+      "sha1": "22aa938823cce97705983e273715286159dc88e3",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٥٩ - ٦٢",
+      "excerpt": "«البحث الأول (في طريق البحث وترتيبه الطبعي): يلتزم البيان بعد الاستفسار، ويؤاخَذ",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t18",
+      "sha1": "674e711b837f72de74281d0b29729e31db5ee0de",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٦٣ - ٦٥",
+      "excerpt": "«البحث الثاني: التعريف الحقيقي لاشتماله على دعاوى ضمنية يُمنع، ويُنقض ببيان الاخ",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t19",
+      "sha1": "38ad41972f6bc5892c8e6413a4b39dc25ba601cf",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٦٦ - ٦٨",
+      "excerpt": "«البحث الثالث: يستبان مما ذكرنا عدم توجه المنع حقيقةً على النقل والدعوى، حيث لم ",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t19",
+      "sha1": "62c780a15e5e74e290a2f88cfaab659cd52f29ec",
+      "label": "توضيح مبسّط: مثال لبطلان الدليل مع صحة المدلول",
+      "topic_pages": "ص ٦٦ - ٦٨",
+      "excerpt": "لو استدل أحد على حدوث العالم بدليل فاسد، فأبطل خصمه دليله، لم يلزم من ذلك أن الع",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t20",
+      "sha1": "83f57f63c30a3ee55e7cf100efcd4a9a63ef751b",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٦٩ - ٧٣",
+      "excerpt": "«البحث الرابع: منع مقدمة معينة أو أكثر صريحة أو ضمنية يكون بناء الكلام عليه جائز",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t21",
+      "sha1": "d65d19b8997887cb3a6cad9f0a5ccdf01b039da7",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٧٤ - ٧٧",
+      "excerpt": "«البحث الخامس: من جملة المعلوم أن السند الصحيح ملزوم لخفاء المقدمة، ومقوٍّ للمنع",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t22",
+      "sha1": "f48b3cc22c0b4e999802da019855d1f3776e6f37",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٧٨ - ٨٠",
+      "excerpt": "«البحث السادس: لا يُسمع النقض من غير شاهد بخلاف المناقضة، والفرق ثابت. وإجراء ال",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t23",
+      "sha1": "d4f03d15d63194e85492fffcee8947c937ed4d05",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٨١ - ٨٥",
+      "excerpt": "«البحث السابع: نفي المدلول من غير الدليل مكابرة، ومع الدليل قبل إقامة الدليل غصب",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t24",
+      "sha1": "cfd3b5751cc20841b8dcfcac647921adb7a48731",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٨٥ - ٨٦",
+      "excerpt": "«البحث الثامن: قد تُنقض المقدمة أو تُعارض بعد إقامة الدليل عليها، ويسمى «مناقضة ",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t25",
+      "sha1": "90e0f946ef34563fef1b804ef80fd2eb9ae9e015",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٨٧ - ٨٩",
+      "excerpt": "«البحث التاسع: لا يحسن إيراد النقض والمعارضة إذا كان المستدل مشككاً مغالطاً؛ لأن",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t25",
+      "sha1": "76bf08f2ada1042fdc7e45a408283ebc1a9642d0",
+      "label": "توضيح مبسّط: ما المصادرة على المطلوب؟",
+      "topic_pages": "ص ٨٧ - ٨٩",
+      "excerpt": "أن تجعل الدعوى نفسها (أو جزءها) مقدمة في دليلها، فيدور الدليل على نفسه. / مثاله:",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t26",
+      "sha1": "3407f3597c93947bc76e8b96ac53274d70449202",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٩٠ - ٩١",
+      "excerpt": "«خاتمة: قد علمت أن المناظرة كلها تتعلق بالأحكام صريحةً كانت أو ضمنيةً. وما يقال:",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "block",
+      "topic": "t27",
+      "sha1": "bfe77068f47a0a71b4b6ccd5589f1e9701cea3e1",
+      "label": "نص المتن (الشريفية)",
+      "topic_pages": "ص ٩١ - ٩٣",
+      "excerpt": "«وصية: لا يحسن الاستعجال في البحث، وفي عدمه فوائد للجانبين. ومن الواجب التكلم في",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "explanation",
+      "question": 2,
+      "sha1": "8d4653bfca770168b437ac6e470bf318f85acc5a",
+      "excerpt": "المتوفى سنة ثلاث وثمانين وألف.",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "explanation",
+      "question": 34,
+      "sha1": "c5511250b2ee7f77a79d9b472cb348b5869d954f",
+      "excerpt": "اللمّي: الأوسط علة في الواقع والذهن.",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "explanation",
+      "question": 35,
+      "sha1": "5412e83aa0e692ecd2393de547fe6c15f6e95d9e",
+      "excerpt": "استدلال من المعلول (الحمى) على العلة (التعفن).",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "explanation",
+      "question": 57,
+      "sha1": "458e90bb68d6b808440f6738b00f52934ea21a18",
+      "excerpt": "هو مثله شكلاً وصورة، والفرق في النتيجة.",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "explanation",
+      "question": 79,
+      "sha1": "dfd3455bfc990ecc3187e5a0d7bf7748f35e1be8",
+      "excerpt": "وُجد الأمر ولم يوجد الوجوب.",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    },
+    {
+      "kind": "explanation",
+      "question": 80,
+      "sha1": "a63b148796a45836c0635b5e469b64daf1aff071",
+      "excerpt": "كل تعريف يحتاج إلى تعريف إلى غير نهاية.",
+      "reason": "In the live page at de019d2 without a page reference; seeded under N4 so step 1 keeps the content unchanged. Review before the content changes.",
+      "review": "unreviewed"
+    }
+  ]
+}
