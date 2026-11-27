@@ -4,6 +4,7 @@ import json
 import re
 
 from helpers import PILOT, REPO
+from mudhakarah.config import STEP2_CHANGES
 from mudhakarah.render import TEMPLATE_DIR, template_files
 
 TEMPLATES = template_files(REPO)
@@ -60,19 +61,36 @@ def test_lf_only_and_no_unknown_tags():
         assert b"\r" not in raw
         text = raw.decode("utf-8")
         assert "{#" not in text
-        # the only statements are includes of the partials (spec section 4, hierarchy)
+        # the only statements are includes of the partials (spec section 4, hierarchy) and
+        # the approved step-2 switches (docs/step-2-list.md): if "S2-n" in step2 / else / endif
         for stmt in re.findall(r"\{%(.*?)%\}", text, re.S):
-            assert re.fullmatch(r'\s*include "partials/[a-z.]+\.j2"\s*', stmt), stmt
+            m = re.fullmatch(r'\s*if "(S2-[0-9]+)" in step2\s*', stmt)
+            if m:
+                assert m.group(1) in STEP2_CHANGES, stmt
+                continue
+            assert re.fullmatch(r'\s*(include "partials/[a-z.]+\.j2"|else|endif)\s*', stmt), stmt
 
 
 def test_every_expression_uses_known_roots():
     for path in TEMPLATES:
         for expr in re.findall(r"\{\{(.*?)\}\}", path.read_text(encoding="utf-8")):
             expr = expr.strip()
-            assert re.match(r'^(\(?(book|site|model)\b|"\$\{"$)', expr), expr
+            assert re.match(r'^(\(?(book|site|model)\b|build\.template_version$|"\$\{"$)', expr), expr
 
 
 def test_every_partial_is_included_once():
     text = "".join(p.read_text(encoding="utf-8") for p in TEMPLATES)
     for name in PARTIALS:
         assert text.count(f'{{% include "partials/{name}" %}}') == 1, name
+
+
+def test_template_version_tag_is_present_and_matches_the_tool_version():
+    """S2-2 (R2): a page built with the switch carries exactly one tag naming the tool version."""
+    from mudhakarah import TOOL_VERSION
+    book = json.loads((REPO / "books" / PILOT / "book.json").read_text(encoding="utf-8"))
+    assert "S2-2" in book["features"]["step2"]
+    assert re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", TOOL_VERSION)
+    page = (REPO / book["output"]).read_text(encoding="utf-8")
+    head = page.split("</head>", 1)[0]
+    assert re.findall(r'<meta name="mudhakarah:template" content="([^"]*)">', page) == [TOOL_VERSION]
+    assert f'<meta name="mudhakarah:template" content="{TOOL_VERSION}">' in head

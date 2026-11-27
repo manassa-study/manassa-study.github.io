@@ -1,7 +1,9 @@
 """The renderer (spec section 2, layer 4, and section 4).
 
-Jinja2 renders platform/templates/book.html.j2 with three values: `book`
-(book.json), `site` (platform/site.json) and `model` (the book model). The
+Jinja2 renders platform/templates/book.html.j2 with five values: `book`
+(book.json), `site` (platform/site.json), `model` (the book model), `step2`
+(the approved step-2 changes the book has turned on, from features.step2) and
+`build` (the template version written by S2-2: the tool version). The
 environment is fixed so that output bytes depend only on the inputs:
 StrictUndefined, HTML autoescaping, keep_trailing_newline, no block trimming,
 LF line endings.
@@ -13,6 +15,8 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, StrictUndefined, TemplateError, UndefinedError
 from markupsafe import Markup
 
+from . import TOOL_VERSION
+from .config import step2_changes
 from .errors import BLOCKING, BuildStopped, Finding
 
 TEMPLATE_DIR = Path("platform") / "templates"
@@ -50,6 +54,43 @@ def js_array(values):
     return Markup(text)
 
 
+# S2-3 (O-5): the book-specific words the app script uses, gathered into one object at the
+# top of the script. Paths are into book.json; the object keeps the same shape.
+APP_CONFIG_FIELDS = (
+    ("storage_key",),
+    ("welcome_session_key",),
+    ("labels", "examples_title"),
+    ("labels", "examples_short"),
+    ("labels", "examples_count_noun"),
+    ("labels", "examples_in_lesson"),
+    ("search", "suggestions"),
+)
+
+
+def app_config(book):
+    """The app script's config object (S2-3) as compact JSON, refusing script breakers."""
+    config = {}
+    for path in APP_CONFIG_FIELDS:
+        value = book
+        for key in path:
+            if not isinstance(value, dict) or key not in value:
+                raise RenderRefused(f"app_config needs book.{'.'.join(path)}")
+            value = value[key]
+        ok = isinstance(value, str) or (isinstance(value, list) and all(isinstance(v, str) for v in value))
+        if not ok:
+            raise RenderRefused(f"book.{'.'.join(path)} must be a string or a list of strings")
+        target = config
+        for key in path[:-1]:
+            target = target.setdefault(key, {})
+        target[path[-1]] = value
+    text = json.dumps(config, ensure_ascii=False, separators=(",", ":"))
+    lowered = text.lower()
+    for bad in SCRIPT_BREAKERS:
+        if bad in lowered:
+            raise RenderRefused(f"a value in the app config contains '{bad}'")
+    return Markup(text)
+
+
 def url(value):
     """An https address written as is (no escaping, so '&' in the fonts address stays raw).
     Refused if it could leave an HTML attribute or a JavaScript string."""
@@ -77,7 +118,7 @@ def make_environment(repo_root):
         auto_reload=False,
         cache_size=0,
     )
-    env.filters.update(data_json=data_json, js_array=js_array, url=url, pct_hex=pct_hex)
+    env.filters.update(data_json=data_json, js_array=js_array, app_config=app_config, url=url, pct_hex=pct_hex)
     return env
 
 
@@ -96,7 +137,9 @@ def render(repo_root, book, site, model, where="renderer"):
             "(it is added when the Fiqh book migrates)", where)])
     env = make_environment(repo_root)
     try:
-        text = env.get_template(TEMPLATE_NAME).render(book=book, site=site, model=model)
+        text = env.get_template(TEMPLATE_NAME).render(book=book, site=site, model=model,
+                                                           step2=step2_changes(book),
+                                                           build={"template_version": TOOL_VERSION})
     except UndefinedError as e:
         raise BuildStopped("rendering", [Finding("V8.undefined", BLOCKING,
                                                  f"the template uses an undefined value: {e}", where)])

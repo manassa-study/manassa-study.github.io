@@ -1,12 +1,15 @@
 """V8 HTML output (blocking), beyond the data-line checks in mudhakarah.output:
-in step 1 the doctype and opening <html> tag equal the baseline's exactly, and no
+the doctype and opening <html> tag are exactly the step-1 baseline's, or, once the
+book turns on S2-1, carry lang="ar" dir="rtl"; and no
 leftover words of another book appear outside the data line (the generalized form
 of the legacy build's `leftover` asserts). Page size is a warning (R1)."""
+from ..config import step2_changes
 from ..errors import BLOCKING, WARNING, Finding
 from ..output import DATA_PREFIX
 
 STEP1_OPENING = "<!doctype html><html><head>"  # today's pages have a bare <html> (V8 correction)
 SIZE_BUDGET = 800_000      # bytes, the master plan's 800 KB budget
+STEP2_OPENING = '<!doctype html><html lang="ar" dir="rtl"><head>'  # S2-1
 GROWTH_LIMIT = 1.10        # more than 10% above the previous build
 
 # Words that identify each deployed book, from the five baseline pages (Phase 0
@@ -31,9 +34,12 @@ def chrome(text):
 
 def check(text, book, where, previous_size=None):
     out = []
-    if not text.startswith(STEP1_OPENING):
-        out.append(Finding("V8.opening", BLOCKING,
-                           f"the page must start with '{STEP1_OPENING}' exactly in step 1", where))
+    if "S2-1" in step2_changes(book):
+        opening, rule = STEP2_OPENING, "once S2-1 is on (lang and dir are required)"
+    else:
+        opening, rule = STEP1_OPENING, "in step 1"
+    if not text.startswith(opening):
+        out.append(Finding("V8.opening", BLOCKING, f"the page must start with '{opening}' exactly {rule}", where))
     rest = chrome(text)
     for key, markers in BOOK_MARKERS.items():
         if key == book["storage_key"]:

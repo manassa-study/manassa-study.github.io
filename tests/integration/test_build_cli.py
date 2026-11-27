@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import sys
 
-from helpers import PILOT, PILOT_PAGE, REPO, make_repo
+from helpers import PILOT, PILOT_PAGE, PUBLISHED_SHA256, REPO, make_repo
 from mudhakarah.diffreport import diff_report
 
 CLI = [sys.executable, str(REPO / "tools" / "build.py")]
@@ -14,7 +14,7 @@ def test_check_passes_on_the_committed_pilot():
     before = (REPO / PILOT_PAGE).stat().st_mtime_ns
     r = subprocess.run(CLI + ["check", PILOT], capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
-    assert "a91018ea392c1b39d8af7583f18d792e9f3467e63e4c91c13183545ce016aaf3" in r.stdout
+    assert PUBLISHED_SHA256 in r.stdout
     assert (REPO / PILOT_PAGE).stat().st_mtime_ns == before
 
 
@@ -47,6 +47,10 @@ def test_diff_against_a_git_ref_writes_both_reports(tmp_path):
     r = subprocess.run(CLI + ["diff", PILOT, "--against", "de019d2", "--out", str(tmp_path)], capture_output=True,
                        text=True)
     assert r.returncode == 0, r.stderr
-    assert "identical" in r.stdout
+    # From Phase 2 the page outside the data line differs from the baseline by the approved
+    # step-2 changes (checked exactly in test_step2.py); the data line and content do not.
+    assert "different" in r.stdout
     assert "No content changes." in (tmp_path / f"{PILOT}.content-changes.md").read_text(encoding="utf-8")
-    assert "No differences." in (tmp_path / f"{PILOT}.diff.md").read_text(encoding="utf-8")
+    diff = (tmp_path / f"{PILOT}.diff.md").read_text(encoding="utf-8")
+    assert diff.split("## Data line", 1)[1].strip() == "No differences."
+    assert '+<!doctype html><html lang="ar" dir="rtl"><head>' in diff

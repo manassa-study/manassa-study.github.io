@@ -13,3 +13,6 @@
   An exception is never a verified reference.
 - **Reviewers:** Bilal approves ID changes (O-8) and signs off content-change reports by
   approving the pull request (O-10), until he names others in writing.
+- **Step 2 (Phase 2):** S2-1, S2-2 and S2-3 are on (`features.step2` in `book.json`); the
+  migration report is `docs/migrations/munazara-rashidiya.md`. The data line still equals the
+  baseline page's.

@@ -1,4 +1,5 @@
 """Shared test helpers."""
+import hashlib
 import shutil
 from pathlib import Path
 
@@ -7,6 +8,11 @@ PILOT = "munazara-rashidiya"
 PILOT_PAGE = "mantiq/MunazaraRashidiyaAQU.html"
 PILOT_SHA256 = "a91018ea392c1b39d8af7583f18d792e9f3467e63e4c91c13183545ce016aaf3"
 GOLDEN = REPO / "tests" / "golden"
+# PILOT_SHA256 is the Phase 1 baseline (tests/golden/MunazaraRashidiyaAQU.html). The page
+# published from Phase 2 is the step-2 golden page: the baseline plus the approved step-2
+# changes the book has turned on (tests/integration/test_step2.py).
+STEP2_GOLDEN = GOLDEN / "MunazaraRashidiyaAQU.step2.html"
+PUBLISHED_SHA256 = hashlib.sha256(STEP2_GOLDEN.read_bytes()).hexdigest()
 
 
 def make_repo(tmp_path, books=(), published=True):

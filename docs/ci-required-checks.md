@@ -10,7 +10,7 @@ main repository's direct-push freeze (decision of 27 November 2026).
 | `build-check` | Now | The committed pilot page equals a fresh build; all validators pass |
 | `reproducibility` | Now | Two clean builds give identical bytes and manifests |
 | `id-invariants` | Now | The pull request's ID lock never removes an item, reuses an ID or rewrites history |
-| `browser` | Phase 2 | Playwright tests; advisory in Phase 1, blocking from the pilot migration |
+| `browser` | Phase 2 | Playwright tests; advisory in Phase 1, blocking in CI from the pilot migration (Phase 2) |
 
 The `reports` job never fails and is not a required check.
 

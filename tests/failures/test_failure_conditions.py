@@ -140,6 +140,7 @@ CASES = {
     "V1.json": lambda t: build_with(t, lambda r: book_json(r).write_text("{not json", encoding="utf-8")),
     "V1.encoding": lambda t: build_with(t, lambda r: book_json(r).write_bytes(b'{"title": "\xff"}')),
     "V1.missing-file": lambda t: build_with(t, lambda r: book_json(r).unlink()),
+    "V1.duplicate-switch": lambda t: c_v1(t, lambda b: b["features"].update(step2=["S2-1", "S2-1"])),
     "V1.feature-unavailable": lambda t: c_v1(t, lambda b: b["features"].update(dedication_card=True)),
     # V2 content structure
     "V2.missing-file": lambda t: c_v1(t, lambda b: b["content"]["files"].append("m9.py")),

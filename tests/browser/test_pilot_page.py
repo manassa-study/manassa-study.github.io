@@ -1,12 +1,12 @@
 """Browser tests of the built pilot page (spec section 9). Advisory in Phase 1,
-blocking from the pilot migration. No network: everything but 127.0.0.1 is
+blocking from the pilot migration (Phase 2). No network: everything but 127.0.0.1 is
 blocked, so Supabase is never contacted (R5)."""
 import json
 
 import pytest
 
 from helpers import GOLDEN, REPO
-from pagekit import STORAGE_KEY
+from pagekit import STORAGE_KEY, WELCOME_KEY, block_outside
 
 LIVE = json.loads((GOLDEN / "MunazaraRashidiyaAQU.data.json").read_text(encoding="utf-8"))
 TOPICS = [t["id"] for ch in LIVE["DEEP_STUDY_DATA"] for s in ch["sections"] for t in s["topics"]]
@@ -31,6 +31,22 @@ def test_every_route_opens(open_page, page_url):
         page.goto(page_url + r)
         assert page.locator("#view").inner_text().strip(), r
     assert errors == []
+
+
+def test_language_and_direction_are_set_before_any_script_runs(browser, page_url):
+    """S2-1: with JavaScript off, the page is still Arabic and right-to-left."""
+    ctx = browser.new_context(java_script_enabled=False)
+    try:
+        blocked = []
+        block_outside(ctx, blocked)
+        page = ctx.new_page()
+        page.goto(page_url + "#home")
+        html = page.locator("html")
+        assert html.get_attribute("lang") == "ar"
+        assert html.get_attribute("dir") == "rtl"
+        assert page.evaluate("getComputedStyle(document.body).direction") == "rtl"
+    finally:
+        ctx.close()
 
 
 def test_supabase_is_never_reached(open_page, page_url):
@@ -135,4 +151,73 @@ def test_saved_progress_from_the_live_page_loads_unchanged(open_page, page_url):
         page.locator("#qMore").text_content()
     page.goto(page_url + "#study-t1")
     assert page.locator("#doneBtn").inner_text() == "إلغاء العلامة"  # t1 is still marked studied
+    assert errors == []
+
+
+# --- S2-3: the book words now come from the config object at the top of the script ---
+
+BOOK = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
+LESSONS_WITH_EXAMPLES = len({e["topic"] for e in LIVE["QURANIC_EXAMPLES"] if e.get("topic") in TOPICS})
+
+
+def test_search_suggestions_come_from_the_book_config(open_page, page_url):
+    page, errors, _ = open_page()
+    page.goto(page_url + "#home")
+    page.click("#searchBtn")
+    chips = page.locator("#spRes .sugg .chip")
+    assert chips.all_inner_texts() == BOOK["search"]["suggestions"]
+    chips.nth(1).click()
+    assert page.input_value("#q") == BOOK["search"]["suggestions"][1]
+    assert page.locator("#spRes .sr-i").count() > 0
+    assert errors == []
+
+
+def test_welcome_popup_shows_once_per_visit(open_page, page_url):
+    page, errors, _ = open_page(welcome_seen=False)
+    page.goto(page_url + "#home")
+    assert page.locator("#wel").is_visible()
+    page.click("#welGo")
+    page.click('#welPick .pick[data-go="revision"]')
+    assert page.locator("#wel").is_hidden()
+    assert page.evaluate(f"sessionStorage.getItem({json.dumps(WELCOME_KEY)})") == "1"
+    page.reload()
+    page.wait_for_timeout(200)
+    assert page.locator("#wel").is_hidden()
+    assert errors == []
+
+
+def test_progress_is_saved_under_the_book_storage_key(open_page, page_url):
+    page, errors, _ = open_page(state={})
+    page.goto(page_url + "#review-cards")
+    page.reload()
+    assert stored(page)["registered"] is True
+    assert page.evaluate("Object.keys(localStorage)") == [STORAGE_KEY]
+    assert errors == []
+
+
+def _example_words(page, url):
+    """What a student sees of the S2-3 words: home tile, review tab, search group, lesson heading."""
+    page.goto(url + "#home")
+    tile = page.locator('a[href="#review-ayat"]').first.inner_text()
+    page.goto(url + "#review-cards")
+    tabs = page.locator(".tabs a, .tabs button, [role=tab]").all_inner_texts()
+    lessons = []
+    for t in TOPICS:
+        page.goto(url + f"#study-{t}")
+        lessons += page.locator("#view h2.h2").all_inner_texts()
+    page.click("#searchBtn")
+    page.fill("#q", LIVE["QURANIC_EXAMPLES"][0]["ayah"][:12])  # an example: its search group label
+    groups = page.locator("#spRes .sr-g").all_inner_texts()
+    return tile, tabs, lessons, groups
+
+
+def test_what_students_see_of_the_book_words_is_unchanged(open_page, page_url, baseline_url):
+    page, errors, _ = open_page()
+    before = _example_words(page, baseline_url)
+    after = _example_words(page, page_url)
+    assert after == before
+    tile, tabs, lessons, groups = after
+    assert BOOK["labels"]["examples_title"] in tile and BOOK["labels"]["examples_count_noun"] in tile
+    assert BOOK["labels"]["examples_short"] in tabs
+    assert lessons.count(BOOK["labels"]["examples_in_lesson"]) == LESSONS_WITH_EXAMPLES
     assert errors == []
