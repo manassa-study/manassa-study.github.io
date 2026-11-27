@@ -189,7 +189,10 @@ def test_book_markers_belong_to_their_own_page_only(key, page):
             if other_key != key:
                 assert marker not in v08_html.chrome((REPO / other).read_text(encoding="utf-8")), (marker, other)
     # and each of these pages passes V8 as its own book
-    assert [f for f in v08_html.check((REPO / page).read_text(encoding="utf-8"), {"storage_key": key}, "x")
+    book = {"storage_key": key}
+    if key == "munazara-rashidiya-v1":  # migrated: its step-2 switches decide the opening
+        book = json.loads((REPO / "books" / "munazara-rashidiya" / "book.json").read_text(encoding="utf-8"))
+    assert [f for f in v08_html.check((REPO / page).read_text(encoding="utf-8"), book, "x")
             if f.severity == "blocking"] == []
 
 

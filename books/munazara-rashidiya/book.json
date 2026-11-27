@@ -102,6 +102,9 @@
     "browser_theme_color": "#3b1d06"
   },
   "features": {
-    "dedication_card": false
+    "dedication_card": false,
+    "step2": [
+      "S2-1"
+    ]
   }
 }

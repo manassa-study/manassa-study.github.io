@@ -4,6 +4,7 @@ import json
 import re
 
 from helpers import PILOT, REPO
+from mudhakarah.config import STEP2_CHANGES
 from mudhakarah.render import TEMPLATE_DIR, template_files
 
 TEMPLATES = template_files(REPO)
@@ -60,9 +61,14 @@ def test_lf_only_and_no_unknown_tags():
         assert b"\r" not in raw
         text = raw.decode("utf-8")
         assert "{#" not in text
-        # the only statements are includes of the partials (spec section 4, hierarchy)
+        # the only statements are includes of the partials (spec section 4, hierarchy) and
+        # the approved step-2 switches (docs/step-2-list.md): if "S2-n" in step2 / else / endif
         for stmt in re.findall(r"\{%(.*?)%\}", text, re.S):
-            assert re.fullmatch(r'\s*include "partials/[a-z.]+\.j2"\s*', stmt), stmt
+            m = re.fullmatch(r'\s*if "(S2-[0-9]+)" in step2\s*', stmt)
+            if m:
+                assert m.group(1) in STEP2_CHANGES, stmt
+                continue
+            assert re.fullmatch(r'\s*(include "partials/[a-z.]+\.j2"|else|endif)\s*', stmt), stmt
 
 
 def test_every_expression_uses_known_roots():

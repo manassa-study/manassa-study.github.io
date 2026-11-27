@@ -1,9 +1,11 @@
 """Golden test (spec section 4, blocking): the pilot built from the template equals
-the baseline page byte for byte, and its data equals the Phase 0 extract."""
+the committed page, and its data equals the Phase 0 extract. That the build with
+no step-2 switch on equals the baseline page byte for byte, and that the published
+page differs from it only by the approved step-2 changes, is in test_step2.py."""
 import hashlib
 import json
 
-from helpers import GOLDEN, PILOT, PILOT_PAGE, PILOT_SHA256, REPO
+from helpers import GOLDEN, PILOT, PILOT_PAGE, PILOT_SHA256, PUBLISHED_SHA256, REPO
 from mudhakarah.output import parse_data_line
 from mudhakarah.pipeline import run_book
 
@@ -16,16 +18,11 @@ def test_golden_files_are_the_baseline():
     assert hashlib.sha256((GOLDEN / "MunazaraRashidiyaAQU.html").read_bytes()).hexdigest() == PILOT_SHA256
 
 
-def test_pilot_build_equals_golden_page_byte_for_byte():
+def test_pilot_build_equals_committed_page():
     result = _build()
     assert result.output_path == PILOT_PAGE
-    assert result.html == (GOLDEN / "MunazaraRashidiyaAQU.html").read_bytes()
-    assert hashlib.sha256(result.html).hexdigest() == PILOT_SHA256
-    assert len(result.html) == 408_561
-
-
-def test_pilot_build_equals_committed_page():
-    assert _build().html == (REPO / PILOT_PAGE).read_bytes()
+    assert result.html == (REPO / PILOT_PAGE).read_bytes()
+    assert hashlib.sha256(result.html).hexdigest() == PUBLISHED_SHA256
 
 
 def test_data_line_equals_phase0_extract_exactly():

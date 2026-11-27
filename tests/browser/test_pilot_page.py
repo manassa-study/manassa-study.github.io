@@ -1,12 +1,12 @@
 """Browser tests of the built pilot page (spec section 9). Advisory in Phase 1,
-blocking from the pilot migration. No network: everything but 127.0.0.1 is
+blocking from the pilot migration (Phase 2). No network: everything but 127.0.0.1 is
 blocked, so Supabase is never contacted (R5)."""
 import json
 
 import pytest
 
 from helpers import GOLDEN, REPO
-from pagekit import STORAGE_KEY
+from pagekit import STORAGE_KEY, block_outside
 
 LIVE = json.loads((GOLDEN / "MunazaraRashidiyaAQU.data.json").read_text(encoding="utf-8"))
 TOPICS = [t["id"] for ch in LIVE["DEEP_STUDY_DATA"] for s in ch["sections"] for t in s["topics"]]
@@ -31,6 +31,22 @@ def test_every_route_opens(open_page, page_url):
         page.goto(page_url + r)
         assert page.locator("#view").inner_text().strip(), r
     assert errors == []
+
+
+def test_language_and_direction_are_set_before_any_script_runs(browser, page_url):
+    """S2-1: with JavaScript off, the page is still Arabic and right-to-left."""
+    ctx = browser.new_context(java_script_enabled=False)
+    try:
+        blocked = []
+        block_outside(ctx, blocked)
+        page = ctx.new_page()
+        page.goto(page_url + "#home")
+        html = page.locator("html")
+        assert html.get_attribute("lang") == "ar"
+        assert html.get_attribute("dir") == "rtl"
+        assert page.evaluate("getComputedStyle(document.body).direction") == "rtl"
+    finally:
+        ctx.close()
 
 
 def test_supabase_is_never_reached(open_page, page_url):
