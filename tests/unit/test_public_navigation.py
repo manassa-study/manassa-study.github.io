@@ -89,6 +89,21 @@ def test_homepage_primary_browse_group_is_subjects():
     assert subject_group.count('class="card reveal') == 4
 
 
+def test_readers_link_brand_home_and_offer_other_existing_books():
+    all_readers = READERS + ("Tafseer/TafseerMaqaranAQU.html",)
+    for current in all_readers:
+        text = (REPO / current).read_text(encoding="utf-8")
+        assert '<a class="brand" href="/" aria-label="منصة المذاكرة، الصفحة الرئيسية">' in text
+        assert "اختر كتاباً آخر" in text
+        for destination in all_readers:
+            href = f'href="/{destination}"'
+            if destination == current:
+                assert href not in text
+            else:
+                assert href in text
+                assert (REPO / destination).is_file()
+
+
 def test_mobile_navigation_toggle_supports_keyboard_and_breakpoint():
     js = (REPO / "public-nav.js").read_text(encoding="utf-8")
     css = (REPO / "public-nav.css").read_text(encoding="utf-8")
