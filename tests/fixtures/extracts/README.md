@@ -3,8 +3,8 @@
 The `const D` data of four deployed pages at the Phase 0 baseline, copied
 unchanged from the preservation package (`07-derived-data-extracts/`). The
 pilot's extract is `tests/golden/MunazaraRashidiyaAQU.data.json`. The ID tests
-run against all five, read-only (spec section 9). These books are not migrated,
-and nothing here is served (`tests/` is excluded from the site).
+run against all five, read-only (spec section 9). The four Phase 3 books have since been
+migrated; these extracts remain read-only preservation fixtures, and nothing here is served (`tests/` is excluded from the site).
 
 SHA-256, equal to the package's `MANIFEST.sha256` and checked by
 `tests/integration/test_ids_extracts.py`:
