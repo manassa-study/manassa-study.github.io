@@ -1,5 +1,7 @@
 # Migration report: المدخل إلى الفقه الإسلامي (Phase 3, book 1)
 
+> **Current status (28 November 2026):** المدخل إلى الفقه الإسلامي was merged in [PR #12](https://github.com/manassa-study/manassa-study.github.io/pull/12) at `32aef51b48e2a2ddd058e99006951b9c7d4881c2`. The pre-merge status and next-step statements below are historical; see [the Phase 3 closure record](../phase3-closure-handover.md) for current status.
+
 Status: built and tested on `claude/project-thread-jkwb0r`. **Not merged.** Merging changes
 no published byte of this page (it builds to the same file), but it moves the page under the
 build: from then on the page is generated, and hand edits are refused by `build-check`.
