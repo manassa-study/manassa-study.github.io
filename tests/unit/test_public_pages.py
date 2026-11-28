@@ -110,3 +110,36 @@ def test_public_page_styles_handle_mobile_focus_and_reduced_motion():
     assert "@media(prefers-reduced-motion:reduce)" in css
     assert ":focus-visible" in css
     assert "@media(prefers-color-scheme:dark)" in css
+
+
+def test_student_portal_is_linked_and_reads_existing_progress_only():
+    from pathlib import Path
+
+    nav_pages = (
+        "index.html", "about.html", "team.html", "privacy.html",
+        "Tafseer/privacy.html", "fiqh.html", "hadith.html", "mantiq.html",
+    )
+    for name in nav_pages:
+        assert 'href="/portal.html"' in (REPO / name).read_text(encoding="utf-8")
+
+    page = (REPO / "portal.html").read_text(encoding="utf-8")
+    script = (REPO / "portal.js").read_text(encoding="utf-8")
+    assert '<html lang="ar" dir="rtl">' in page
+    assert 'href="/portal.css"' in page
+    assert 'src="/portal.js"' in page
+    assert 'id="dashboard"' in page
+    assert 'from("progress").select("course,state")' in script
+    assert '.eq("user_id",user.id)' in script
+    assert 'from("profiles")' not in script
+    assert '.upsert(' not in script
+    assert "service_role" not in script.lower()
+    assert 'item.c' in script and 'item.n' in script
+    for key, route in (
+        ("madkhal-fiqh-v1", "/fiqh/MadkhalFiqhAQU.html"),
+        ("munazara-rashidiya-v1", "/mantiq/MunazaraRashidiyaAQU.html"),
+        ("tafsir-muqaran-v1", "/Tafseer/TafseerMaqaranAQU.html"),
+        ("takhreej-asaneed-v1", "/hadith/TakhreejAsaneedAQU.html"),
+        ("tareekh-tafseer-v1", "/Tafseer/TareekhTafseerAQU.html"),
+    ):
+        assert key in script
+        assert route in script
