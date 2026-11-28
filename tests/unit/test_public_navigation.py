@@ -6,13 +6,14 @@ import re
 REPO = Path(__file__).resolve().parents[2]
 PUBLIC_PAGES = ("index.html", "fiqh.html", "hadith.html", "mantiq.html")
 NAV_LINKS = {
-    "/#home", "/#about", "/#books", "/#team", "/#join", "/#portal",
+    "/#home", "/#about", "/#books", "/#team", "/#join", "/portal.html",
 }
 READERS = (
     "Tafseer/TareekhTafseerAQU.html",
     "hadith/TakhreejAsaneedAQU.html",
     "fiqh/MadkhalFiqhAQU.html",
     "mantiq/MunazaraRashidiyaAQU.html",
+    "Tafseer/TafseerMaqaranAQU.html",
 )
 
 
@@ -53,11 +54,13 @@ def test_home_links_resolve_to_catalogue_about_team_join_and_portal():
 
 
 def test_student_portal_targets_published_readers_and_login_entry():
-    text = (REPO / "index.html").read_text(encoding="utf-8")
+    page = (REPO / "portal.html").read_text(encoding="utf-8")
+    script = (REPO / "portal.js").read_text(encoding="utf-8")
     for path in READERS:
-        assert f'href="/{path}"' in text
+        assert f'href:"/{path}"' in script
         assert (REPO / path).is_file()
-    assert "زر الحساب لتسجيل الدخول" in text
+    assert 'id="google-login"' in page
+    assert 'id="email-form"' in page
 
 
 def test_mobile_navigation_toggle_supports_keyboard_and_breakpoint():
