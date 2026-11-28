@@ -10,16 +10,24 @@ var BOOKS=[
  {key:"tareekh-tafseer-v1",title:"دراسة تاريخ التفسير",href:"/Tafseer/TareekhTafseerAQU.html"}
 ];
 var $=function(id){return document.getElementById(id)};
-var client=null,currentUser=null,loadingFor=null;
+var client=null,currentUser=null,currentSessionKey=undefined,sessionGeneration=0,activeRequest=null,renderedSessionKey=null,authEventSeen=false;
 var authBox=$("auth-summary"),signedOut=$("signed-out"),signedIn=$("signed-in");
 var dashboard=$("dashboard"),status=$("portal-status"),emailMessage=$("email-message");
 function number(n){return new Intl.NumberFormat("ar").format(n||0)}
 function message(text,isError){status.textContent=text;status.classList.toggle("error",!!isError);status.hidden=!text}
 function object(value){return value&&typeof value==="object"&&!Array.isArray(value)?value:{}}
 function countTrue(value){var o=object(value);return Object.keys(o).filter(function(key){return !!o[key]}).length}
+function validQuizAttempt(item){
+ if(!item||typeof item!=="object"||Array.isArray(item))return false;
+ if(item.mode!=="practice"&&item.mode!=="exam")return false;
+ if(typeof item.ch!=="string"||!item.ch.trim())return false;
+ if(!Number.isSafeInteger(item.c)||!Number.isSafeInteger(item.n)||item.n<=0||item.c<0||item.c>item.n)return false;
+ if(item.t!==undefined&&(!Number.isSafeInteger(item.t)||item.t<0))return false;
+ return true;
+}
 function quizStats(history){
- var list=Array.isArray(history)?history:[],correct=0,total=0;
- list.forEach(function(item){if(!item||!Number.isFinite(Number(item.c))||!Number.isFinite(Number(item.n))||Number(item.n)<=0)return;correct+=Math.min(Number(item.n),Math.max(0,Number(item.c)));total+=Number(item.n)});
+ var list=(Array.isArray(history)?history:[]).filter(validQuizAttempt),correct=0,total=0;
+ list.forEach(function(item){correct+=item.c;total+=item.n});
  return {attempts:list.length,correct:correct,total:total,accuracy:total?Math.round(correct/total*100):null}
 }
 function stateFromRow(row){
@@ -67,36 +75,54 @@ function render(rows){
  dashboard.hidden=false;
 }
 function signedOutState(text){
- currentUser=null;dashboard.hidden=true;signedOut.hidden=false;signedIn.hidden=true;
+ dashboard.hidden=true;signedOut.hidden=false;signedIn.hidden=true;
  $("account-email").textContent="";
  authBox.textContent=text||"سجّل الدخول لعرض التقدم المحفوظ في حسابك.";
  message("",false);
 }
-function loadProgress(user){
+function sessionKey(session){
+ if(!session||!session.user||!session.access_token)return null;
+ return session.user.id+"|"+session.access_token+"|"+(session.refresh_token||"");
+}
+function loadProgress(user,key,generation){
  if(!user||!client)return;
- if(loadingFor===user.id)return;
- loadingFor=user.id;currentUser=user;dashboard.hidden=true;signedOut.hidden=true;signedIn.hidden=false;
+ var request={key:key,generation:generation};
+ activeRequest=request;currentUser=user;dashboard.hidden=true;signedOut.hidden=true;signedIn.hidden=false;
  $("account-email").textContent=user.email||"";
  authBox.textContent="سيُعرض هنا التقدم المتزامن المحفوظ في حسابك.";
  message("جارٍ تحميل تقدمك…",false);
  client.from("progress").select("course,state").eq("user_id",user.id).in("course",BOOKS.map(function(book){return book.key}))
  .then(function(result){
-   loadingFor=null;
-   if(!currentUser||currentUser.id!==user.id)return;
+   if(activeRequest!==request||generation!==sessionGeneration||currentSessionKey!==key||!currentUser||currentUser.id!==user.id)return;
+   activeRequest=null;
    if(result.error){message("تعذّر تحميل التقدم الآن. حاول مرة أخرى بعد قليل.",true);return}
-   render(result.data||[]);message("",false);
- }).catch(function(){loadingFor=null;if(currentUser&&currentUser.id===user.id)message("تعذّر تحميل التقدم الآن. حاول مرة أخرى بعد قليل.",true)});
+   render(result.data||[]);renderedSessionKey=key;message("",false);
+ }).catch(function(){
+   if(activeRequest!==request||generation!==sessionGeneration||currentSessionKey!==key||!currentUser||currentUser.id!==user.id)return;
+   activeRequest=null;message("تعذّر تحميل التقدم الآن. حاول مرة أخرى بعد قليل.",true);
+ });
 }
-function authChanged(session){
- var user=session&&session.user;
- if(user){loadProgress(user)}else{loadingFor=null;signedOutState("سجّل الدخول لعرض التقدم المتزامن في حسابك.")}
+function authChanged(session,event){
+ var user=session&&session.user,key=sessionKey(session),forceRefresh=event==="TOKEN_REFRESHED";
+ if(key===currentSessionKey&&!forceRefresh){
+   if(!user)return;
+   if(activeRequest&&activeRequest.key===key)return;
+   if(renderedSessionKey===key)return;
+ }
+ currentSessionKey=key;sessionGeneration++;activeRequest=null;renderedSessionKey=null;currentUser=user||null;
+ if(user){loadProgress(user,key,sessionGeneration)}
+ else{signedOutState("سجّل الدخول لعرض التقدم المتزامن في حسابك.")}
 }
 function init(){
  if(!window.supabase||!window.supabase.createClient){signedOutState("تعذّر تجهيز تسجيل الدخول. أعد تحميل الصفحة أو حاول لاحقاً.");return}
  try{client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,detectSessionInUrl:true,flowType:"pkce",storageKey:"study-auth"}})}
  catch(e){signedOutState("تعذّر تجهيز تسجيل الدخول. أعد تحميل الصفحة أو حاول لاحقاً.");return}
- client.auth.onAuthStateChange(function(event,session){authChanged(session)});
- client.auth.getSession().then(function(result){if(result.error){signedOutState("تعذّر التحقق من الجلسة. حاول تسجيل الدخول مجدداً.");return}authChanged(result.data&&result.data.session)}).catch(function(){signedOutState("تعذّر التحقق من الجلسة. حاول تسجيل الدخول مجدداً.")});
+ client.auth.onAuthStateChange(function(event,session){authEventSeen=true;authChanged(session,event)});
+ client.auth.getSession().then(function(result){
+  if(authEventSeen)return;
+  if(result.error){signedOutState("تعذّر التحقق من الجلسة. حاول تسجيل الدخول مجدداً.");return}
+  authChanged(result.data&&result.data.session,"GET_SESSION");
+ }).catch(function(){if(!authEventSeen)signedOutState("تعذّر التحقق من الجلسة. حاول تسجيل الدخول مجدداً.")});
  $("google-login").addEventListener("click",function(){
   client.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:"select_account"}}}).then(function(result){if(result.error)emailMessage.textContent="تعذّر بدء تسجيل الدخول. حاول مرة أخرى."});
  });
@@ -119,7 +145,7 @@ function init(){
    emailMessage.textContent="تم تسجيل الدخول.";
   }).catch(function(){$("verify-code").disabled=false;emailMessage.textContent="تعذّر التحقق من الرمز."});
  });
- $("logout").addEventListener("click",function(){client.auth.signOut().then(function(){signedOutState("سجّلت الخروج.")})});
+ $("logout").addEventListener("click",function(){client.auth.signOut().then(function(result){if(result.error){message("تعذّر تسجيل الخروج. حاول مرة أخرى.",true);return}authChanged(null,"SIGNED_OUT")})});
 }
 init();
 })();
