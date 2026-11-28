@@ -4,7 +4,7 @@ from pathlib import Path
 import re
 
 REPO = Path(__file__).resolve().parents[2]
-PUBLIC_PAGES = ("index.html", "fiqh.html", "hadith.html", "mantiq.html")
+PUBLIC_PAGES = ("index.html", "fiqh.html", "hadith.html", "mantiq.html", "Tafseer/index.html")
 NAV_LINKS = {
     "/#home", "/#about", "/#books", "/#team", "/#join", "/portal.html",
 }
@@ -44,13 +44,9 @@ def test_home_links_resolve_to_catalogue_about_team_join_and_portal():
     parser = IdParser()
     parser.feed(text)
     assert {"home", "about", "books", "team", "join", "portal"} <= parser.ids
-    for href in (
-        "https://manassa-study.github.io/mantiq.html",
-        "https://manassa-study.github.io/Tafseer/",
-        "https://manassa-study.github.io/hadith.html",
-        "https://manassa-study.github.io/fiqh.html",
-    ):
+    for href in ("/mantiq.html", "/Tafseer/", "/hadith.html", "/fiqh.html"):
         assert href in text
+    assert (REPO / "Tafseer" / "index.html").is_file()
 
 
 def test_student_portal_targets_published_readers_and_login_entry():
@@ -61,6 +57,36 @@ def test_student_portal_targets_published_readers_and_login_entry():
         assert (REPO / path).is_file()
     assert 'id="google-login"' in page
     assert 'id="email-form"' in page
+    tafseer_catalogue = (REPO / "Tafseer" / "index.html").read_text(encoding="utf-8")
+    assert 'href="/Tafseer/TareekhTafseerAQU.html"' in tafseer_catalogue
+    assert 'href="/Tafseer/TafseerMaqaranAQU.html"' in tafseer_catalogue
+    assert "كتب أكاديمية" in tafseer_catalogue
+
+
+
+def test_homepage_browses_by_subject_and_keeps_categories_subject_specific():
+    text = (REPO / "index.html").read_text(encoding="utf-8")
+    subjects = (
+        ("علوم القرآن والتفسير", "/Tafseer/"),
+        ("الحديث وعلومه", "/hadith.html"),
+        ("الفقه وأصوله", "/fiqh.html"),
+        ("المنطق والمناظرة", "/mantiq.html"),
+    )
+    for subject, href in subjects:
+        assert subject in text
+        assert f'href="{href}"' in text
+    assert "كتب أكاديمية" in text and "كتب تراثية" in text
+    assert "الكتب التراثية</p>" not in text
+    assert "الكتب الأكاديمية (مقررات الجامعة)" not in text
+    assert "العقيدة</h3>" not in text
+    assert "اللغة العربية</h3>" not in text
+
+
+def test_homepage_primary_browse_group_is_subjects():
+    text = (REPO / "index.html").read_text(encoding="utf-8")
+    subject_group = text.split('<p class="section-label" id="books">', 1)[1].split('  <section class="about reveal"', 1)[0]
+    assert "تصفح حسب العلم" in subject_group
+    assert subject_group.count('class="card reveal') == 4
 
 
 def test_mobile_navigation_toggle_supports_keyboard_and_breakpoint():
