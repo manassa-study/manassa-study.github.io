@@ -1,5 +1,7 @@
 # Phase 3 Book 3 migration progress
 
+> **Current status (28 November 2026):** تاريخ التفسير was merged in [PR #17](https://github.com/manassa-study/manassa-study.github.io/pull/17) at `6ce433fbc61169774377dfa96e5baf2e961083c0`. The pre-merge status and next-step statements below are historical; see [the Phase 3 closure record](../phase3-closure-handover.md) for current status.
+
 **Target:** تاريخ التفسير
 **Published page:** `Tafseer/TareekhTafseerAQU.html`
 **Branch:** `codex/phase3-book3-tareekh`

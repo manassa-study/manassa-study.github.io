@@ -1,5 +1,7 @@
 # Migration report: التخريج ودراسة الأسانيد (Phase 3, book 2)
 
+> **Current status (28 November 2026):** التخريج ودراسة الأسانيد was merged in [PR #16](https://github.com/manassa-study/manassa-study.github.io/pull/16) at `7dc5deb57dccd4f73f65c283a44d8cf1666a474a`. The pre-merge status and next-step statements below are historical; see [the Phase 3 closure record](../phase3-closure-handover.md) for current status.
+
 **Status:** built on `codex/phase3-book2-takhreej`; not merged or deployed.
 **Baseline:** `32aef51b48e2a2ddd058e99006951b9c7d4881c2`.
 **Published page:** `hadith/TakhreejAsaneedAQU.html`.
