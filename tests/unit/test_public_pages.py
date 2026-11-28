@@ -82,7 +82,15 @@ def test_privacy_copy_matches_reader_and_feedback_implementation():
     assert "location.href" in feedback and 'fetch("https://docs.google.com/forms' in feedback
     assert "حقل التواصل اختياري" in text
     assert "لم أتحقق من مدد الاحتفاظ" in text
-    assert "لم أجد في التطبيق واجهة لحذف سجل التقدم السحابي" in text
+    assert "مسح تقدّمي في هذا المقرر" in text
+    assert "البريد الإلكتروني إن توفر" in text and "الاسم إن توفر" in text
+    assert "last_seen" in text
+    assert "لا يحذف حساب الطالب" in text
+    auth = (REPO / "platform/templates/partials/auth.js.j2").read_text(encoding="utf-8")
+    assert 'g("accReset").onclick' in auth
+    assert 'from("progress").upsert' in auth
+    assert 'from("profiles").upsert' in auth
+    assert "last_seen:new Date().toISOString()" in auth
     assert "document.cookie" not in readers
     assert "لم يظهر في الشيفرة المباشرة استدعاء لكتابة ملفات تعريف ارتباط" in text
 
