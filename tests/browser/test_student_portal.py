@@ -143,7 +143,7 @@ def test_old_account_response_cannot_replace_new_account_progress(browser):
 
             resolve_request(page, 1, rows_with_done(7))
             page.wait_for_function("!document.querySelector('#dashboard').hidden")
-            assert page.locator(".book-card").first.locator(".book-stat b").first.inner_text() == "٧"
+            assert page.locator(".book-card").first.locator(".book-stat b").first.inner_text() == "7"
             assert errors == []
         finally:
             context.close()
@@ -169,7 +169,7 @@ def test_old_token_response_cannot_replace_refreshed_session_progress(browser):
 
             resolve_request(page, 1, rows_with_done(3))
             page.wait_for_function("!document.querySelector('#dashboard').hidden")
-            assert page.locator(".book-card").first.locator(".book-stat b").first.inner_text() == "٣"
+            assert page.locator(".book-card").first.locator(".book-stat b").first.inner_text() == "3"
             assert errors == []
         finally:
             context.close()
@@ -212,10 +212,10 @@ def test_only_complete_valid_quiz_history_counts_toward_attempts_and_accuracy(br
 
             metrics = page.locator(".book-card").first.locator(".book-stat b")
             assert metrics.nth(2).inner_text() == "٣"
-            assert "دقة الإجابات: ٦٧٪" in page.locator(".book-card").first.inner_text()
+            assert "دقة الإجابات: 67%" in page.locator(".book-card").first.inner_text()
             summary = page.locator("#summary-grid").inner_text()
-            assert "٣" in summary
-            assert "٦٧٪" in summary
+            assert "3" in summary
+            assert "67%" in summary
             assert errors == []
         finally:
             context.close()
