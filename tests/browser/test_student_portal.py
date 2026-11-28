@@ -3,6 +3,7 @@ import contextlib
 import functools
 import http.server
 import json
+import re
 from pathlib import Path
 import threading
 
@@ -334,3 +335,55 @@ def test_rejected_sign_out_shows_error_and_keeps_session_state(browser):
             assert errors == []
         finally:
             context.close()
+
+
+PUBLISHED_READERS = {
+    "madkhal-fiqh-v1": "/fiqh/MadkhalFiqhAQU.html",
+    "munazara-rashidiya-v1": "/mantiq/MunazaraRashidiyaAQU.html",
+    "tafsir-muqaran-v1": "/Tafseer/TafseerMaqaranAQU.html",
+    "takhreej-asaneed-v1": "/hadith/TakhreejAsaneedAQU.html",
+    "tareekh-tafseer-v1": "/Tafseer/TareekhTafseerAQU.html",
+}
+
+
+def test_portal_allowlists_match_published_reader_ids():
+    portal = (REPO / "portal.js").read_text(encoding="utf-8")
+    allowlist_pattern = re.compile(
+        r'\{key:"(?P<key>[^"]+)",title:"[^"]+",href:"(?P<href>[^"]+)",'
+        r'topicIds:idsThrough\("t",(?P<topic_count>\d+)\),cardIds:'
+        r'(?:idsThrough\("",(?P<card_count>\d+)\)|idsFrom\((?P<sparse_cards>\[[^\]]+\])\))\}'
+    )
+    matches = list(allowlist_pattern.finditer(portal))
+    assert len(matches) == len(PUBLISHED_READERS), "Portal allowlist declaration shape changed."
+    assert len({match.group("key") for match in matches}) == len(matches), "Duplicate portal book key."
+
+    allowlists = {}
+    for match in matches:
+        topic_count = int(match.group("topic_count"))
+        topic_ids = {f"t{index}" for index in range(1, topic_count + 1)}
+        if match.group("card_count") is not None:
+            card_ids = {str(index) for index in range(1, int(match.group("card_count")) + 1)}
+        else:
+            card_ids = {str(value) for value in json.loads(match.group("sparse_cards"))}
+        allowlists[match.group("key")] = (match.group("href"), topic_ids, card_ids)
+
+    assert set(allowlists) == set(PUBLISHED_READERS)
+    for key, reader_path in PUBLISHED_READERS.items():
+        href, allowed_topics, allowed_cards = allowlists[key]
+        assert href == reader_path, f"{key}: portal route no longer matches its reader."
+        source = (REPO / reader_path.lstrip("/")).read_text(encoding="utf-8")
+        marker = "const D = "
+        assert marker in source, f"{reader_path}: published data object not found."
+        data, _ = json.JSONDecoder().raw_decode(source[source.index(marker) + len(marker):])
+
+        topic_ids = [
+            str(topic["id"])
+            for chapter in data["DEEP_STUDY_DATA"]
+            for section in chapter["sections"]
+            for topic in section["topics"]
+        ]
+        card_ids = [str(card["id"]) for card in data["FLASHCARDS"]]
+        assert len(topic_ids) == len(set(topic_ids)), f"{reader_path}: duplicate topic ID."
+        assert len(card_ids) == len(set(card_ids)), f"{reader_path}: duplicate card ID."
+        assert allowed_topics == set(topic_ids), f"{key}: portal topic allowlist differs from reader IDs."
+        assert allowed_cards == set(card_ids), f"{key}: portal card allowlist differs from reader IDs."
