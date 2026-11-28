@@ -29,7 +29,11 @@ BOOK_MARKERS = {
 
 
 def chrome(text):
-    return "\n".join(line for line in text.split("\n") if not line.startswith(DATA_PREFIX))
+    without_data = "\n".join(line for line in text.split("\n") if not line.startswith(DATA_PREFIX))
+    # The reader switch intentionally names and links to other books. Exclude
+    # that known navigation menu from the legacy cross-book-content check.
+    import re
+    return re.sub(r'<nav class="book-switch-menu"[^>]*>.*?</nav>', "", without_data, flags=re.DOTALL)
 
 
 def check(text, book, where, previous_size=None):

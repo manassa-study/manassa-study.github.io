@@ -646,7 +646,7 @@ main{min-width:0}
 <header class="topbar">
   <div class="topbar-in">
     <button class="ibtn only-mobile" id="tocBtn" aria-label="فهرس الكتاب"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
-    <a class="brand" href="#home">
+    <a class="brand" href="/" aria-label="منصة المذاكرة، الصفحة الرئيسية">
       <span class="brand-mark" aria-hidden="true">ف</span>
       <span class="brand-txt">
         <span class="brand-t">المدخل إلى الفقه الإسلامي</span>
@@ -659,6 +659,21 @@ main{min-width:0}
     <button class="ibtn" id="themeBtn" aria-label="تبديل الوضع الليلي"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
   </div>
 </header>
+
+<div class="book-switch-wrap">
+  <details class="book-switch">
+    <summary class="btn sm">اختر كتاباً آخر</summary>
+    <nav class="book-switch-menu" aria-label="الانتقال إلى كتاب آخر">
+      <section><b>علوم القرآن والتفسير</b>
+        <a href="/Tafseer/TareekhTafseerAQU.html">تاريخ التفسير</a>
+        <a href="/Tafseer/TafseerMaqaranAQU.html">دراسة التفسير المقارن</a>
+      </section>
+      <section><b>الحديث وعلومه</b><a href="/hadith/TakhreejAsaneedAQU.html">التخريج ودراسة الأسانيد</a></section>
+
+      <section><b>المنطق والمناظرة</b><a href="/mantiq/MunazaraRashidiyaAQU.html">المناظرة الرشيدية</a></section>
+    </nav>
+  </details>
+</div>
 
 <div class="shell">
   <aside class="side" id="side" aria-label="فهرس الكتاب">
@@ -1568,6 +1583,15 @@ details.blk:not([open])>summary::after{content:"عرض";flex:none;align-self:cen
 .selftest>summary::before{order:-1}
 .car{width:28px;height:28px;background-size:15px;align-self:center;margin-inline-start:auto;transform:rotate(180deg)}
 .nd.hasc.closed>.row1 .car,.recall .nd.hasc:not(.open)>.row1 .car{transform:none}
+.book-switch-wrap{max-width:1360px;margin:0 auto;padding:8px 16px 0}
+.book-switch{position:relative;width:max-content;z-index:45}
+.book-switch>summary{cursor:pointer;list-style:none}
+.book-switch>summary::-webkit-details-marker{display:none}
+.book-switch-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:80;min-width:min(280px,calc(100vw - 32px));max-height:min(65vh,420px);overflow:auto;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.book-switch-menu section+section{border-top:1px solid var(--line)}
+.book-switch-menu b{display:block;padding:7px 8px 3px;color:var(--muted);font-size:12px}
+.book-switch-menu a{display:block;padding:7px 8px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:13.5px;line-height:1.5}
+.book-switch-menu a:hover{background:var(--surface-2)}
 </style>
 <script src="https://manassa-study.github.io/report.js" defer></script>
 </body></html>
