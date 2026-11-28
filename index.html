@@ -20,6 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;600;700&family=Noto+Kufi+Arabic:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="/public-nav.css">
 <style>
 :root{
   --paper:#eef2f7; --surface:#ffffff; --line:#d5deea; --ink:#16213a; --muted:#56637a;
@@ -171,8 +172,16 @@ footer .du{font-family:var(--f-read);font-size:19px;color:var(--gold-ink);displa
 </style>
 </head>
 <body>
+<a class="site-skip" href="#books">انتقل إلى الكتب</a>
+<div class="site-nav-wrap" data-site-nav>
+  <a class="site-brand" href="/" aria-label="منصة المذاكرة، الصفحة الرئيسية"><span class="site-brand-mark" aria-hidden="true">م</span><span>منصة المذاكرة</span></a>
+  <button class="site-nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>القائمة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <nav class="site-nav" id="site-nav" aria-label="التنقل الرئيسي">
+    <a href="/#home" aria-current="page">الرئيسية</a><a href="/#about">عن المنصة</a><a href="/#books">الكتب</a><a href="/#team">فريقنا</a><a href="/#join">انضم إلى الفريق</a><a class="site-nav-portal" href="/#portal">بوابة الطالب</a>
+  </nav>
+</div>
 
-<header class="hero">
+<header class="hero" id="home">
   <div class="glow" aria-hidden="true"></div>
   <div class="stars" aria-hidden="true"></div>
   <p class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
@@ -185,7 +194,7 @@ footer .du{font-family:var(--f-read);font-size:19px;color:var(--gold-ink);displa
 </header>
 
 <main>
-  <p class="section-label">الكتب التراثية</p>
+  <p class="section-label" id="books">الكتب التراثية</p>
   <div class="grid one">
 
     <a class="card reveal bronze" href="https://manassa-study.github.io/mantiq.html">
@@ -249,7 +258,7 @@ footer .du{font-family:var(--f-read);font-size:19px;color:var(--gold-ink);displa
 
   </div>
 
-  <section class="about reveal">
+  <section class="about reveal" id="about">
     <h3>عن المنصة</h3>
     <p>جُمعت هذه المنصة لتيسير مذاكرة المقررات الشرعية على الطلاب. كل مقرر مرتب أبواباً وفصولاً، ومع كل مطلب ملخص واضح وخريطة ذهنية وبطاقات للحفظ وأسئلة للمراجعة، ثم اختبار محاكي بمؤقت قبل الامتحان. تعمل الصفحات على الجوال والحاسوب.</p>
   </section>
@@ -259,6 +268,21 @@ footer .du{font-family:var(--f-read);font-size:19px;color:var(--gold-ink);displa
     <div class="feat"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4.5" cy="5" r="2"/><circle cx="19.5" cy="5" r="2"/><circle cx="12" cy="20.5" r="2"/><path d="M6 6.4l3.8 3.6M18 6.4l-3.8 3.6M12 15v3.5"/></svg></div><b>خرائط ذهنية</b><span>ترى الصورة كاملة</span></div>
     <div class="feat"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg></div><b>بطاقات للحفظ</b><span>راجع التعريفات بسرعة</span></div>
     <div class="feat"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><b>اختبارات</b><span>تأكد من فهمك قبل الامتحان</span></div>
+  </section>
+  <section class="public-panel reveal" id="portal" aria-labelledby="portal-title">
+    <div><p class="public-eyebrow">للطالب</p><h2 id="portal-title">بوابة الطالب</h2><p>اختر المقرر للمتابعة. داخل صفحة المقرر، افتح زر الحساب لتسجيل الدخول ومزامنة تقدمك بالطريقة المتاحة فيه.</p></div>
+    <div class="public-link-grid">
+      <a href="/Tafseer/TareekhTafseerAQU.html">التفسير وعلوم القرآن <span>←</span></a>
+      <a href="/hadith/TakhreejAsaneedAQU.html">علوم الحديث <span>←</span></a>
+      <a href="/fiqh/MadkhalFiqhAQU.html">الفقه وأصوله <span>←</span></a>
+      <a href="/mantiq/MunazaraRashidiyaAQU.html">المنطق والمناظرة <span>←</span></a>
+    </div>
+  </section>
+  <section class="public-panel public-panel-compact reveal" id="team" aria-labelledby="team-title">
+    <div><p class="public-eyebrow">منصة المذاكرة</p><h2 id="team-title">فريقنا</h2><p>إعداد وتصميم المنصة: محمد بلال البلوشي. نعمل على تيسير مذاكرة المقررات الشرعية بمواد منظمة وأدوات للمراجعة.</p></div>
+  </section>
+  <section class="public-panel public-panel-compact reveal" id="join" aria-labelledby="join-title">
+    <div><p class="public-eyebrow">ساهم معنا</p><h2 id="join-title">انضم إلى الفريق</h2><p>نرحب بالمقترحات والمساهمات التي تحسن محتوى المنصة وتجربة الطلاب. اطّلع على المشروع وشاركنا عبر مستودعه.</p><a class="public-action" href="https://github.com/manassa-study/manassa-study.github.io">زيارة مستودع المشروع <span aria-hidden="true">↗</span></a></div>
   </section>
 </main>
 
@@ -371,6 +395,7 @@ footer .du{font-family:var(--f-read);font-size:19px;color:var(--gold-ink);displa
   }
 })();
 </script>
+<script src="/public-nav.js" defer></script>
 <script src="https://manassa-study.github.io/report.js" defer></script>
 </body>
 </html>
