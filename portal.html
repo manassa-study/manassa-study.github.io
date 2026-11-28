@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b2a52">
+<title>بوابة الطالب — منصة المذاكرة</title>
+<meta name="description" content="تابع تقدمك الدراسي عبر كتب منصة المذاكرة في لوحة واحدة.">
+<link rel="icon" href="/Tafseer/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Scheherazade+New:wght@400;600;700&family=Noto+Kufi+Arabic:wght@500;600;700&family=Tajawal:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="/public-nav.css">
+<link rel="stylesheet" href="/portal.css">
+</head>
+<body>
+<a class="site-skip" href="#main">انتقل إلى المحتوى الرئيسي</a>
+<div class="site-nav-wrap" data-site-nav>
+  <a class="site-brand" href="/" aria-label="منصة المذاكرة، الصفحة الرئيسية"><span class="site-brand-mark" aria-hidden="true">م</span><span>منصة المذاكرة</span></a>
+  <button class="site-nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>القائمة</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <nav class="site-nav" id="site-nav" aria-label="التنقل الرئيسي">
+    <a href="/">الرئيسية</a><a href="/about.html">عن المنصة</a><a href="/#books">الكتب</a><a href="/team.html">فريقنا</a><a href="/#join">انضم إلى الفريق</a><a class="site-nav-portal" href="/portal.html" aria-current="page">بوابة الطالب</a>
+  </nav>
+</div>
+<main id="main" class="portal-main">
+  <header class="portal-hero">
+    <p class="eyebrow">مساحة تعلمك</p>
+    <h1>بوابة الطالب</h1>
+    <p>نظرة واحدة على تقدمك في كتب المنصة، ثم تابع من حيث توقفت في صفحة كل كتاب.</p>
+  </header>
+  <section class="portal-auth" aria-labelledby="auth-title">
+    <div class="auth-heading">
+      <h2 id="auth-title">حسابك</h2>
+      <p id="auth-summary">سجّل الدخول لعرض التقدم المحفوظ في حسابك.</p>
+    </div>
+    <div id="signed-out" class="auth-actions">
+      <button id="google-login" class="button primary" type="button">الدخول بحساب Google</button>
+      <form id="email-form" class="email-form">
+        <label for="email">أو ادخل ببريدك الإلكتروني</label>
+        <div class="email-row"><input id="email" type="email" autocomplete="email" required placeholder="البريد الإلكتروني" dir="ltr"><button id="send-code" class="button" type="submit">أرسل رمز الدخول</button></div>
+        <div id="code-wrap" hidden><label for="code">رمز الدخول</label><div class="email-row"><input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="••••••" dir="ltr"><button id="verify-code" class="button" type="button">تأكيد الرمز</button></div></div>
+        <p id="email-message" class="form-message" aria-live="polite"></p>
+      </form>
+    </div>
+    <div id="signed-in" class="signed-in" hidden>
+      <p>مسجّل الدخول: <b id="account-email" dir="ltr"></b></p>
+      <button id="logout" class="button quiet" type="button">تسجيل الخروج</button>
+    </div>
+  </section>
+  <p id="portal-status" class="portal-status" role="status" aria-live="polite">جارٍ تجهيز البوابة…</p>
+  <section id="dashboard" hidden aria-labelledby="overview-title">
+    <div class="section-heading"><div><p class="eyebrow">ملخص شامل</p><h2 id="overview-title">تقدمك عبر الكتب</h2></div><p class="section-note">يعرض هذا الملخص تقدمك المتزامن مع حسابك. وتبقى لوحة كل كتاب داخل صفحته كما هي.</p></div>
+    <div id="summary-grid" class="summary-grid" aria-label="ملخص التقدم"></div>
+    <div class="section-heading books-heading"><div><p class="eyebrow">متابعة المذاكرة</p><h2>كتبك</h2></div></div>
+    <div id="book-grid" class="book-grid"></div>
+  </section>
+  <footer class="portal-footer"><p>تعرض البوابة مؤشرات المذاكرة المسجلة في حسابك، ولا تمثل سجلاً رسمياً للدرجات أو التسجيل في المقررات.</p><a href="/privacy.html">سياسة الخصوصية</a></footer>
+</main>
+<script src="/public-nav.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/portal.js" defer></script>
+</body>
+</html>
