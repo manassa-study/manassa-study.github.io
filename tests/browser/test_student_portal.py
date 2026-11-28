@@ -211,7 +211,7 @@ def test_only_complete_valid_quiz_history_counts_toward_attempts_and_accuracy(br
             page.wait_for_function("!document.querySelector('#dashboard').hidden")
 
             metrics = page.locator(".book-card").first.locator(".book-stat b")
-            assert metrics.nth(2).inner_text() == "٣"
+            assert metrics.nth(2).inner_text() == "3"
             assert "دقة الإجابات: 67%" in page.locator(".book-card").first.inner_text()
             summary = page.locator("#summary-grid").inner_text()
             assert "3" in summary
