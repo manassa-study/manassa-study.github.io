@@ -2,12 +2,14 @@
 "use strict";
 var SUPABASE_URL="https://bkqyroqdhkfofoevicjg.supabase.co";
 var SUPABASE_KEY="sb_publishable_mmRkRsFroni2dgiF8eTXtQ__WGqONmH";
+function idsThrough(prefix,count){var ids={};for(var i=1;i<=count;i++)ids[prefix+i]=true;return ids}
+function idsFrom(values){var ids={};values.forEach(function(id){ids[String(id)]=true});return ids}
 var BOOKS=[
- {key:"madkhal-fiqh-v1",title:"المدخل إلى الفقه الإسلامي",href:"/fiqh/MadkhalFiqhAQU.html"},
- {key:"munazara-rashidiya-v1",title:"المناظرة الرشيدية",href:"/mantiq/MunazaraRashidiyaAQU.html"},
- {key:"tafsir-muqaran-v1",title:"دراسة التفسير المقارن",href:"/Tafseer/TafseerMaqaranAQU.html"},
- {key:"takhreej-asaneed-v1",title:"التخريج ودراسة الأسانيد",href:"/hadith/TakhreejAsaneedAQU.html"},
- {key:"tareekh-tafseer-v1",title:"دراسة تاريخ التفسير",href:"/Tafseer/TareekhTafseerAQU.html"}
+ {key:"madkhal-fiqh-v1",title:"المدخل إلى الفقه الإسلامي",href:"/fiqh/MadkhalFiqhAQU.html",topicIds:idsThrough("t",31),cardIds:idsThrough("",186)},
+ {key:"munazara-rashidiya-v1",title:"المناظرة الرشيدية",href:"/mantiq/MunazaraRashidiyaAQU.html",topicIds:idsThrough("t",27),cardIds:idsThrough("",169)},
+ {key:"tafsir-muqaran-v1",title:"دراسة التفسير المقارن",href:"/Tafseer/TafseerMaqaranAQU.html",topicIds:idsThrough("t",22),cardIds:idsFrom([1,2,3,4,5,6,7,8,9,10,11,12,13,14,101,102,103,104,105,106,107,108,109,110,111,112])},
+ {key:"takhreej-asaneed-v1",title:"التخريج ودراسة الأسانيد",href:"/hadith/TakhreejAsaneedAQU.html",topicIds:idsThrough("t",29),cardIds:idsThrough("",163)},
+ {key:"tareekh-tafseer-v1",title:"دراسة تاريخ التفسير",href:"/Tafseer/TareekhTafseerAQU.html",topicIds:idsThrough("t",43),cardIds:idsThrough("",179)}
 ];
 var $=function(id){return document.getElementById(id)};
 var client=null,currentUser=null,currentSessionKey=undefined,sessionGeneration=0,activeRequest=null,renderedSessionKey=null,authEventSeen=false;
@@ -16,7 +18,7 @@ var dashboard=$("dashboard"),status=$("portal-status"),emailMessage=$("email-mes
 function number(n){return new Intl.NumberFormat("ar").format(n||0)}
 function message(text,isError){status.textContent=text;status.classList.toggle("error",!!isError);status.hidden=!text}
 function object(value){return value&&typeof value==="object"&&!Array.isArray(value)?value:{}}
-function countTrue(value){var o=object(value);return Object.keys(o).filter(function(key){return !!o[key]}).length}
+function countTrue(value,allowedIds){var o=object(value);return Object.keys(o).filter(function(key){return Object.prototype.hasOwnProperty.call(allowedIds,key)&&!!o[key]}).length}
 function validQuizAttempt(item){
  if(!item||typeof item!=="object"||Array.isArray(item))return false;
  if(item.mode!=="practice"&&item.mode!=="exam")return false;
@@ -53,7 +55,7 @@ function render(rows){
  var grid=$("book-grid"),summary=$("summary-grid");grid.textContent="";summary.textContent="";
  BOOKS.forEach(function(book){
   var state=stateFromRow(byCourse[book.key]);
-  var done=countTrue(state.done),mastered=countTrue(state.mastered),quiz=quizStats(state.quizHist);
+  var done=countTrue(state.done,book.topicIds),mastered=countTrue(state.mastered,book.cardIds),quiz=quizStats(state.quizHist);
   totals.done+=done;totals.mastered+=mastered;totals.attempts+=quiz.attempts;totals.correct+=quiz.correct;totals.answers+=quiz.total;
   var card=document.createElement("article");card.className="book-card";
   var title=document.createElement("h3");title.textContent=book.title;card.appendChild(title);
@@ -124,7 +126,7 @@ function init(){
   authChanged(result.data&&result.data.session,"GET_SESSION");
  }).catch(function(){if(!authEventSeen)signedOutState("تعذّر التحقق من الجلسة. حاول تسجيل الدخول مجدداً.")});
  $("google-login").addEventListener("click",function(){
-  client.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:"select_account"}}}).then(function(result){if(result.error)emailMessage.textContent="تعذّر بدء تسجيل الدخول. حاول مرة أخرى."});
+  client.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname,queryParams:{prompt:"select_account"}}}).then(function(result){if(result.error)emailMessage.textContent="تعذّر بدء تسجيل الدخول. حاول مرة أخرى."}).catch(function(){emailMessage.textContent="تعذّر بدء تسجيل الدخول الآن. تحقق من الاتصال وحاول مرة أخرى."});
  });
  $("email-form").addEventListener("submit",function(event){
   event.preventDefault();var email=$("email").value.trim();if(!email)return;
@@ -145,7 +147,7 @@ function init(){
    emailMessage.textContent="تم تسجيل الدخول.";
   }).catch(function(){$("verify-code").disabled=false;emailMessage.textContent="تعذّر التحقق من الرمز."});
  });
- $("logout").addEventListener("click",function(){client.auth.signOut().then(function(result){if(result.error){message("تعذّر تسجيل الخروج. حاول مرة أخرى.",true);return}authChanged(null,"SIGNED_OUT")})});
+ $("logout").addEventListener("click",function(){client.auth.signOut().then(function(result){if(result.error){message("تعذّر تسجيل الخروج. حاول مرة أخرى.",true);return}authChanged(null,"SIGNED_OUT")}).catch(function(){message("تعذّر تسجيل الخروج. حاول مرة أخرى.",true)})});
 }
 init();
 })();

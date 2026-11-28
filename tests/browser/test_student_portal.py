@@ -3,6 +3,7 @@ import contextlib
 import functools
 import http.server
 import json
+import re
 from pathlib import Path
 import threading
 
@@ -27,8 +28,8 @@ window.supabase = {
         getSession: function() {
           return Promise.resolve({data: {session: window.__initialPortalSession}, error: null});
         },
-        signOut: function() { return Promise.resolve({error: null}); },
-        signInWithOAuth: function() { return Promise.resolve({error: null}); },
+        signOut: function() { return window.__rejectSignOut ? Promise.reject(new Error("network unavailable")) : Promise.resolve({error: null}); },
+        signInWithOAuth: function() { return window.__rejectOAuth ? Promise.reject(new Error("network unavailable")) : Promise.resolve({error: null}); },
         signInWithOtp: function() { return Promise.resolve({error: null}); },
         verifyOtp: function() { return Promise.resolve({error: null}); }
       },
@@ -116,7 +117,7 @@ def resolve_request(page, index, rows):
 def rows_with_done(count):
     return [{
         "course": "madkhal-fiqh-v1",
-        "state": {"done": {f"topic-{index}": True for index in range(count)}},
+        "state": {"done": {f"t{index}": True for index in range(1, count + 1)}},
     }]
 
 
@@ -219,3 +220,170 @@ def test_only_complete_valid_quiz_history_counts_toward_attempts_and_accuracy(br
             assert errors == []
         finally:
             context.close()
+
+
+BOOKS = [
+    ("madkhal-fiqh-v1", "t1", "1"),
+    ("munazara-rashidiya-v1", "t1", "1"),
+    ("tafsir-muqaran-v1", "t1", "1"),
+    ("takhreej-asaneed-v1", "t1", "1"),
+    ("tareekh-tafseer-v1", "t1", "1"),
+]
+
+
+def localized(number):
+    return str(number)
+
+
+@pytest.mark.browser
+def test_only_published_topic_and_card_ids_count_for_each_book_and_totals(browser):
+    rows = []
+    for course, topic_id, card_id in BOOKS:
+        mastered = {card_id: True, "stale-card-id": True}
+        if course == "tafsir-muqaran-v1":
+            mastered.update({"101": True, "15": True})
+        rows.append({
+            "course": course,
+            "state": {
+                "done": {topic_id: True, "stale-topic-id": True},
+                "mastered": mastered,
+            },
+        })
+    with serve_repo() as base_url:
+        context, page, errors = open_portal(
+            browser, base_url, session("account-a", "a@example.test", "token-a", "refresh-a")
+        )
+        try:
+            wait_for_requests(page, 1)
+            resolve_request(page, 0, rows)
+            page.wait_for_function("!document.querySelector('#dashboard').hidden")
+
+            for index, card in enumerate(page.locator(".book-card").all()):
+                stats = card.locator(".book-stat b")
+                assert stats.nth(0).inner_text() == localized(1)
+                assert stats.nth(1).inner_text() == localized(2 if index == 2 else 1)
+            summary = page.locator("#summary-grid .metric strong")
+            assert summary.nth(0).inner_text() == localized(5)
+            assert summary.nth(1).inner_text() == localized(6)
+            assert errors == []
+        finally:
+            context.close()
+
+
+@pytest.mark.browser
+def test_malformed_root_and_nested_progress_states_count_as_empty(browser):
+    rows = [
+        {"course": "madkhal-fiqh-v1", "state": "{not-json"},
+        {"course": "munazara-rashidiya-v1", "state": "[]"},
+        {"course": "tafsir-muqaran-v1", "state": 7},
+        {"course": "takhreej-asaneed-v1", "state": {"done": [], "mastered": "invalid"}},
+        {"course": "tareekh-tafseer-v1", "state": {"done": True, "mastered": None}},
+    ]
+    with serve_repo() as base_url:
+        context, page, errors = open_portal(
+            browser, base_url, session("account-a", "a@example.test", "token-a", "refresh-a")
+        )
+        try:
+            wait_for_requests(page, 1)
+            resolve_request(page, 0, rows)
+            page.wait_for_function("!document.querySelector('#dashboard').hidden")
+
+            for card in page.locator(".book-card").all():
+                stats = card.locator(".book-stat b")
+                assert stats.nth(0).inner_text() == localized(0)
+                assert stats.nth(1).inner_text() == localized(0)
+            summary = page.locator("#summary-grid .metric strong")
+            assert summary.nth(0).inner_text() == localized(0)
+            assert summary.nth(1).inner_text() == localized(0)
+            assert errors == []
+        finally:
+            context.close()
+
+
+@pytest.mark.browser
+def test_rejected_google_sign_in_shows_useful_feedback(browser):
+    with serve_repo() as base_url:
+        context, page, errors = open_portal(browser, base_url, None)
+        try:
+            page.evaluate("window.__rejectOAuth = true")
+            page.locator("#google-login").click()
+            page.wait_for_function("document.querySelector('#email-message').textContent.length > 0")
+            assert "تعذّر بدء تسجيل الدخول" in page.locator("#email-message").inner_text()
+            assert page.locator("#signed-out").is_visible()
+            assert errors == []
+        finally:
+            context.close()
+
+
+@pytest.mark.browser
+def test_rejected_sign_out_shows_error_and_keeps_session_state(browser):
+    with serve_repo() as base_url:
+        context, page, errors = open_portal(
+            browser, base_url, session("account-a", "a@example.test", "token-a", "refresh-a")
+        )
+        try:
+            wait_for_requests(page, 1)
+            resolve_request(page, 0, [])
+            page.wait_for_function("!document.querySelector('#dashboard').hidden")
+            page.evaluate("window.__rejectSignOut = true")
+            page.locator("#logout").click()
+            page.wait_for_function("document.querySelector('#portal-status').textContent.length > 0")
+
+            assert "تعذّر تسجيل الخروج" in page.locator("#portal-status").inner_text()
+            assert page.locator("#account-email").inner_text() == "a@example.test"
+            assert page.locator("#dashboard").is_visible()
+            assert errors == []
+        finally:
+            context.close()
+
+
+PUBLISHED_READERS = {
+    "madkhal-fiqh-v1": "/fiqh/MadkhalFiqhAQU.html",
+    "munazara-rashidiya-v1": "/mantiq/MunazaraRashidiyaAQU.html",
+    "tafsir-muqaran-v1": "/Tafseer/TafseerMaqaranAQU.html",
+    "takhreej-asaneed-v1": "/hadith/TakhreejAsaneedAQU.html",
+    "tareekh-tafseer-v1": "/Tafseer/TareekhTafseerAQU.html",
+}
+
+
+def test_portal_allowlists_match_published_reader_ids():
+    portal = (REPO / "portal.js").read_text(encoding="utf-8")
+    allowlist_pattern = re.compile(
+        r'\{key:"(?P<key>[^"]+)",title:"[^"]+",href:"(?P<href>[^"]+)",'
+        r'topicIds:idsThrough\("t",(?P<topic_count>\d+)\),cardIds:'
+        r'(?:idsThrough\("",(?P<card_count>\d+)\)|idsFrom\((?P<sparse_cards>\[[^\]]+\])\))\}'
+    )
+    matches = list(allowlist_pattern.finditer(portal))
+    assert len(matches) == len(PUBLISHED_READERS), "Portal allowlist declaration shape changed."
+    assert len({match.group("key") for match in matches}) == len(matches), "Duplicate portal book key."
+
+    allowlists = {}
+    for match in matches:
+        topic_count = int(match.group("topic_count"))
+        topic_ids = {f"t{index}" for index in range(1, topic_count + 1)}
+        if match.group("card_count") is not None:
+            card_ids = {str(index) for index in range(1, int(match.group("card_count")) + 1)}
+        else:
+            card_ids = {str(value) for value in json.loads(match.group("sparse_cards"))}
+        allowlists[match.group("key")] = (match.group("href"), topic_ids, card_ids)
+
+    assert set(allowlists) == set(PUBLISHED_READERS)
+    for key, reader_path in PUBLISHED_READERS.items():
+        href, allowed_topics, allowed_cards = allowlists[key]
+        assert href == reader_path, f"{key}: portal route no longer matches its reader."
+        source = (REPO / reader_path.lstrip("/")).read_text(encoding="utf-8")
+        marker = "const D = "
+        assert marker in source, f"{reader_path}: published data object not found."
+        data, _ = json.JSONDecoder().raw_decode(source[source.index(marker) + len(marker):])
+
+        topic_ids = [
+            str(topic["id"])
+            for chapter in data["DEEP_STUDY_DATA"]
+            for section in chapter["sections"]
+            for topic in section["topics"]
+        ]
+        card_ids = [str(card["id"]) for card in data["FLASHCARDS"]]
+        assert len(topic_ids) == len(set(topic_ids)), f"{reader_path}: duplicate topic ID."
+        assert len(card_ids) == len(set(card_ids)), f"{reader_path}: duplicate card ID."
+        assert allowed_topics == set(topic_ids), f"{key}: portal topic allowlist differs from reader IDs."
+        assert allowed_cards == set(card_ids), f"{key}: portal card allowlist differs from reader IDs."
